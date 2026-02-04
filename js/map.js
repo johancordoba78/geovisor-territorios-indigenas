@@ -1,5 +1,14 @@
-var map = L.map('map').setView([9.8, -83.7], 8);
+// ===============================
+// MAPA BASE
+// ===============================
+var map = L.map('map', {
+  preferCanvas: true
+}).setView([9.8, -83.7], 8);
 
+// Fondo negro real
+map.getContainer().style.background = '#000000';
+
+// Capa base oscura (CARTO)
 L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   {
@@ -7,43 +16,81 @@ L.tileLayer(
   }
 ).addTo(map);
 
+// ===============================
+// ESTILO BASE DE TERRITORIOS
+// ===============================
 function estiloTerritorios() {
   return {
     color: '#1b5e20',
     weight: 1.5,
     fillColor: '#66bb6a',
-    fillOpacity: 0.5
+    fillOpacity: 0.6
   };
 }
 
-function onEachFeature(feature, layer) {
+// ===============================
+// RESALTADO AL PASAR EL MOUSE
+// ===============================
+function highlightFeature(e) {
+  var layer = e.target;
 
+  layer.setStyle({
+    color: '#FFD700', // amarillo
+    weight: 3,
+    fillOpacity: 0.8
+  });
+
+  layer.bringToFront();
+}
+
+function resetHighlight(e) {
+  geojson.resetStyle(e.target);
+}
+
+// ===============================
+// POPUP + EVENTOS
+// ===============================
+function onEachFeature(feature, layer) {
   var p = feature.properties;
 
-  var foto = p.FOTO ? p.FOTO : 'fotos/sin_foto.jpg';
+  var foto  = p.FOTO  ? p.FOTO  : 'fotos/sin_foto.jpg';
   var ficha = p.FICHA ? p.FICHA : 'fichas/en_construccion.html';
 
   var html = `
     <div class="popup-title">${p.TERRITORIO}</div>
     <img src="${foto}" class="popup-img">
     <table class="popup-table">
-      <tr><td><b>Decreto:</b></td><td>${p.DECRETO}</td></tr>
-      <tr><td><b>Año:</b></td><td>${p.AÑO}</td></tr>
-      <tr><td><b>Clasificación:</b></td><td>${p.CLASIF}</td></tr>
-      <tr><td><b>Área (ha):</b></td><td>${Number(p.AREA_HA).toFixed(2)}</td></tr>
+      <tr><td><b>Decreto</b></td><td>${p.DECRETO}</td></tr>
+      <tr><td><b>Año</b></td><td>${p.AÑO}</td></tr>
+      <tr><td><b>Clasificación</b></td><td>${p.CLASIF}</td></tr>
+      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA}</td></tr>
     </table>
-    <a href="${ficha}" target="_blank" class="popup-btn">Ver ficha técnica</a>
+    <a href="${ficha}" target="_blank" class="popup-btn">
+      Ver ficha técnica
+    </a>
   `;
 
   layer.bindPopup(html);
+
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight
+  });
 }
 
+// ===============================
+// CARGA DEL GEOJSON
+// ===============================
+var geojson;
+
 fetch('data/territorios_indigenas.geojson')
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
-    L.geoJSON(data, {
+    geojson = L.geoJSON(data, {
       style: estiloTerritorios,
       onEachFeature: onEachFeature
     }).addTo(map);
   })
-  .catch(err => console.warn('GeoJSON aún no cargado'));
+  .catch(error => {
+    console.error('Error cargando el GeoJSON:', error);
+  });
