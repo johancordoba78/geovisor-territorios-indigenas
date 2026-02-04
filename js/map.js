@@ -1,9 +1,9 @@
 var map = L.map('map').setView([9.8, -83.7], 8);
 
 L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  'https://tiles.stadiamaps.com/tiles/alidade_dark/{z}/{x}/{y}{r}.png',
   {
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
+    attribution: '&copy; OpenMapTiles &copy; OpenStreetMap contributors'
   }
 ).addTo(map);
 
