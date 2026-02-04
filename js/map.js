@@ -1,48 +1,50 @@
-var map = L.map('map').setView([9.8, -83.7], 8);
-
-L.tileLayer(
-  'https://tiles.stadiamaps.com/tiles/alidade_dark/{z}/{x}/{y}{r}.png',
-  {
-    attribution: '&copy; OpenMapTiles &copy; OpenStreetMap contributors'
-  }
-).addTo(map);
-
-
-function estiloTerritorios() {
-  return {
-    color: '#1b5e20',
-    weight: 1.5,
-    fillColor: '#66bb6a',
-    fillOpacity: 0.5
-  };
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000; /* 🔴 fondo negro real */
 }
 
-function onEachFeature(feature, layer) {
-  var p = feature.properties;
-
-  var foto = p.FOTO ? p.FOTO : 'fotos/sin_foto.jpg';
-  var ficha = p.FICHA ? p.FICHA : 'fichas/en_construccion.html';
-
-  var html = `
-    <div class="popup-title">${p.TERRITORIO}</div>
-    <img src="${foto}" class="popup-img">
-    <table class="popup-table">
-      <tr><td><b>Decreto:</b></td><td>${p.DECRETO}</td></tr>
-      <tr><td><b>Año:</b></td><td>${p.AÑO}</td></tr>
-      <tr><td><b>Clasificación:</b></td><td>${p.CLASIF}</td></tr>
-      <tr><td><b>Área (ha):</b></td><td>${Number(p.AREA_HA).toFixed(2)}</td></tr>
-    </table>
-    <a href="${ficha}" target="_blank" class="popup-btn">Ver ficha técnica</a>
-  `;
-
-  layer.bindPopup(html);
+#map {
+  width: 100%;
+  height: 100%;
+  background: #000000; /* 🔴 fondo negro del mapa */
 }
 
-fetch('data/territorios_indigenas.geojson')
-  .then(res => res.json())
-  .then(data => {
-    L.geoJSON(data, {
-      style: estiloTerritorios,
-      onEachFeature: onEachFeature
-    }).addTo(map);
-  });
+.leaflet-container {
+  background: #000000 !important; /* 🔴 fuerza Leaflet */
+}
+
+.popup-img {
+  width: 100%;
+  max-width: 250px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.popup-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.popup-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.popup-table td {
+  padding: 2px 4px;
+}
+
+.popup-btn {
+  display: block;
+  margin-top: 6px;
+  padding: 6px;
+  background: #2e7d32;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+}
