@@ -1,8 +1,12 @@
 var map = L.map('map').setView([9.8, -83.7], 8);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap'
-}).addTo(map);
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  {
+    attribution: '&copy; OpenStreetMap &copy; CARTO'
+  }
+).addTo(map);
+
 
 function estiloTerritorios() {
   return {
