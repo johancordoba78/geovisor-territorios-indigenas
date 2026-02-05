@@ -3,16 +3,13 @@
 // ===============================
 var map = L.map('map').setView([9.8, -83.7], 8);
 
-// Fondo negro real
-map.getContainer().style.background = '#000000';
-
 // ===============================
 // MAPAS BASE
 // ===============================
 var baseOscuro = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   { attribution: '&copy; OpenStreetMap &copy; CARTO' }
-);
+).addTo(map);
 
 var baseSatelite = L.tileLayer(
   'https://server.arcgisonline.com/ArcGIS/rest/services/' +
@@ -20,43 +17,33 @@ var baseSatelite = L.tileLayer(
   { attribution: 'Tiles &copy; Esri' }
 );
 
-baseOscuro.addTo(map);
-
 // ===============================
-// ESTILO NORMAL
+// ESTILO TERRITORIOS
 // ===============================
-function estiloTerritorios() {
+function estiloNormal() {
   return {
-    color: '#FFFFFF',      // borde blanco
+    color: '#ffffff',     // borde blanco
     weight: 2,
-    opacity: 1,
-    fillColor: '#ff5500',  // naranja definitivo
+    fillColor: '#ff5500', // naranja
     fillOpacity: 0.65
   };
 }
 
-// ===============================
-// HOVER (AMARILLO)
-// ===============================
-function highlightFeature(e) {
-  var layer = e.target;
-
-  layer.setStyle({
+function estiloHover(e) {
+  e.target.setStyle({
     color: '#FFD700',
     weight: 3,
     fillColor: '#ff8800',
     fillOpacity: 0.85
   });
-
-  layer.bringToFront();
 }
 
-function resetHighlight(e) {
-  territoriosLayer.resetStyle(e.target);
+function resetHover(e) {
+  territorios.resetStyle(e.target);
 }
 
 // ===============================
-// POPUP + EVENTOS
+// POPUP
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties;
@@ -81,8 +68,8 @@ function onEachFeature(feature, layer) {
   layer.bindPopup(html);
 
   layer.on({
-    mouseover: highlightFeature,
-    mouseout: resetHighlight,
+    mouseover: estiloHover,
+    mouseout: resetHover,
     click: function () {
       map.fitBounds(layer.getBounds(), { padding: [20, 20] });
     }
@@ -92,34 +79,32 @@ function onEachFeature(feature, layer) {
 // ===============================
 // CARGA GEOJSON
 // ===============================
-var territoriosLayer;
+var territorios;
 
 fetch('data/territorios_indigenas.geojson')
-  .then(r => r.json())
+  .then(res => res.json())
   .then(data => {
 
-    territoriosLayer = L.geoJSON(data, {
-      style: estiloTerritorios,
+    territorios = L.geoJSON(data, {
+      style: estiloNormal,
       onEachFeature: onEachFeature
     }).addTo(map);
 
+    map.fitBounds(territorios.getBounds());
+
     // ===============================
-    // CONTROL DE CAPAS SIMPLE
+    // CONTROL DE CAPAS (NORMAL)
     // ===============================
-    var mapasBase = {
-      "Mapa oscuro": baseOscuro,
-      "Satélite": baseSatelite
-    };
-
-    var overlays = {
-      "Territorios indígenas": territoriosLayer
-    };
-
-    L.control.layers(mapasBase, overlays, {
-      collapsed: false
-    }).addTo(map);
-
-    map.fitBounds(territoriosLayer.getBounds());
+    L.control.layers(
+      {
+        "Mapa oscuro": baseOscuro,
+        "Satélite": baseSatelite
+      },
+      {
+        "Territorios indígenas": territorios
+      },
+      { collapsed: false }
+    ).addTo(map);
 
     // ===============================
     // LEYENDA
@@ -131,12 +116,12 @@ fetch('data/territorios_indigenas.geojson')
       div.innerHTML = `
         <b>Territorios</b><br>
         <i style="background:#ff5500"></i> Territorio indígena<br>
-        <i style="background:#FFD700"></i> Territorio en foco
+        <i style="background:#FFD700"></i> En foco
       `;
       return div;
     };
 
     legend.addTo(map);
   })
-  .catch(err => console.error('Error cargando GeoJSON:', err));
+  .catch(err => console.error(err));
 
