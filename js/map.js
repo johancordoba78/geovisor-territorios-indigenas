@@ -1,7 +1,9 @@
 // ===============================
 // MAPA
 // ===============================
-var map = L.map('map').setView([9.8, -83.7], 7);
+var map = L.map('map', {
+  preferCanvas: false
+}).setView([9.8, -83.7], 7);
 
 // ===============================
 // MAPAS BASE
@@ -65,18 +67,18 @@ function reset(e) {
 }
 
 // ===============================
-// EVENTOS + POPUP (ATRIBUTOS)
+// EVENTOS + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
   layer.bindPopup(`
-    <div class="popup-title">${p.TERRITORIO}</div>
+    <div class="popup-title">${p.TERRITORIO || 'Territorio indígena'}</div>
     <table class="popup-table">
-      <tr><td><b>Decreto</b></td><td>${p.DECRETO}</td></tr>
-      <tr><td><b>Año</b></td><td>${p.AÑO}</td></tr>
-      <tr><td><b>Clasificación</b></td><td>${p.CLASIF}</td></tr>
-      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA}</td></tr>
+      <tr><td><b>Decreto</b></td><td>${p.DECRETO || '-'}</td></tr>
+      <tr><td><b>Año</b></td><td>${p.AÑO || '-'}</td></tr>
+      <tr><td><b>Clasificación</b></td><td>${p.CLASIF || '-'}</td></tr>
+      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA || '-'}</td></tr>
     </table>
   `);
 
@@ -95,7 +97,7 @@ function onEachFeature(feature, layer) {
 // ===============================
 var territoriosLayer;
 
-fetch('./data/territorios_indigenas.geojson')
+fetch('data/territorios_indigenas.geojson')
   .then(r => r.json())
   .then(data => {
 
@@ -111,7 +113,4 @@ fetch('./data/territorios_indigenas.geojson')
 
     map.fitBounds(territoriosLayer.getBounds());
   })
-  .catch(err => {
-    console.error(err);
-    alert('❌ No se pudo cargar el GeoJSON');
-  });
+  .catch(err => console.error(err));
