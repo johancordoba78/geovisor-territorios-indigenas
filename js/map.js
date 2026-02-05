@@ -37,24 +37,18 @@ var controlCapas = L.control.layers(
 ).addTo(map);
 
 // ===============================
-// SIMBOLOGÍA (CLASIF)
+// SIMBOLOGÍA (CLASIF REAL)
 // ===============================
-// REGLA:
-// - "CREF y PAFTS"  → mismo color
-// - "Solo PAFTS"    → mismo color
-// - "Sin CREF ni PAFTS" → color distinto
+// CLASES EXISTENTES:
+// - "CREF y PAFTS"
+// - "Solo PAFTS"
+// - "Sin CREF ni PAFTS"
+
 function getColor(clasif) {
-
-  if (!clasif) {
-    return '#e66101'; // PAFTS / CREF por defecto
-  }
-
   if (clasif === 'Sin CREF ni PAFTS') {
-    return '#7570b3'; // sin instrumentos
+    return '#7570b3'; // SIN instrumentos
   }
-
-  // CREF y PAFTS + Solo PAFTS
-  return '#e66101';
+  return '#e66101'; // CREF y PAFTS + Solo PAFTS
 }
 
 function estiloNormal(feature) {
@@ -72,14 +66,11 @@ function estiloNormal(feature) {
 // ===============================
 function highlight(e) {
   var layer = e.target;
-
   layer.setStyle({
     color: '#FFD700',
     weight: 3,
-    fillColor: '#ffcc33',
     fillOpacity: 0.85
   });
-
   layer.bringToFront();
 }
 
@@ -93,8 +84,8 @@ function reset(e) {
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
-  // Tooltip (nombre)
-  layer.bindTooltip(p.TERRITORIO || 'Territorio indígena', {
+  // Tooltip (nombre del territorio)
+  layer.bindTooltip(p.TERRITORIO, {
     sticky: true,
     direction: 'top',
     opacity: 0.9
@@ -148,23 +139,17 @@ fetch('data/territorios_indigenas.geojson')
   .catch(err => console.error(err));
 
 // ===============================
-// LEYENDA
+// LEYENDA (ÚNICA Y CORRECTA)
 // ===============================
 var legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function () {
-  var div = L.DomUtil.create('div', 'info legend');
-
-  div.style.background = 'rgba(0,0,0,0.75)';
-  div.style.color = '#fff';
-  div.style.padding = '10px';
-  div.style.fontSize = '12px';
-  div.style.borderRadius = '6px';
+  var div = L.DomUtil.create('div', 'legend');
 
   div.innerHTML = `
     <b>Clasificación</b><br>
-    <i style="background:#e66101; width:12px; height:12px; display:inline-block;"></i> PAFTS / CREF<br>
-    <i style="background:#7570b3; width:12px; height:12px; display:inline-block;"></i> Sin CREF ni PAFTS
+    <i style="background:#e66101"></i> CREF y PAFTS / Solo PAFTS<br>
+    <i style="background:#7570b3"></i> Sin CREF ni PAFTS
   `;
 
   return div;
