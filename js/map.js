@@ -108,19 +108,26 @@ fetch('data/territorios_indigenas.geojson')
     map.fitBounds(boundsGeneral);
 
     // ===============================
-    // CONTROL DE CAPAS
-    // ===============================
-    L.control.layers(
-      {
-        "Mapa oscuro": baseOscuro,
-        "Satélite": baseSatelite,
-        "OpenStreetMap": baseOSM
-      },
-      {
-        "Territorios indígenas": territorios
-      },
-      { collapsed: false }
-    ).addTo(map);
+// CONTROL DE CAPAS (ORDENADO)
+// ===============================
+var mapasBase = {
+  "Mapa oscuro": baseOscuro,
+  "Satélite": baseSatelite,
+  "OpenStreetMap": baseOSM
+};
+
+var capasVectoriales = {
+  "Territorios indígenas": territorios
+};
+
+L.control.layers(
+  mapasBase,
+  capasVectoriales,
+  {
+    collapsed: false,
+    position: 'topright'
+  }
+).addTo(map);
 
     // ===============================
     // BUSCADOR
