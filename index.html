@@ -10,7 +10,7 @@
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
-  <!-- Leaflet Search CSS (PASO B) -->
+  <!-- Leaflet Search CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet-search@3.0.4/dist/leaflet-search.min.css"
@@ -21,61 +21,16 @@
 </head>
 <body>
 
-  <!-- ===============================
-       MAPA
-  =============================== -->
+  <!-- MAPA -->
   <div id="map"></div>
-
-  <!-- ===============================
-       PANEL C – FICHA DEL TERRITORIO
-  =============================== -->
-  <div id="panel-info" class="panel-info hidden">
-    <div class="panel-header">
-      <span id="panel-title">Territorio</span>
-      <button id="panel-close">✕</button>
-    </div>
-
-    <div class="panel-body">
-      <table class="panel-table">
-        <tr>
-          <td><b>Decreto</b></td>
-          <td id="p-decreto">-</td>
-        </tr>
-        <tr>
-          <td><b>Año</b></td>
-          <td id="p-anio">-</td>
-        </tr>
-        <tr>
-          <td><b>Clasificación</b></td>
-          <td id="p-clasif">-</td>
-        </tr>
-        <tr>
-          <td><b>Área (ha)</b></td>
-          <td id="p-area">-</td>
-        </tr>
-      </table>
-
-      <hr>
-
-      <!-- PASO D (futuro) -->
-      <div class="panel-placeholder">
-        📷 Fotos y documentos<br>
-        <small>(Paso D)</small>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===============================
-       LIBRERÍAS JS
-  =============================== -->
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Leaflet Search JS (PASO B) -->
+  <!-- Leaflet Search -->
   <script src="https://unpkg.com/leaflet-search@3.0.4/dist/leaflet-search.min.js"></script>
 
-  <!-- JS del visor -->
+  <!-- JS principal -->
   <script src="js/map.js"></script>
 
 </body>
