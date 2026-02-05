@@ -62,19 +62,6 @@ function reset(e) {
 }
 
 // ===============================
-// PANEL
-// ===============================
-function actualizarPanel(p) {
-  document.getElementById('detalle').innerHTML = `
-    <b>${p.TERRITORIO || '-'}</b><br>
-    Decreto: ${p.DECRETO || '-'}<br>
-    Año: ${p.AÑO || '-'}<br>
-    Clasificación: ${p.CLASIF || '-'}<br>
-    Área (ha): ${Number(p.AREA_HA || 0).toLocaleString('es-CR')}
-  `;
-}
-
-// ===============================
 // EVENTOS + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
@@ -95,26 +82,9 @@ function onEachFeature(feature, layer) {
     mouseout: reset,
     click: function () {
       map.fitBounds(layer.getBounds(), { padding: [20, 20] });
-      actualizarPanel(p);
       layer.openPopup();
     }
   });
-}
-
-// ===============================
-// KPIs
-// ===============================
-function calcularKPIs(data) {
-  let total = data.features.length;
-  let area = 0;
-
-  data.features.forEach(f => {
-    area += Number(f.properties.AREA_HA || 0);
-  });
-
-  document.getElementById('kpi-total').textContent = total;
-  document.getElementById('kpi-area').textContent =
-    area.toLocaleString('es-CR', { maximumFractionDigits: 0 });
 }
 
 // ===============================
@@ -125,8 +95,6 @@ var territoriosLayer;
 fetch('data/territorios_indigenas.geojson')
   .then(r => r.json())
   .then(data => {
-
-    calcularKPIs(data);
 
     territoriosLayer = L.geoJSON(data, {
       style: estiloNormal,
