@@ -7,19 +7,69 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
-#map {
-  width: 100%;
+/* PANEL */
+#panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
   height: 100%;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 15px;
+  z-index: 1000;
+  overflow-y: auto;
 }
 
-/* Evita fondo gris si no cargan tiles */
+#panel h2 {
+  margin-top: 0;
+  font-size: 18px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 6px;
+}
+
+#panel h3 {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ffcc00;
+}
+
+.kpi {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: #ccc;
+}
+
+.kpi-value {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#detalle {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* MAPA */
+#map {
+  position: absolute;
+  left: 300px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Leaflet */
 .leaflet-container {
   background: #000;
 }
 
-/* ===============================
-   POPUP
-=============================== */
+/* POPUP */
 .popup-title {
   font-weight: bold;
   font-size: 14px;
@@ -35,9 +85,7 @@ html, body {
   padding: 2px 4px;
 }
 
-/* ===============================
-   CONTROL DE CAPAS
-=============================== */
+/* CONTROL DE CAPAS */
 .leaflet-control-layers {
   background: rgba(0,0,0,0.75);
   color: white;
