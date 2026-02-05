@@ -39,7 +39,7 @@ var controlCapas = L.control.layers(
 // ===============================
 // SIMBOLOGÍA (CLASIF REAL)
 // ===============================
-// CLASES EXISTENTES EN EL GEOJSON:
+// CLASES EXISTENTES:
 // - "CREF y PAFTS"
 // - "Solo PAFTS"
 // - "Sin CREF ni PAFTS"
@@ -58,7 +58,7 @@ function getColor(clasif) {
     return '#7570b3'; // morado
   }
 
-  // respaldo por seguridad
+  // respaldo
   return '#cccccc';
 }
 
@@ -95,7 +95,7 @@ function reset(e) {
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
-  // Tooltip (nombre del territorio)
+  // Tooltip
   layer.bindTooltip(p.TERRITORIO, {
     sticky: true,
     direction: 'top',
@@ -150,7 +150,7 @@ fetch('data/territorios_indigenas.geojson')
   .catch(err => console.error(err));
 
 // ===============================
-// LEYENDA (ÚNICA Y COHERENTE)
+// LEYENDA (CORRECTA – 3 CLASES)
 // ===============================
 var legend = L.control({ position: 'bottomright' });
 
