@@ -3,18 +3,13 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: #000000;
+  background: #000;
   font-family: Arial, sans-serif;
 }
 
 #map {
   width: 100%;
   height: 100%;
-  background: #000000;
-}
-
-.leaflet-container {
-  background: #000000 !important;
 }
 
 /* ===============================
@@ -28,7 +23,7 @@ html, body {
 
 .popup-img {
   width: 100%;
-  max-width: 240px;
+  max-width: 220px;
   border-radius: 4px;
   margin-bottom: 6px;
 }
@@ -54,50 +49,6 @@ html, body {
 }
 
 /* ===============================
-   CONTROL DE CAPAS (LIMPIO)
-=============================== */
-
-/* Fondo */
-.leaflet-control-layers {
-  background: rgba(0,0,0,0.85);
-  color: #ffffff;
-  padding: 8px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.6);
-}
-
-/* 🔴 OCULTA "Mapas base" y "Capas" */
-.leaflet-control-layers-base > span,
-.leaflet-control-layers-overlays > span {
-  display: none !important;
-}
-
-/* 🔴 OCULTA separadores */
-.leaflet-control-layers-separator {
-  display: none !important;
-}
-
-/* Items planos */
-.leaflet-control-layers label {
-  display: block;
-  margin-bottom: 4px;
-  cursor: pointer;
-}
-
-/* Checkbox y radio alineados */
-.leaflet-control-layers input {
-  margin-right: 6px;
-}
-
-/* Texto */
-.leaflet-control-layers label span {
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: normal;
-}
-
-/* ===============================
    LEYENDA
 =============================== */
 .legend {
@@ -113,5 +64,4 @@ html, body {
   height: 14px;
   float: left;
   margin-right: 6px;
-  opacity: 0.9;
 }
