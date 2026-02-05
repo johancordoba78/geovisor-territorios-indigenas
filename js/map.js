@@ -74,11 +74,19 @@ function reset(e) {
 }
 
 // ===============================
-// EVENTOS + POPUP
+// EVENTOS + TOOLTIP + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
+  // 🔹 TOOLTIP (nombre del territorio)
+  layer.bindTooltip(p.TERRITORIO || 'Territorio indígena', {
+    sticky: true,
+    direction: 'top',
+    opacity: 0.9
+  });
+
+  // 🔹 POPUP
   layer.bindPopup(`
     <div class="popup-title">${p.TERRITORIO}</div>
     <table class="popup-table">
@@ -92,6 +100,7 @@ function onEachFeature(feature, layer) {
     </table>
   `);
 
+  // 🔹 EVENTOS
   layer.on({
     mouseover: highlight,
     mouseout: reset,
@@ -101,7 +110,6 @@ function onEachFeature(feature, layer) {
     }
   });
 }
-
 
 // ===============================
 // CARGA GEOJSON
