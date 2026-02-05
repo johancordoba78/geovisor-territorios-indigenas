@@ -12,12 +12,14 @@ html, body {
   height: 100%;
 }
 
-/* Leaflet */
+/* Evita fondo gris si no cargan tiles */
 .leaflet-container {
   background: #000;
 }
 
-/* POPUP */
+/* ===============================
+   POPUP
+=============================== */
 .popup-title {
   font-weight: bold;
   font-size: 14px;
@@ -33,7 +35,9 @@ html, body {
   padding: 2px 4px;
 }
 
-/* CONTROL DE CAPAS */
+/* ===============================
+   CONTROL DE CAPAS
+=============================== */
 .leaflet-control-layers {
   background: rgba(0,0,0,0.75);
   color: white;
