@@ -155,3 +155,23 @@ fetch('data/territorios_indigenas.geojson')
     map.addControl(searchControl);
   })
   .catch(err => console.error('Error cargando GeoJSON:', err));
+// ===============================
+// BOTÓN VISTA GENERAL
+// ===============================
+document.getElementById('btnHome').addEventListener('click', function () {
+
+  // Cerrar popups
+  map.closePopup();
+
+  // Resetear estilos
+  territorios.eachLayer(function (layer) {
+    territorios.resetStyle(layer);
+  });
+
+  // Volver a vista general
+  map.fitBounds(territorios.getBounds(), {
+    padding: [30, 30],
+    animate: true,
+    duration: 0.8
+  });
+});
