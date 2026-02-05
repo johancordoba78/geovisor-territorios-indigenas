@@ -24,7 +24,7 @@ var baseOSM = L.tileLayer(
 );
 
 // ===============================
-// CONTROL DE CAPAS
+// CONTROL DE CAPAS BASE
 // ===============================
 var controlCapas = L.control.layers(
   {
@@ -37,29 +37,12 @@ var controlCapas = L.control.layers(
 ).addTo(map);
 
 // ===============================
-// SIMBOLOGÍA (CLASIF REAL)
+// SIMBOLOGÍA POR CLASIFICACIÓN
 // ===============================
-// CLASES EXISTENTES:
-// - "CREF y PAFTS"
-// - "Solo PAFTS"
-// - "Sin CREF ni PAFTS"
-
 function getColor(clasif) {
-
-  if (clasif === 'CREF y PAFTS') {
-    return '#e66101'; // naranja
-  }
-
-  if (clasif === 'Solo PAFTS') {
-    return '#f1c40f'; // amarillo
-  }
-
-  if (clasif === 'Sin CREF ni PAFTS') {
-    return '#7570b3'; // morado
-  }
-
-  // respaldo
-  return '#cccccc';
+  if (clasif === 'Solo PAFTS') return '#f1c40f';      // amarillo
+  if (clasif === 'Sin CREF ni PAFTS') return '#7570b3'; // morado
+  return '#e66101'; // CREF y PAFTS
 }
 
 function estiloNormal(feature) {
@@ -90,19 +73,30 @@ function reset(e) {
 }
 
 // ===============================
+// FILTRO PASO A (CLASIFICACIÓN)
+// ===============================
+var filtrosClasif = {
+  'CREF y PAFTS': true,
+  'Solo PAFTS': true,
+  'Sin CREF ni PAFTS': true
+};
+
+function filtroClasificacion(feature) {
+  return filtrosClasif[feature.properties.CLASIF] === true;
+}
+
+// ===============================
 // EVENTOS + TOOLTIP + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
-  // Tooltip
   layer.bindTooltip(p.TERRITORIO, {
     sticky: true,
     direction: 'top',
     opacity: 0.9
   });
 
-  // Popup
   layer.bindPopup(`
     <div class="popup-title">${p.TERRITORIO}</div>
     <table class="popup-table">
@@ -137,7 +131,8 @@ fetch('data/territorios_indigenas.geojson')
 
     territoriosLayer = L.geoJSON(data, {
       style: estiloNormal,
-      onEachFeature: onEachFeature
+      onEachFeature: onEachFeature,
+      filter: filtroClasificacion
     }).addTo(map);
 
     controlCapas.addOverlay(
@@ -150,21 +145,51 @@ fetch('data/territorios_indigenas.geojson')
   .catch(err => console.error(err));
 
 // ===============================
-// LEYENDA (CORRECTA – 3 CLASES)
+// LEYENDA
 // ===============================
 var legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function () {
   var div = L.DomUtil.create('div', 'legend');
-
   div.innerHTML = `
     <b>Clasificación</b><br>
     <i style="background:#e66101"></i> CREF y PAFTS<br>
     <i style="background:#f1c40f"></i> Solo PAFTS<br>
     <i style="background:#7570b3"></i> Sin CREF ni PAFTS
   `;
-
   return div;
 };
 
 legend.addTo(map);
+
+// ===============================
+// CONTROL PASO A – CHECKBOX
+// ===============================
+var controlFiltros = L.control({ position: 'topright' });
+
+controlFiltros.onAdd = function () {
+  var div = L.DomUtil.create('div', 'filtros');
+  div.innerHTML = `
+    <b>Filtrar clasificación</b><br>
+    <label><input type="checkbox" checked data-clasif="CREF y PAFTS"> CREF y PAFTS</label><br>
+    <label><input type="checkbox" checked data-clasif="Solo PAFTS"> Solo PAFTS</label><br>
+    <label><input type="checkbox" checked data-clasif="Sin CREF ni PAFTS"> Sin CREF ni PAFTS</label>
+  `;
+  return div;
+};
+
+controlFiltros.addTo(map);
+
+// Eventos checkbox
+document.addEventListener('change', function (e) {
+  if (!e.target.dataset.clasif) return;
+
+  filtrosClasif[e.target.dataset.clasif] = e.target.checked;
+
+  territoriosLayer.clearLayers();
+  fetch('data/territorios_indigenas.geojson')
+    .then(r => r.json())
+    .then(data => {
+      territoriosLayer.addData(data);
+    });
+});
