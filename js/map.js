@@ -1,5 +1,5 @@
 // ===============================
-// MAPA
+// MAPA (UNA SOLA VEZ)
 // ===============================
 var map = L.map('map').setView([9.8, -83.7], 7);
 
@@ -15,8 +15,7 @@ var baseOscuro = L.tileLayer(
 
 // Satélite
 var baseSatelite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-  'World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   { attribution: 'Tiles &copy; Esri' }
 );
 
@@ -26,14 +25,15 @@ var baseOSM = L.tileLayer(
   { attribution: '&copy; OpenStreetMap' }
 );
 
-// Control de capas (SOLO BASES)
+// ===============================
+// CONTROL DE CAPAS (SOLO BASES)
+// ===============================
 L.control.layers(
   {
     "Mapa oscuro": baseOscuro,
     "Satélite": baseSatelite,
     "OpenStreetMap": baseOSM
   },
-  null,
+  {},
   { collapsed: false }
 ).addTo(map);
-
