@@ -53,7 +53,7 @@ function resetHover(e) {
 function onEachFeature(feature, layer) {
   var p = feature.properties;
 
-  var html = `
+  var htmlPopup = `
     <div class="popup-title">${p.TERRITORIO}</div>
     <table class="popup-table">
       <tr><td><b>Decreto</b></td><td>${p.DECRETO}</td></tr>
@@ -63,13 +63,25 @@ function onEachFeature(feature, layer) {
     </table>
   `;
 
-  layer.bindPopup(html);
+  var htmlSidebar = `
+    <h3>${p.TERRITORIO}</h3>
+    <table class="popup-table">
+      <tr><td><b>Decreto</b></td><td>${p.DECRETO}</td></tr>
+      <tr><td><b>Año</b></td><td>${p.AÑO}</td></tr>
+      <tr><td><b>Clasificación</b></td><td>${p.CLASIF}</td></tr>
+      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA}</td></tr>
+    </table>
+  `;
+
+  layer.bindPopup(htmlPopup);
 
   layer.on({
     mouseover: estiloHover,
     mouseout: resetHover,
     click: function () {
       map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+
+      document.getElementById('sidebar-content').innerHTML = htmlSidebar;
     }
   });
 }
