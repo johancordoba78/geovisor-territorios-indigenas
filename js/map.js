@@ -44,7 +44,7 @@ function highlightFeature(e) {
   layer.setStyle({
     color: '#FFD700',      // 🟨 amarillo
     weight: 3,
-    fillColor: '#FFB000',  // naranja más claro
+    fillColor: '#ff5500',  // naranja más claro
     fillOpacity: 0.85
   });
 
