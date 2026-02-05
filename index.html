@@ -4,16 +4,32 @@
   <meta charset="utf-8">
   <title>Geovisor Territorios Indígenas</title>
 
-  <link rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
+  <!-- Buscador (CSS) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet-control-search@2.9.9/dist/leaflet-search.min.css"
+  />
+
+  <!-- Estilos propios -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <div id="map"></div>
 
+  <!-- Leaflet JS (SIEMPRE PRIMERO) -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Buscador (JS) -->
+  <script src="https://unpkg.com/leaflet-control-search@2.9.9/dist/leaflet-search.min.js"></script>
+
+  <!-- Tu código -->
   <script src="js/map.js"></script>
 </body>
 </html>
