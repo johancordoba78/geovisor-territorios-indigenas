@@ -19,13 +19,26 @@ var baseSatelite = L.tileLayer(
 
 var baseOSM = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  { attribution: '&copy; OpenStreetMap' }
+  { attribution: '&copy; OpenStreetMap contributors' }
 );
 
 // ===============================
-// ESTILO TERRITORIOS
+// CONTROL DE CAPAS (BASES)
 // ===============================
-function estiloTerritorios() {
+var controlCapas = L.control.layers(
+  {
+    "Mapa oscuro": baseOscuro,
+    "Satélite": baseSatelite,
+    "OpenStreetMap": baseOSM
+  },
+  {},
+  { collapsed: false }
+).addTo(map);
+
+// ===============================
+// ESTILOS TERRITORIOS
+// ===============================
+function estiloNormal() {
   return {
     color: '#ffffff',
     weight: 2,
@@ -34,14 +47,29 @@ function estiloTerritorios() {
   };
 }
 
+function estiloResaltado(layer) {
+  layer.setStyle({
+    color: '#FFD700',
+    weight: 3,
+    fillColor: '#ff8800',
+    fillOpacity: 0.85
+  });
+
+  layer.bringToFront();
+}
+
+function resetEstilo(layer) {
+  territoriosLayer.resetStyle(layer);
+}
+
 // ===============================
-// POPUP CON ATRIBUTOS
+// EVENTOS + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
-  var p = feature.properties;
+  var p = feature.properties || {};
 
   var html = `
-    <div class="popup-title">${p.TERRITORIO || 'Sin nombre'}</div>
+    <div class="popup-title">${p.TERRITORIO || 'Territorio indígena'}</div>
     <table class="popup-table">
       <tr><td><b>Decreto</b></td><td>${p.DECRETO || '-'}</td></tr>
       <tr><td><b>Año</b></td><td>${p.AÑO || '-'}</td></tr>
@@ -51,6 +79,22 @@ function onEachFeature(feature, layer) {
   `;
 
   layer.bindPopup(html);
+
+  layer.on({
+    mouseover: function () {
+      estiloResaltado(layer);
+    },
+    mouseout: function () {
+      resetEstilo(layer);
+    },
+    click: function () {
+      map.fitBounds(layer.getBounds(), {
+        padding: [20, 20],
+        animate: true
+      });
+      layer.openPopup();
+    }
+  });
 }
 
 // ===============================
@@ -59,30 +103,24 @@ function onEachFeature(feature, layer) {
 var territoriosLayer;
 
 fetch('data/territorios_indigenas.geojson')
-  .then(r => r.json())
-  .then(data => {
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
 
     territoriosLayer = L.geoJSON(data, {
-      style: estiloTerritorios,
+      style: estiloNormal,
       onEachFeature: onEachFeature
     }).addTo(map);
 
-    map.fitBounds(territoriosLayer.getBounds());
+    controlCapas.addOverlay(
+      territoriosLayer,
+      'Territorios indígenas'
+    );
 
-    // ===============================
-    // CONTROL DE CAPAS (BASES + VECTOR)
-    // ===============================
-    L.control.layers(
-      {
-        "Mapa oscuro": baseOscuro,
-        "Satélite": baseSatelite,
-        "OpenStreetMap": baseOSM
-      },
-      {
-        "Territorios indígenas": territoriosLayer
-      },
-      { collapsed: false }
-    ).addTo(map);
+    map.fitBounds(territoriosLayer.getBounds());
   })
-  .catch(err => console.error('Error cargando GeoJSON:', err));
+  .catch(function (err) {
+    console.error('Error cargando territorios:', err);
+  });
 
