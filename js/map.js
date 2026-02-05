@@ -40,9 +40,9 @@ var controlCapas = L.control.layers(
 // SIMBOLOGÍA POR CLASIFICACIÓN
 // ===============================
 function getColor(clasif) {
-  if (clasif === 'Solo PAFTS') return '#f1c40f';      // amarillo
+  if (clasif === 'Solo PAFTS') return '#f1c40f';        // amarillo
   if (clasif === 'Sin CREF ni PAFTS') return '#7570b3'; // morado
-  return '#e66101'; // CREF y PAFTS
+  return '#e66101';                                   // CREF y PAFTS
 }
 
 function estiloNormal(feature) {
@@ -121,9 +121,10 @@ function onEachFeature(feature, layer) {
 }
 
 // ===============================
-// CARGA GEOJSON
+// CARGA GEOJSON + BUSCADOR (PASO B)
 // ===============================
 var territoriosLayer;
+var searchControl;
 
 fetch('data/territorios_indigenas.geojson')
   .then(r => r.json())
@@ -141,6 +142,30 @@ fetch('data/territorios_indigenas.geojson')
     );
 
     map.fitBounds(territoriosLayer.getBounds());
+
+    // 🔍 BUSCADOR DE TERRITORIOS (PASO B)
+    searchControl = new L.Control.Search({
+      layer: territoriosLayer,
+      propertyName: 'TERRITORIO',
+      zoom: 11,
+      initial: false,
+      hideMarkerOnCollapse: true,
+      textPlaceholder: 'Buscar territorio…'
+    });
+
+    searchControl.on('search:locationfound', function (e) {
+      e.layer.setStyle({
+        color: '#00ffff',
+        weight: 4
+      });
+      e.layer.openPopup();
+    });
+
+    searchControl.on('search:collapsed', function () {
+      territoriosLayer.resetStyle();
+    });
+
+    map.addControl(searchControl);
   })
   .catch(err => console.error(err));
 
