@@ -23,7 +23,7 @@ var baseOSM = L.tileLayer(
 );
 
 // ===============================
-// CONTROL DE CAPAS (BASES)
+// CONTROL DE CAPAS
 // ===============================
 var controlCapas = L.control.layers(
   {
@@ -36,20 +36,22 @@ var controlCapas = L.control.layers(
 ).addTo(map);
 
 // ===============================
-// ESTILOS TERRITORIOS
+// ESTILOS
 // ===============================
-function estiloNormal() {
+function estiloNormal(feature) {
   return {
-    color: '#ffffff',
+    color: '#ffffff',      // borde blanco
     weight: 2,
-    fillColor: '#ff5500',
+    fillColor: '#ff5500',  // naranja
     fillOpacity: 0.6
   };
 }
 
-function estiloResaltado(layer) {
+function estiloHighlight(e) {
+  var layer = e.target;
+
   layer.setStyle({
-    color: '#FFD700',
+    color: '#FFD700',      // AMARILLO
     weight: 3,
     fillColor: '#ff8800',
     fillOpacity: 0.85
@@ -58,12 +60,12 @@ function estiloResaltado(layer) {
   layer.bringToFront();
 }
 
-function resetEstilo(layer) {
-  territoriosLayer.resetStyle(layer);
+function resetHighlight(e) {
+  territoriosLayer.resetStyle(e.target);
 }
 
 // ===============================
-// EVENTOS + POPUP
+// POPUP + EVENTOS
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
@@ -81,12 +83,8 @@ function onEachFeature(feature, layer) {
   layer.bindPopup(html);
 
   layer.on({
-    mouseover: function () {
-      estiloResaltado(layer);
-    },
-    mouseout: function () {
-      resetEstilo(layer);
-    },
+    mouseover: estiloHighlight,
+    mouseout: resetHighlight,
     click: function () {
       map.fitBounds(layer.getBounds(), {
         padding: [20, 20],
@@ -103,10 +101,8 @@ function onEachFeature(feature, layer) {
 var territoriosLayer;
 
 fetch('data/territorios_indigenas.geojson')
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
+  .then(res => res.json())
+  .then(data => {
 
     territoriosLayer = L.geoJSON(data, {
       style: estiloNormal,
@@ -120,7 +116,5 @@ fetch('data/territorios_indigenas.geojson')
 
     map.fitBounds(territoriosLayer.getBounds());
   })
-  .catch(function (err) {
-    console.error('Error cargando territorios:', err);
-  });
+  .catch(err => console.error('Error cargando GeoJSON:', err));
 
