@@ -1,25 +1,28 @@
 // ===============================
-// MAPA
-// ===============================
-var map = L.map('map').setView([9.8, -83.7], 8);
-
-// ===============================
 // MAPAS BASE
 // ===============================
+
+// Oscuro
 var baseOscuro = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   { attribution: '&copy; OpenStreetMap &copy; CARTO' }
-).addTo(map);
+);
 
+// Satélite
 var baseSatelite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+  'World_Imagery/MapServer/tile/{z}/{y}/{x}',
   { attribution: 'Tiles &copy; Esri' }
 );
 
+// OpenStreetMap
 var baseOSM = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  { attribution: '&copy; OpenStreetMap' }
+  { attribution: '&copy; OpenStreetMap contributors' }
 );
+
+// Base por defecto
+baseOscuro.addTo(map);
 
 // ===============================
 // ESTILOS TERRITORIOS
