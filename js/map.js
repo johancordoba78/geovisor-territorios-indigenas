@@ -1,9 +1,7 @@
 // ===============================
 // MAPA
 // ===============================
-var map = L.map('map', {
-  preferCanvas: false
-}).setView([9.8, -83.7], 7);
+var map = L.map('map').setView([9.8, -83.7], 7);
 
 // ===============================
 // MAPAS BASE
@@ -41,29 +39,39 @@ var controlCapas = L.control.layers(
 // ===============================
 function estiloNormal() {
   return {
-    interactive: true,      // 🔴 CLAVE
-    color: '#ffffff',
+    interactive: true,
+    color: '#000000',
     weight: 2,
-    fillColor: '#ff5500',
-    fillOpacity: 0.6
+    fillColor: '#ff6600',
+    fillOpacity: 0.65
   };
 }
 
 function highlight(e) {
-  var layer = e.target;
-
-  layer.setStyle({
+  e.target.setStyle({
     color: '#FFD700',
     weight: 3,
     fillColor: '#ff8800',
     fillOpacity: 0.85
   });
-
-  layer.bringToFront();
+  e.target.bringToFront();
 }
 
 function reset(e) {
-  territoriosLayer.resetStyle(e.target);
+  e.target.setStyle(estiloNormal());
+}
+
+// ===============================
+// PANEL
+// ===============================
+function actualizarPanel(p) {
+  document.getElementById('detalle').innerHTML = `
+    <b>${p.TERRITORIO || '-'}</b><br>
+    Decreto: ${p.DECRETO || '-'}<br>
+    Año: ${p.AÑO || '-'}<br>
+    Clasificación: ${p.CLASIF || '-'}<br>
+    Área (ha): ${Number(p.AREA_HA || 0).toLocaleString('es-CR')}
+  `;
 }
 
 // ===============================
@@ -73,11 +81,13 @@ function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
   layer.bindPopup(`
-    <b>${p.TERRITORIO || 'Territorio indígena'}</b><br>
-    Decreto: ${p.DECRETO || '-'}<br>
-    Año: ${p.AÑO || '-'}<br>
-    Clasificación: ${p.CLASIF || '-'}<br>
-    Área (ha): ${p.AREA_HA || '-'}
+    <div class="popup-title">${p.TERRITORIO || 'Territorio indígena'}</div>
+    <table class="popup-table">
+      <tr><td><b>Decreto</b></td><td>${p.DECRETO || '-'}</td></tr>
+      <tr><td><b>Año</b></td><td>${p.AÑO || '-'}</td></tr>
+      <tr><td><b>Clasificación</b></td><td>${p.CLASIF || '-'}</td></tr>
+      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA || '-'}</td></tr>
+    </table>
   `);
 
   layer.on({
@@ -85,9 +95,26 @@ function onEachFeature(feature, layer) {
     mouseout: reset,
     click: function () {
       map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+      actualizarPanel(p);
       layer.openPopup();
     }
   });
+}
+
+// ===============================
+// KPIs
+// ===============================
+function calcularKPIs(data) {
+  let total = data.features.length;
+  let area = 0;
+
+  data.features.forEach(f => {
+    area += Number(f.properties.AREA_HA || 0);
+  });
+
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-area').textContent =
+    area.toLocaleString('es-CR', { maximumFractionDigits: 0 });
 }
 
 // ===============================
@@ -98,6 +125,8 @@ var territoriosLayer;
 fetch('data/territorios_indigenas.geojson')
   .then(r => r.json())
   .then(data => {
+
+    calcularKPIs(data);
 
     territoriosLayer = L.geoJSON(data, {
       style: estiloNormal,
@@ -112,44 +141,4 @@ fetch('data/territorios_indigenas.geojson')
     map.fitBounds(territoriosLayer.getBounds());
   })
   .catch(err => console.error(err));
-
-// ===============================
-// BOTÓN VISTA GENERAL
-// ===============================
-var boundsGeneral;
-
-fetch('data/territorios_indigenas.geojson')
-  .then(r => r.json())
-  .then(data => {
-    boundsGeneral = L.geoJSON(data).getBounds();
-  });
-
-// Control personalizado
-var botonVistaGeneral = L.control({ position: 'topleft' });
-
-botonVistaGeneral.onAdd = function () {
-  var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-  div.innerHTML = '🏠';
-  div.title = 'Vista general';
-
-  div.style.backgroundColor = '#000';
-  div.style.color = '#fff';
-  div.style.cursor = 'pointer';
-  div.style.width = '34px';
-  div.style.height = '34px';
-  div.style.lineHeight = '34px';
-  div.style.textAlign = 'center';
-  div.style.fontSize = '18px';
-
-  div.onclick = function () {
-    if (boundsGeneral) {
-      map.fitBounds(boundsGeneral, { padding: [20, 20] });
-    }
-  };
-
-  return div;
-};
-
-botonVistaGeneral.addTo(map);
-
 
