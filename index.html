@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Geovisor Territorios Indígenas</title>
 
-  <!-- ✅ Leaflet CSS (ESTO ES LO QUE FALTABA) -->
+  <!-- Leaflet CSS (OBLIGATORIO) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -15,27 +15,8 @@
 </head>
 <body>
 
-  <div id="app">
-
-    <!-- PANEL LATERAL -->
-    <div id="sidebar">
-      <h1>Territorios Indígenas</h1>
-      <p class="subtitle">Sistema de información geográfica</p>
-
-      <p>
-        Este visor permite explorar los territorios indígenas de Costa Rica,
-        visualizar su ubicación, extensión y atributos legales.
-      </p>
-
-      <p class="hint">
-        🔍 Use el buscador o seleccione un territorio en el mapa.
-      </p>
-    </div>
-
-    <!-- MAPA -->
-    <div id="map"></div>
-
-  </div>
+  <!-- MAPA (SOLO MAPA, SIN PANEL AÚN) -->
+  <div id="map"></div>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
