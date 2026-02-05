@@ -37,15 +37,23 @@ var controlCapas = L.control.layers(
 ).addTo(map);
 
 // ===============================
-// ESTILOS
+// ESTILOS (SIMBOLOGÍA POR CLASIF)
 // ===============================
-function estiloNormal() {
+function estiloNormal(feature) {
+
+  var clasif = feature.properties.CLASIF;
+  var color = '#ff5500'; // valor por defecto
+
+  if (clasif === 'Solo PAFTS') color = '#e66101';
+  if (clasif === 'PAFTS + PSA') color = '#5e3c99';
+  if (clasif === 'PSA') color = '#1b7837';
+
   return {
     interactive: true,
     color: '#ffffff',
     weight: 2,
-    fillColor: '#ff5500',
-    fillOpacity: 0.6
+    fillColor: color,
+    fillOpacity: 0.65
   };
 }
 
@@ -55,7 +63,7 @@ function highlight(e) {
   layer.setStyle({
     color: '#FFD700',
     weight: 3,
-    fillColor: '#ff8800',
+    fillColor: '#ffcc33',
     fillOpacity: 0.85
   });
 
@@ -73,12 +81,12 @@ function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
   layer.bindPopup(`
-    <div class="popup-title">${p.TERRITORIO || 'Territorio indígena'}</div>
+    <div class="popup-title">${p.TERRITORIO}</div>
     <table class="popup-table">
-      <tr><td><b>Decreto</b></td><td>${p.DECRETO || '-'}</td></tr>
-      <tr><td><b>Año</b></td><td>${p.AÑO || '-'}</td></tr>
-      <tr><td><b>Clasificación</b></td><td>${p.CLASIF || '-'}</td></tr>
-      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA || '-'}</td></tr>
+      <tr><td><b>Decreto</b></td><td>${p.DECRETO}</td></tr>
+      <tr><td><b>Año</b></td><td>${p.AÑO}</td></tr>
+      <tr><td><b>Clasificación</b></td><td>${p.CLASIF}</td></tr>
+      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA}</td></tr>
     </table>
   `);
 
@@ -114,43 +122,3 @@ fetch('data/territorios_indigenas.geojson')
     map.fitBounds(territoriosLayer.getBounds());
   })
   .catch(err => console.error(err));
-
-// ===============================
-// BOTÓN VISTA GENERAL
-// ===============================
-var boundsGeneral;
-
-fetch('data/territorios_indigenas.geojson')
-  .then(r => r.json())
-  .then(data => {
-    boundsGeneral = L.geoJSON(data).getBounds();
-  });
-
-// Control personalizado
-var botonVistaGeneral = L.control({ position: 'topleft' });
-
-botonVistaGeneral.onAdd = function () {
-  var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-  div.innerHTML = '🏠';
-  div.title = 'Vista general';
-
-  div.style.backgroundColor = '#000';
-  div.style.color = '#fff';
-  div.style.cursor = 'pointer';
-  div.style.width = '34px';
-  div.style.height = '34px';
-  div.style.lineHeight = '34px';
-  div.style.textAlign = 'center';
-  div.style.fontSize = '18px';
-
-  div.onclick = function () {
-    if (boundsGeneral) {
-      map.fitBounds(boundsGeneral, { padding: [20, 20] });
-    }
-  };
-
-  return div;
-};
-
-botonVistaGeneral.addTo(map);
-
