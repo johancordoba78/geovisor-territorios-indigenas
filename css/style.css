@@ -1,58 +1,17 @@
-/* RESET */
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   height: 100%;
-  font-family: Arial, sans-serif;
   background: #000;
 }
 
-/* CONTENEDOR GENERAL */
-#app {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
-
-/* PANEL LATERAL */
-#sidebar {
-  width: 300px;
-  background: #000000;
-  color: #ffffff;
-  padding: 16px;
-  box-sizing: border-box;
-  border-right: 1px solid #222;
-}
-
-#sidebar h1 {
-  margin: 0 0 6px 0;
-  font-size: 20px;
-}
-
-#sidebar .subtitle {
-  color: #ff5500;
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-#sidebar p {
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-#sidebar .hint {
-  margin-top: 14px;
-  font-size: 12px;
-  opacity: 0.85;
-}
-
-/* MAPA */
 #map {
-  flex: 1;
+  width: 100%;
   height: 100%;
 }
 
-/* FORZAR FONDO NEGRO */
+/* Evita fondo gris si no hay tiles */
 .leaflet-container {
-  background: #000000 !important;
+  background: #000;
 }
