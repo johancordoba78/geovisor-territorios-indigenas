@@ -23,6 +23,30 @@
 
   <!-- CONTENEDOR DEL MAPA -->
   <div id="map"></div>
+  <!-- PANEL C: FICHA DEL TERRITORIO -->
+<div id="panel-info" class="panel-info hidden">
+  <div class="panel-header">
+    <span id="panel-title">Territorio</span>
+    <button id="panel-close">✕</button>
+  </div>
+
+  <div class="panel-body">
+    <table class="panel-table">
+      <tr><td><b>Decreto</b></td><td id="p-decreto">-</td></tr>
+      <tr><td><b>Año</b></td><td id="p-anio">-</td></tr>
+      <tr><td><b>Clasificación</b></td><td id="p-clasif">-</td></tr>
+      <tr><td><b>Área (ha)</b></td><td id="p-area">-</td></tr>
+    </table>
+
+    <hr>
+
+    <div class="panel-placeholder">
+      📷 Fotos y documentos<br>
+      <small>(Paso D)</small>
+    </div>
+  </div>
+</div>
+
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
