@@ -45,3 +45,40 @@ L.control.layers(
   { collapsed: false }
 ).addTo(map);
 
+// ===============================
+// TERRITORIOS INDÍGENAS
+// ===============================
+
+function estiloTerritorios() {
+  return {
+    color: '#ffffff',
+    weight: 2,
+    fillColor: '#ff5500',
+    fillOpacity: 0.6
+  };
+}
+
+var territoriosLayer;
+
+// Cargar GeoJSON
+fetch('data/territorios_indigenas.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    territoriosLayer = L.geoJSON(data, {
+      style: estiloTerritorios
+    });
+
+    // Agregar al control de capas (NO al mapa por defecto)
+    controlCapas.addOverlay(
+      territoriosLayer,
+      'Territorios indígenas'
+    );
+
+    // Mostrar por defecto
+    territoriosLayer.addTo(map);
+
+    // Ajustar vista
+    map.fitBounds(territoriosLayer.getBounds());
+  })
+  .catch(err => console.error('Error cargando territorios:', err));
