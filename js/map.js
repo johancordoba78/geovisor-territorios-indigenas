@@ -85,7 +85,10 @@ function onEachFeature(feature, layer) {
       <tr><td><b>Decreto</b></td><td>${p.DECRETO}</td></tr>
       <tr><td><b>Año</b></td><td>${p.AÑO}</td></tr>
       <tr><td><b>Clasificación</b></td><td>${p.CLASIF}</td></tr>
-      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA}</td></tr>
+      <tr>
+        <td><b>Área (ha)</b></td>
+        <td>${Number(p.AREA_HA).toLocaleString('es-CR', { maximumFractionDigits: 0 })}</td>
+      </tr>
     </table>
   `);
 
@@ -98,6 +101,7 @@ function onEachFeature(feature, layer) {
     }
   });
 }
+
 
 // ===============================
 // CARGA GEOJSON
