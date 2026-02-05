@@ -40,9 +40,9 @@ var controlCapas = L.control.layers(
 // SIMBOLOGÍA POR CLASIFICACIÓN
 // ===============================
 function getColor(clasif) {
-  if (clasif === 'Solo PAFTS') return '#f1c40f';        // amarillo
-  if (clasif === 'Sin CREF ni PAFTS') return '#7570b3'; // morado
-  return '#e66101';                                   // CREF y PAFTS
+  if (clasif === 'Solo PAFTS') return '#f1c40f';
+  if (clasif === 'Sin CREF ni PAFTS') return '#7570b3';
+  return '#e66101';
 }
 
 function estiloNormal(feature) {
@@ -86,6 +86,19 @@ function filtroClasificacion(feature) {
 }
 
 // ===============================
+// PANEL C – FUNCIÓN ACTUALIZAR
+// ===============================
+function actualizarPanel(p) {
+  document.getElementById('panel-info').classList.remove('hidden');
+  document.getElementById('panel-title').textContent = p.TERRITORIO;
+  document.getElementById('p-decreto').textContent = p.DECRETO;
+  document.getElementById('p-anio').textContent = p.AÑO;
+  document.getElementById('p-clasif').textContent = p.CLASIF;
+  document.getElementById('p-area').textContent =
+    Number(p.AREA_HA).toLocaleString('es-CR', { maximumFractionDigits: 0 });
+}
+
+// ===============================
 // EVENTOS + TOOLTIP + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
@@ -115,6 +128,7 @@ function onEachFeature(feature, layer) {
     mouseout: reset,
     click: function () {
       map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+      actualizarPanel(p);
       layer.openPopup();
     }
   });
@@ -143,7 +157,7 @@ fetch('data/territorios_indigenas.geojson')
 
     map.fitBounds(territoriosLayer.getBounds());
 
-    // 🔍 BUSCADOR DE TERRITORIOS (PASO B)
+    // BUSCADOR
     searchControl = new L.Control.Search({
       layer: territoriosLayer,
       propertyName: 'TERRITORIO',
@@ -158,6 +172,7 @@ fetch('data/territorios_indigenas.geojson')
         color: '#00ffff',
         weight: 4
       });
+      actualizarPanel(e.layer.feature.properties);
       e.layer.openPopup();
     });
 
@@ -218,3 +233,10 @@ document.addEventListener('change', function (e) {
       territoriosLayer.addData(data);
     });
 });
+
+// ===============================
+// CERRAR PANEL C
+// ===============================
+document.getElementById('panel-close').onclick = function () {
+  document.getElementById('panel-info').classList.add('hidden');
+};
