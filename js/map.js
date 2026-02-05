@@ -37,13 +37,24 @@ var controlCapas = L.control.layers(
 ).addTo(map);
 
 // ===============================
-// ESTILOS (SIMBOLOGÍA POR CLASIF)
+// SIMBOLOGÍA (CLASIF)
 // ===============================
+// REGLA:
+// - "CREF y PAFTS"  → mismo color
+// - "Solo PAFTS"    → mismo color
+// - "Sin CREF ni PAFTS" → color distinto
 function getColor(clasif) {
-  if (clasif === 'Solo PAFTS') return '#e66101';
-  if (clasif === 'PAFTS + PSA') return '#5e3c99';
-  if (clasif === 'PSA') return '#1b7837';
-  return '#ff5500';
+
+  if (!clasif) {
+    return '#e66101'; // PAFTS / CREF por defecto
+  }
+
+  if (clasif === 'Sin CREF ni PAFTS') {
+    return '#7570b3'; // sin instrumentos
+  }
+
+  // CREF y PAFTS + Solo PAFTS
+  return '#e66101';
 }
 
 function estiloNormal(feature) {
@@ -56,6 +67,9 @@ function estiloNormal(feature) {
   };
 }
 
+// ===============================
+// INTERACCIÓN
+// ===============================
 function highlight(e) {
   var layer = e.target;
 
@@ -79,14 +93,14 @@ function reset(e) {
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
-  // 🔹 TOOLTIP (nombre del territorio)
+  // Tooltip (nombre)
   layer.bindTooltip(p.TERRITORIO || 'Territorio indígena', {
     sticky: true,
     direction: 'top',
     opacity: 0.9
   });
 
-  // 🔹 POPUP
+  // Popup
   layer.bindPopup(`
     <div class="popup-title">${p.TERRITORIO}</div>
     <table class="popup-table">
@@ -100,7 +114,6 @@ function onEachFeature(feature, layer) {
     </table>
   `);
 
-  // 🔹 EVENTOS
   layer.on({
     mouseover: highlight,
     mouseout: reset,
@@ -150,9 +163,8 @@ legend.onAdd = function () {
 
   div.innerHTML = `
     <b>Clasificación</b><br>
-    <i style="background:${getColor('Solo PAFTS')}; width:12px; height:12px; display:inline-block;"></i> Solo PAFTS<br>
-    <i style="background:${getColor('PAFTS + PSA')}; width:12px; height:12px; display:inline-block;"></i> PAFTS + PSA<br>
-    <i style="background:${getColor('PSA')}; width:12px; height:12px; display:inline-block;"></i> PSA
+    <i style="background:#e66101; width:12px; height:12px; display:inline-block;"></i> PAFTS / CREF<br>
+    <i style="background:#7570b3; width:12px; height:12px; display:inline-block;"></i> Sin CREF ni PAFTS
   `;
 
   return div;
