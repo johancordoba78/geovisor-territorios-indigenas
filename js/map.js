@@ -12,8 +12,7 @@ var baseOscuro = L.tileLayer(
 ).addTo(map);
 
 var baseSatelite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-  'World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   { attribution: 'Tiles &copy; Esri' }
 );
 
@@ -23,7 +22,7 @@ var baseOSM = L.tileLayer(
 );
 
 // ===============================
-// ESTILO TERRITORIOS
+// ESTILOS TERRITORIOS
 // ===============================
 function estiloNormal() {
   return {
@@ -82,7 +81,7 @@ var territorios;
 var boundsGeneral;
 
 fetch('data/territorios_indigenas.geojson')
-  .then(r => r.json())
+  .then(res => res.json())
   .then(data => {
 
     territorios = L.geoJSON(data, {
@@ -94,7 +93,7 @@ fetch('data/territorios_indigenas.geojson')
     map.fitBounds(boundsGeneral);
 
     // ===============================
-    // CONTROL DE CAPAS (CORRECTO)
+    // CONTROL DE CAPAS
     // ===============================
     L.control.layers(
       {
@@ -109,16 +108,62 @@ fetch('data/territorios_indigenas.geojson')
     ).addTo(map);
 
     // ===============================
+    // BUSCADOR
+    // ===============================
+    var searchControl = new L.Control.Search({
+      layer: territorios,
+      propertyName: 'TERRITORIO',
+      marker: false,
+      moveToLocation: function (latlng, title, map) {
+        map.fitBounds(latlng.layer.getBounds(), {
+          padding: [20, 20],
+          animate: true
+        });
+      }
+    });
+
+    searchControl.on('search:locationfound', function (e) {
+      e.layer.openPopup();
+      estiloHover({ target: e.layer });
+    });
+
+    searchControl.on('search:collapsed', function () {
+      territorios.eachLayer(function (layer) {
+        territorios.resetStyle(layer);
+      });
+    });
+
+    map.addControl(searchControl);
+
+    // ===============================
     // BOTÓN VISTA GENERAL
     // ===============================
-    var btn = L.control({ position: 'topleft' });
-    btn.onAdd = function () {
-      var div = L.DomUtil.create('div', 'btn-vista-general');
+    var btnHome = L.control({ position: 'topleft' });
+
+    btnHome.onAdd = function () {
+      var div = L.DomUtil.create('div', 'btn-home');
       div.innerHTML = '🌎 Vista general';
       div.onclick = function () {
         map.fitBounds(boundsGeneral);
       };
       return div;
     };
-    btn.addTo(map);
-  });
+
+    btnHome.addTo(map);
+
+    // ===============================
+    // LEYENDA
+    // ===============================
+    var legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function () {
+      var div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <b>Territorios</b><br>
+        <i style="background:#ff5500"></i> Territorio indígena<br>
+        <i style="background:#FFD700"></i> En foco
+      `;
+      return div;
+    };
+    legend.addTo(map);
+  })
+  .catch(err => console.error(err));
