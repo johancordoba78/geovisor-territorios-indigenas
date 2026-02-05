@@ -6,45 +6,61 @@ var map = L.map('map').setView([9.8, -83.7], 8);
 // Fondo negro real
 map.getContainer().style.background = '#000000';
 
-// Capa base oscura (CartoDB Dark)
-L.tileLayer(
+// ===============================
+// MAPAS BASE
+// ===============================
+
+// 🌑 Base oscuro
+var baseOscuro = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
-  }
-).addTo(map);
+  { attribution: '&copy; OpenStreetMap &copy; CARTO' }
+);
+
+// 🛰️ Base satélite
+var baseSatelite = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+  'World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  { attribution: 'Tiles &copy; Esri' }
+);
+
+// Base por defecto
+baseOscuro.addTo(map);
 
 // ===============================
-// PANE PARA TERRITORIOS
+// PANES
 // ===============================
 map.createPane('territoriosPane');
 map.getPane('territoriosPane').style.zIndex = 450;
 
+map.createPane('labelsPane');
+map.getPane('labelsPane').style.zIndex = 500;
+map.getPane('labelsPane').style.pointerEvents = 'none';
+
 // ===============================
 // ESTILO NORMAL DE TERRITORIOS
 // ===============================
-function estiloTerritorios(feature) {
+function estiloTerritorios() {
   return {
     pane: 'territoriosPane',
-    color: '#FFFFFF',      // ⚪ borde blanco
+    color: '#FFFFFF',      // borde blanco
     weight: 2,
     opacity: 1,
-    fillColor: '#FF8C00',  // 🟧 naranja
-    fillOpacity: 0,
+    fillColor: '#ff5500',  // 🟧 COLOR DEFINITIVO
+    fillOpacity: 0.65,
     interactive: true
   };
 }
 
 // ===============================
-// ESTILO HOVER (RESALTADO AMARILLO)
+// HOVER (RESALTADO)
 // ===============================
 function highlightFeature(e) {
   var layer = e.target;
 
   layer.setStyle({
-    color: '#FFD700',      // 🟨 amarillo
+    color: '#FFD700',      // amarillo
     weight: 3,
-    fillColor: '#ff5500',  // naranja más claro
+    fillColor: '#ff8800',
     fillOpacity: 0.85
   });
 
@@ -52,10 +68,10 @@ function highlightFeature(e) {
 }
 
 // ===============================
-// RESETEAR ESTILO AL SALIR
+// RESET ESTILO
 // ===============================
 function resetHighlight(e) {
-  geojson.resetStyle(e.target);
+  territoriosLayer.resetStyle(e.target);
 }
 
 // ===============================
@@ -83,26 +99,87 @@ function onEachFeature(feature, layer) {
 
   layer.bindPopup(html);
 
-  // Eventos de interacción
+  // Hover
   layer.on({
     mouseover: highlightFeature,
-    mouseout: resetHighlight
+    mouseout: resetHighlight,
+    click: function () {
+      map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+    }
   });
 }
 
 // ===============================
+// CAPA TERRITORIOS
+// ===============================
+var territoriosLayer;
+var etiquetasLayer;
+
+// ===============================
 // CARGA DEL GEOJSON
 // ===============================
-var geojson;
-
 fetch('data/territorios_indigenas.geojson')
-  .then(response => response.json())
+  .then(r => r.json())
   .then(data => {
-    geojson = L.geoJSON(data, {
+
+    // Polígonos
+    territoriosLayer = L.geoJSON(data, {
       style: estiloTerritorios,
       onEachFeature: onEachFeature
     }).addTo(map);
+
+    // Etiquetas
+    etiquetasLayer = L.geoJSON(data, {
+      pane: 'labelsPane',
+      interactive: false,
+      onEachFeature: function (feature, layer) {
+        layer.bindTooltip(
+          feature.properties.TERRITORIO,
+          {
+            permanent: true,
+            direction: 'center',
+            className: 'territorio-label'
+          }
+        );
+      }
+    }).addTo(map);
+
+    // ===============================
+    // CONTROL DE CAPAS
+    // ===============================
+    var mapasBase = {
+      "Mapa oscuro": baseOscuro,
+      "Satélite": baseSatelite
+    };
+
+    var overlays = {
+      "Territorios indígenas": territoriosLayer,
+      "Nombres de territorios": etiquetasLayer
+    };
+
+    L.control.layers(mapasBase, overlays, {
+      collapsed: false
+    }).addTo(map);
+
+    // Zoom inicial
+    map.fitBounds(territoriosLayer.getBounds());
+
+    // ===============================
+    // LEYENDA
+    // ===============================
+    var legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function () {
+      var div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <h4>Territorios</h4>
+        <i style="background:#ff5500"></i> Territorio indígena<br>
+        <i style="background:#FFD700"></i> Territorio seleccionado
+      `;
+      return div;
+    };
+
+    legend.addTo(map);
+
   })
-  .catch(error => {
-    console.error('Error cargando GeoJSON:', error);
-  });
+  .catch(err => console.error('Error cargando GeoJSON:', err));
