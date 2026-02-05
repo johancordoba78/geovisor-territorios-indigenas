@@ -16,12 +16,40 @@
 </head>
 
 <body>
+
+  <!-- PANEL LATERAL -->
+  <div id="sidebar">
+    <h2>Territorios Indígenas</h2>
+    <p class="subtitle">
+      Sistema de información geográfica
+    </p>
+
+    <div class="sidebar-section">
+      <p>
+        Este visor permite explorar los territorios indígenas de Costa Rica,
+        visualizar su ubicación, extensión y atributos legales.
+      </p>
+
+      <p class="hint">
+        🔎 Use el buscador o seleccione un territorio en el mapa.
+      </p>
+    </div>
+
+    <div id="sidebar-content">
+      <p class="muted">
+        Seleccione un territorio para ver información detallada.
+      </p>
+    </div>
+  </div>
+
+  <!-- MAPA -->
   <div id="map"></div>
 
-  <!-- JS -->
+  <!-- SCRIPTS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-search@2.9.9/dist/leaflet-search.min.js"></script>
-
   <script src="js/map.js"></script>
+
 </body>
+
 </html>
