@@ -113,3 +113,43 @@ fetch('data/territorios_indigenas.geojson')
   })
   .catch(err => console.error(err));
 
+// ===============================
+// BOTÓN VISTA GENERAL
+// ===============================
+var boundsGeneral;
+
+fetch('data/territorios_indigenas.geojson')
+  .then(r => r.json())
+  .then(data => {
+    boundsGeneral = L.geoJSON(data).getBounds();
+  });
+
+// Control personalizado
+var botonVistaGeneral = L.control({ position: 'topleft' });
+
+botonVistaGeneral.onAdd = function () {
+  var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+  div.innerHTML = '🏠';
+  div.title = 'Vista general';
+
+  div.style.backgroundColor = '#000';
+  div.style.color = '#fff';
+  div.style.cursor = 'pointer';
+  div.style.width = '34px';
+  div.style.height = '34px';
+  div.style.lineHeight = '34px';
+  div.style.textAlign = 'center';
+  div.style.fontSize = '18px';
+
+  div.onclick = function () {
+    if (boundsGeneral) {
+      map.fitBounds(boundsGeneral, { padding: [20, 20] });
+    }
+  };
+
+  return div;
+};
+
+botonVistaGeneral.addTo(map);
+
+
