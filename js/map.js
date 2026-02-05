@@ -39,20 +39,19 @@ var controlCapas = L.control.layers(
 // ===============================
 // ESTILOS (SIMBOLOGÍA POR CLASIF)
 // ===============================
+function getColor(clasif) {
+  if (clasif === 'Solo PAFTS') return '#e66101';
+  if (clasif === 'PAFTS + PSA') return '#5e3c99';
+  if (clasif === 'PSA') return '#1b7837';
+  return '#ff5500';
+}
+
 function estiloNormal(feature) {
-
-  var clasif = feature.properties.CLASIF;
-  var color = '#ff5500'; // valor por defecto
-
-  if (clasif === 'Solo PAFTS') color = '#e66101';
-  if (clasif === 'PAFTS + PSA') color = '#5e3c99';
-  if (clasif === 'PSA') color = '#1b7837';
-
   return {
     interactive: true,
     color: '#ffffff',
     weight: 2,
-    fillColor: color,
+    fillColor: getColor(feature.properties.CLASIF),
     fillOpacity: 0.65
   };
 }
@@ -122,3 +121,29 @@ fetch('data/territorios_indigenas.geojson')
     map.fitBounds(territoriosLayer.getBounds());
   })
   .catch(err => console.error(err));
+
+// ===============================
+// LEYENDA
+// ===============================
+var legend = L.control({ position: 'bottomright' });
+
+legend.onAdd = function () {
+  var div = L.DomUtil.create('div', 'info legend');
+
+  div.style.background = 'rgba(0,0,0,0.75)';
+  div.style.color = '#fff';
+  div.style.padding = '10px';
+  div.style.fontSize = '12px';
+  div.style.borderRadius = '6px';
+
+  div.innerHTML = `
+    <b>Clasificación</b><br>
+    <i style="background:${getColor('Solo PAFTS')}; width:12px; height:12px; display:inline-block;"></i> Solo PAFTS<br>
+    <i style="background:${getColor('PAFTS + PSA')}; width:12px; height:12px; display:inline-block;"></i> PAFTS + PSA<br>
+    <i style="background:${getColor('PSA')}; width:12px; height:12px; display:inline-block;"></i> PSA
+  `;
+
+  return div;
+};
+
+legend.addTo(map);
