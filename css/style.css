@@ -18,9 +18,8 @@ html, body {
 }
 
 /* ===============================
-   POPUPS
-================================ */
-
+   POPUP
+=============================== */
 .popup-title {
   font-weight: bold;
   font-size: 14px;
@@ -29,7 +28,7 @@ html, body {
 
 .popup-img {
   width: 100%;
-  max-width: 260px;
+  max-width: 240px;
   border-radius: 4px;
   margin-bottom: 6px;
 }
@@ -52,4 +51,37 @@ html, body {
   text-align: center;
   text-decoration: none;
   border-radius: 4px;
+}
+
+/* ===============================
+   CONTROL DE CAPAS
+=============================== */
+.leaflet-control-layers {
+  background: rgba(0,0,0,0.75);
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.leaflet-control-layers-separator {
+  border-top: 1px solid #444;
+}
+
+/* ===============================
+   LEYENDA
+=============================== */
+.legend {
+  background: rgba(0,0,0,0.75);
+  color: white;
+  padding: 8px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.legend i {
+  width: 14px;
+  height: 14px;
+  float: left;
+  margin-right: 6px;
+  opacity: 0.9;
 }
