@@ -1,9 +1,59 @@
 /* ===============================
-   PANEL DE CONTROLES (Capas + Filtros)
+   BASE
 =============================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  font-family: Arial, sans-serif;
+}
 
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Evita fondo gris si no cargan tiles */
+.leaflet-container {
+  background: #000;
+}
+
+/* ===============================
+   POPUP
+=============================== */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px;
+  font-size: 13px;
+  color: #000;
+}
+
+.popup-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.popup-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.popup-table td {
+  padding: 3px 6px;
+}
+
+/* ===============================
+   CONTROLES (CAPAS + FILTROS)
+=============================== */
 .leaflet-control {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.45);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -16,7 +66,7 @@
   font-size: 13px;
   line-height: 1.4;
   border-radius: 8px;
-  min-width: 180px;
+  min-width: 185px;
 }
 
 /* Títulos */
@@ -35,13 +85,57 @@
   margin-bottom: 4px;
 }
 
-/* Separación entre secciones */
+/* Separación entre capas y filtros */
 .filtros {
   margin-top: 8px;
 }
 
-/* Checkbox más visible */
+/* Checkbox visible y moderno */
 input[type="checkbox"] {
   accent-color: #f1c40f;
   cursor: pointer;
+}
+
+/* ===============================
+   LEYENDA
+=============================== */
+.legend {
+  background: rgba(15, 15, 15, 0.88);
+  color: #ffffff;
+  padding: 10px 12px;
+  font-size: 12px;
+  border-radius: 8px;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+}
+
+.legend b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.legend i {
+  width: 14px;
+  height: 14px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.9;
+  border-radius: 3px;
+}
+
+.legend div {
+  clear: both;
+}
+
+/* ===============================
+   TOOLTIP
+=============================== */
+.leaflet-tooltip {
+  background: rgba(0,0,0,0.85);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
 }
