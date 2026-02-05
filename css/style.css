@@ -1,39 +1,68 @@
 /* ===============================
-   MEJORA VISUAL FINAL DE CONTROLES
+   PANEL C – FICHA DEL TERRITORIO
 =============================== */
-
-/* Separar bloques dentro del control */
-.leaflet-control-layers-base,
-.leaflet-control-layers-overlays {
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+.panel-info {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 1000;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
 }
 
-/* Título visual para filtros */
-.filtros b {
-  display: block;
-  margin-bottom: 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+/* Oculto por defecto */
+.panel-info.hidden {
+  display: none;
 }
 
-/* Mejor contraste del texto */
-.leaflet-control,
-.filtros {
-  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+/* Encabezado */
+.panel-header {
+  background: #1f1f1f;
+  color: #ffffff;
+  padding: 12px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Espacio interno más balanceado */
-.leaflet-control-layers label,
-.filtros label {
-  padding: 2px 0;
+#panel-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
 }
 
-/* Hover suave */
-.leaflet-control-layers label:hover,
-.filtros label:hover {
-  background: rgba(255,255,255,0.05);
-  border-radius: 4px;
+/* Cuerpo */
+.panel-body {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Tabla */
+.panel-table {
+  width: 100%;
+  font-size: 13px;
+}
+
+.panel-table td {
+  padding: 4px 6px;
+}
+
+/* Placeholder fotos */
+.panel-placeholder {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f2f2f2;
+  text-align: center;
+  font-size: 13px;
+  border-radius: 6px;
 }
 
