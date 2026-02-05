@@ -1,7 +1,9 @@
 // ===============================
 // MAPA
 // ===============================
-var map = L.map('map').setView([9.8, -83.7], 7);
+var map = L.map('map', {
+  preferCanvas: false
+}).setView([9.8, -83.7], 7);
 
 // ===============================
 // MAPAS BASE
@@ -12,14 +14,13 @@ var baseOscuro = L.tileLayer(
 ).addTo(map);
 
 var baseSatelite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-  'World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  { attribution: 'Tiles &copy; Esri' }
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  { attribution: 'Tiles © Esri' }
 );
 
 var baseOSM = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  { attribution: '&copy; OpenStreetMap contributors' }
+  { attribution: '© OpenStreetMap contributors' }
 );
 
 // ===============================
@@ -38,20 +39,21 @@ var controlCapas = L.control.layers(
 // ===============================
 // ESTILOS
 // ===============================
-function estiloNormal(feature) {
+function estiloNormal() {
   return {
-    color: '#ffffff',      // borde blanco
+    interactive: true,      // 🔴 CLAVE
+    color: '#ffffff',
     weight: 2,
-    fillColor: '#ff5500',  // naranja
+    fillColor: '#ff5500',
     fillOpacity: 0.6
   };
 }
 
-function estiloHighlight(e) {
+function highlight(e) {
   var layer = e.target;
 
   layer.setStyle({
-    color: '#FFD700',      // AMARILLO
+    color: '#FFD700',
     weight: 3,
     fillColor: '#ff8800',
     fillOpacity: 0.85
@@ -60,36 +62,29 @@ function estiloHighlight(e) {
   layer.bringToFront();
 }
 
-function resetHighlight(e) {
+function reset(e) {
   territoriosLayer.resetStyle(e.target);
 }
 
 // ===============================
-// POPUP + EVENTOS
+// EVENTOS + POPUP
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
 
-  var html = `
-    <div class="popup-title">${p.TERRITORIO || 'Territorio indígena'}</div>
-    <table class="popup-table">
-      <tr><td><b>Decreto</b></td><td>${p.DECRETO || '-'}</td></tr>
-      <tr><td><b>Año</b></td><td>${p.AÑO || '-'}</td></tr>
-      <tr><td><b>Clasificación</b></td><td>${p.CLASIF || '-'}</td></tr>
-      <tr><td><b>Área (ha)</b></td><td>${p.AREA_HA || '-'}</td></tr>
-    </table>
-  `;
-
-  layer.bindPopup(html);
+  layer.bindPopup(`
+    <b>${p.TERRITORIO || 'Territorio indígena'}</b><br>
+    Decreto: ${p.DECRETO || '-'}<br>
+    Año: ${p.AÑO || '-'}<br>
+    Clasificación: ${p.CLASIF || '-'}<br>
+    Área (ha): ${p.AREA_HA || '-'}
+  `);
 
   layer.on({
-    mouseover: estiloHighlight,
-    mouseout: resetHighlight,
+    mouseover: highlight,
+    mouseout: reset,
     click: function () {
-      map.fitBounds(layer.getBounds(), {
-        padding: [20, 20],
-        animate: true
-      });
+      map.fitBounds(layer.getBounds(), { padding: [20, 20] });
       layer.openPopup();
     }
   });
@@ -101,7 +96,7 @@ function onEachFeature(feature, layer) {
 var territoriosLayer;
 
 fetch('data/territorios_indigenas.geojson')
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
 
     territoriosLayer = L.geoJSON(data, {
@@ -116,5 +111,5 @@ fetch('data/territorios_indigenas.geojson')
 
     map.fitBounds(territoriosLayer.getBounds());
   })
-  .catch(err => console.error('Error cargando GeoJSON:', err));
+  .catch(err => console.error(err));
 
