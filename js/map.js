@@ -18,24 +18,30 @@ var baseSatelite = L.tileLayer(
 );
 
 // ===============================
-// ESTILO TERRITORIOS
+// ESTILO TERRITORIOS (NORMAL)
 // ===============================
 function estiloNormal() {
   return {
     color: '#ffffff',     // borde blanco
     weight: 2,
+    opacity: 1,
     fillColor: '#ff5500', // naranja
     fillOpacity: 0.65
   };
 }
 
+// ===============================
+// HOVER (RESALTADO)
+// ===============================
 function estiloHover(e) {
   e.target.setStyle({
-    color: '#FFD700',
+    color: '#FFD700',     // amarillo
     weight: 3,
     fillColor: '#ff8800',
     fillOpacity: 0.85
   });
+
+  e.target.bringToFront();
 }
 
 function resetHover(e) {
@@ -43,7 +49,7 @@ function resetHover(e) {
 }
 
 // ===============================
-// POPUP
+// POPUP + EVENTOS
 // ===============================
 function onEachFeature(feature, layer) {
   var p = feature.properties;
@@ -93,7 +99,7 @@ fetch('data/territorios_indigenas.geojson')
     map.fitBounds(territorios.getBounds());
 
     // ===============================
-    // CONTROL DE CAPAS (NORMAL)
+    // CONTROL DE CAPAS
     // ===============================
     L.control.layers(
       {
@@ -105,23 +111,6 @@ fetch('data/territorios_indigenas.geojson')
       },
       { collapsed: false }
     ).addTo(map);
-
-    // ===============================
-    // LEYENDA
-    // ===============================
-    var legend = L.control({ position: 'bottomright' });
-
-    legend.onAdd = function () {
-      var div = L.DomUtil.create('div', 'legend');
-      div.innerHTML = `
-        <b>Territorios</b><br>
-        <i style="background:#ff5500"></i> Territorio indígena<br>
-        <i style="background:#FFD700"></i> En foco
-      `;
-      return div;
-    };
-
-    legend.addTo(map);
   })
-  .catch(err => console.error(err));
+  .catch(err => console.error('Error cargando GeoJSON:', err));
 
