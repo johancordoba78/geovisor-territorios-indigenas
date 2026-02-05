@@ -1,5 +1,5 @@
 // ===============================
-// MAPA BASE
+// MAPA
 // ===============================
 var map = L.map('map').setView([9.8, -83.7], 7);
 
@@ -7,7 +7,7 @@ var map = L.map('map').setView([9.8, -83.7], 7);
 // MAPAS BASE
 // ===============================
 
-// Mapa oscuro (por defecto)
+// Mapa oscuro
 var baseOscuro = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   {
