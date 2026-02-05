@@ -77,7 +77,11 @@ function onEachFeature(feature, layer) {
     mouseover: estiloHover,
     mouseout: resetHover,
     click: function () {
-      map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+      map.fitBounds(layer.getBounds(), {
+        padding: [20, 20],
+        animate: true,
+        duration: 0.6
+      });
     }
   });
 }
@@ -91,6 +95,7 @@ fetch('data/territorios_indigenas.geojson')
   .then(res => res.json())
   .then(data => {
 
+    // ---- CAPA DE TERRITORIOS ----
     territorios = L.geoJSON(data, {
       style: estiloNormal,
       onEachFeature: onEachFeature
@@ -98,9 +103,7 @@ fetch('data/territorios_indigenas.geojson')
 
     map.fitBounds(territorios.getBounds());
 
-    // ===============================
-    // CONTROL DE CAPAS
-    // ===============================
+    // ---- CONTROL DE CAPAS ----
     L.control.layers(
       {
         "Mapa oscuro": baseOscuro,
@@ -111,6 +114,44 @@ fetch('data/territorios_indigenas.geojson')
       },
       { collapsed: false }
     ).addTo(map);
+
+    // ===============================
+    // BUSCADOR DE TERRITORIOS
+    // ===============================
+    var searchControl = new L.Control.Search({
+      layer: territorios,
+      propertyName: 'TERRITORIO',
+      marker: false,
+      moveToLocation: function (latlng, title, map) {
+        map.fitBounds(latlng.layer.getBounds(), {
+          padding: [20, 20],
+          animate: true,
+          duration: 0.8
+        });
+      }
+    });
+
+    searchControl.on('search:locationfound', function (e) {
+      e.layer.openPopup();
+
+      e.layer.setStyle({
+        color: '#FFD700',
+        weight: 3,
+        fillColor: '#ff8800',
+        fillOpacity: 0.9
+      });
+
+      if (e.layer.bringToFront) {
+        e.layer.bringToFront();
+      }
+    });
+
+    searchControl.on('search:collapsed', function () {
+      territorios.eachLayer(function (layer) {
+        territorios.resetStyle(layer);
+      });
+    });
+
+    map.addControl(searchControl);
   })
   .catch(err => console.error('Error cargando GeoJSON:', err));
-
