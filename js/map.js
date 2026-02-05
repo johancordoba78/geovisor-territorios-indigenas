@@ -1,14 +1,12 @@
 // ===============================
 // MAPA BASE
 // ===============================
-var map = L.map('map', {
-  preferCanvas: true
-}).setView([9.8, -83.7], 8);
+var map = L.map('map').setView([9.8, -83.7], 8);
 
 // Fondo negro real
 map.getContainer().style.background = '#000000';
 
-// Capa base oscura (CARTO)
+// Capa base oscura
 L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   {
@@ -17,32 +15,43 @@ L.tileLayer(
 ).addTo(map);
 
 // ===============================
-// ESTILO BASE DE TERRITORIOS
+// PANE EXCLUSIVO PARA TERRITORIOS
+// ===============================
+map.createPane('territoriosPane');
+map.getPane('territoriosPane').style.zIndex = 400;
+
+// ===============================
+// ESTILO NORMAL
 // ===============================
 function estiloTerritorios() {
   return {
+    pane: 'territoriosPane',
     color: '#1b5e20',
     weight: 1.5,
-    fillColor: '#66bb6a',
-    fillOpacity: 0.6
+    fillColor: '#4CAF50',
+    fillOpacity: 0.7,
+    interactive: true
   };
 }
 
 // ===============================
-// RESALTADO AL PASAR EL MOUSE
+// ESTILO RESALTADO (HOVER)
 // ===============================
 function highlightFeature(e) {
-  var layer = e.target;
+  const layer = e.target;
 
   layer.setStyle({
-    color: '#FFD700', // amarillo
+    color: '#FFD700',     // amarillo fuerte
     weight: 3,
-    fillOpacity: 0.8
+    fillOpacity: 0.9
   });
 
   layer.bringToFront();
 }
 
+// ===============================
+// RESETEAR ESTILO
+// ===============================
 function resetHighlight(e) {
   geojson.resetStyle(e.target);
 }
@@ -51,12 +60,12 @@ function resetHighlight(e) {
 // POPUP + EVENTOS
 // ===============================
 function onEachFeature(feature, layer) {
-  var p = feature.properties;
+  const p = feature.properties;
 
-  var foto  = p.FOTO  ? p.FOTO  : 'fotos/sin_foto.jpg';
-  var ficha = p.FICHA ? p.FICHA : 'fichas/en_construccion.html';
+  const foto  = p.FOTO  ? p.FOTO  : 'fotos/sin_foto.jpg';
+  const ficha = p.FICHA ? p.FICHA : 'fichas/en_construccion.html';
 
-  var html = `
+  const html = `
     <div class="popup-title">${p.TERRITORIO}</div>
     <img src="${foto}" class="popup-img">
     <table class="popup-table">
@@ -72,25 +81,22 @@ function onEachFeature(feature, layer) {
 
   layer.bindPopup(html);
 
-  layer.on({
-    mouseover: highlightFeature,
-    mouseout: resetHighlight
-  });
+  // 🔥 EVENTOS CLAROS
+  layer.on('mouseover', highlightFeature);
+  layer.on('mouseout', resetHighlight);
 }
 
 // ===============================
-// CARGA DEL GEOJSON
+// CARGA GEOJSON
 // ===============================
-var geojson;
+let geojson;
 
 fetch('data/territorios_indigenas.geojson')
-  .then(response => response.json())
+  .then(r => r.json())
   .then(data => {
     geojson = L.geoJSON(data, {
       style: estiloTerritorios,
       onEachFeature: onEachFeature
     }).addTo(map);
   })
-  .catch(error => {
-    console.error('Error cargando el GeoJSON:', error);
-  });
+  .catch(err => console.error('Error GeoJSON:', err));
