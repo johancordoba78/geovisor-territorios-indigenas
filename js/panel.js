@@ -1,7 +1,7 @@
 function actualizarPanel(props) {
+  const nombre = props.TERRITORIO;
 
-  document.getElementById("panel-titulo").innerText =
-    props.TERRITORIO || "Seleccione un territorio";
+  document.getElementById("panel-titulo").innerText = nombre;
 
   if (!props.CREF) {
     document.getElementById("area-actual").innerText = "–";
@@ -13,10 +13,10 @@ function actualizarPanel(props) {
   }
 
   document.getElementById("area-actual").innerText =
-    props.CREF.area_2024 ?? "–";
+    props.CREF.area_2024.toLocaleString("es-CR");
 
   document.getElementById("variacion").innerText =
-    props.CREF.variacion ?? "–";
+    props.CREF.variacion + " ha";
 
   document.getElementById("adenda").innerText = props.CREF.adenda;
   document.getElementById("rosa").innerText = props.CREF.rosa;
