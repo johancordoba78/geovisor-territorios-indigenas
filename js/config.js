@@ -1,7 +1,11 @@
 // ===============================
+// INICIALIZAR MAPA
+// ===============================
+const map = L.map("map").setView([9.6, -84.1], 7);
+
+// ===============================
 // MAPAS BASE
 // ===============================
-
 const baseMaps = {
   "OpenStreetMap": L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -19,10 +23,15 @@ const baseMaps = {
   )
 };
 
-// ===============================
-// DATOS CREF (CSV convertido a objeto)
-// ===============================
+// 👉 MAPA BASE POR DEFECTO (OBLIGATORIO)
+baseMaps["Carto Claro"].addTo(map);
 
+// 👉 CONTROL DE CAPAS
+L.control.layers(baseMaps, null, { collapsed: true }).addTo(map);
+
+// ===============================
+// DATOS CREF
+// ===============================
 const CREF_DATA = {
   "CABECAR TALAMANCA": {
     beneficiario: "Asociación ...",
@@ -41,4 +50,45 @@ const CREF_DATA = {
     pendiente: "NO"
   }
 };
-;
+
+// ===============================
+// CARGAR TERRITORIOS INDÍGENAS
+// ===============================
+fetch("data/territorios_indigenas.geojson")
+  .then(res => res.json())
+  .then(geojson => {
+
+    const capaTerritorios = L.geoJSON(geojson, {
+      style: feature => ({
+        color: "#333",
+        weight: 1,
+        fillColor: "#c76b00",
+        fillOpacity: 0.7
+      }),
+
+      onEachFeature: (feature, layer) => {
+        layer.on("click", () => {
+          const nombre =
+            feature.properties.TERRITORIO
+              ?.trim()
+              .toUpperCase();
+
+          console.log("Territorio clic:", nombre);
+
+          if (nombre && CREF_DATA[nombre]) {
+            actualizarPanel({
+              nombre,
+              ...CREF_DATA[nombre]
+            });
+          } else {
+            actualizarPanel({ nombre });
+          }
+        });
+      }
+    }).addTo(map);
+
+    // Ajustar vista al país
+    map.fitBounds(capaTerritorios.getBounds());
+  })
+  .catch(err => console.error("Error GeoJSON:", err));
+
