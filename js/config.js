@@ -1,95 +1,42 @@
 // ===============================
 // MAPAS BASE
 // ===============================
-
 const baseMaps = {
   "OpenStreetMap": L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     { attribution: "© OpenStreetMap" }
   ),
-
   "Carto Claro": L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    { attribution: "© CARTO" }
-  ),
-
-  "Carto Oscuro": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
     { attribution: "© CARTO" }
   )
 };
 
 // ===============================
-// DATOS CREF + CLASIFICACIÓN
-// CLAVE = NOMBRE DEL TERRITORIO
-// (MAYÚSCULAS, SIN TILDES)
+// ÁREAS CREF POR AÑO
 // ===============================
-
 const CREF_DATA = {
-
   "BORUCA": {
-    beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
-    area_2024: 1509.26,
-    area_2023: 1384.90,
-    variacion: 124.36,
-    clasificacion: "CREF y PAFS",
-    adenda: "SI",
-    rosa: "PENDIENTE",
-    pendiente: "NO"
+    area: {
+      2018: 1200.5,
+      2019: 1210.3,
+      2020: 1300.0,
+      2021: 1350.2,
+      2022: 1380.1,
+      2023: 1384.9,
+      2024: 1509.26
+    }
   },
 
   "CABECAR TALAMANCA": {
-    beneficiario: "Asociación de Desarrollo Integral Cabécar de Talamanca",
-    area_2024: 25409.16,
-    area_2023: 25409.16,
-    variacion: 0,
-    clasificacion: "CREF y PAFS",
-    adenda: "SI",
-    rosa: "PENDIENTE",
-    pendiente: "NO"
-  },
-
-  "BRIBRI TALAMANCA": {
-    beneficiario: null,
-    area_2024: null,
-    area_2023: null,
-    variacion: null,
-    clasificacion: "Sin CREF ni PAFS",
-    adenda: "—",
-    rosa: "—",
-    pendiente: "—"
-  },
-
-  "CABAGRA": {
-    beneficiario: null,
-    area_2024: null,
-    area_2023: null,
-    variacion: null,
-    clasificacion: "Solo PAFS",
-    adenda: "—",
-    rosa: "—",
-    pendiente: "—"
-  },
-
-  "ALTO CHIRRIPO": {
-    beneficiario: null,
-    area_2024: null,
-    area_2023: null,
-    variacion: null,
-    clasificacion: "Sin CREF ni PAFS",
-    adenda: "—",
-    rosa: "—",
-    pendiente: "—"
+    area: {
+      2018: 25000,
+      2019: 25050,
+      2020: 25200,
+      2021: 25300,
+      2022: 25380,
+      2023: 25409.16,
+      2024: 25409.16
+    }
   }
-
-};
-
-// ===============================
-// COLORES POR CLASIFICACIÓN
-// ===============================
-
-const CLASIFICACION_COLOR = {
-  "CREF y PAFS": "#c67c2d",
-  "Solo PAFS": "#9e9e9e",
-  "Sin CREF ni PAFS": "#d9d9d9"
 };
