@@ -1,15 +1,27 @@
 // ===============================
-// DATOS CREF POR TERRITORIO Y AÑO
+// MAPAS BASE
+// ===============================
+
+const baseMaps = {
+  "OpenStreetMap": L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { attribution: "© OpenStreetMap" }
+  ),
+
+  "Carto Claro": L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    { attribution: "© CARTO" }
+  )
+};
+
+// ===============================
+// DATOS CREF
 // ===============================
 
 const CREF_DATA = {
   "BORUCA": {
+    clasif: "CREF y PAFs",
     area: {
-      2018: 1200.5,
-      2019: 1220.3,
-      2020: 1301.7,
-      2021: 1390.2,
-      2022: 1450.8,
       2023: 1485.9,
       2024: 1509.26
     },
@@ -19,12 +31,8 @@ const CREF_DATA = {
   },
 
   "CABECAR TALAMANCA": {
+    clasif: "CREF y PAFs",
     area: {
-      2018: 25000,
-      2019: 25200,
-      2020: 25350,
-      2021: 25400,
-      2022: 25405,
       2023: 25408,
       2024: 25409.16
     },
