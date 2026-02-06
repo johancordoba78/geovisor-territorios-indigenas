@@ -16,44 +16,24 @@ L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
 // ===============================
 
 window.territorioActivo = null;
-window.datosActivos = null;
+window.featureActivo = null;
 
 // ===============================
-// FUNCIÓN DE CLASIFICACIÓN
+// COLORES POR CLASIFICACIÓN
+// (VIENE DEL GEOJSON)
 // ===============================
 
-function obtenerClasificacion(nombre) {
-  const datos = CREF_DATA[nombre];
-
-  if (!datos) return "Sin CREF ni PAFs";
-
-  // Ajustá esto si luego separás CREF / PAFs
-  if (datos.clasif === "Solo PAFs") return "Solo PAFs";
-  if (datos.clasif === "CREF y PAFs") return "CREF y PAFs";
-
-  // Por defecto
-  return "CREF y PAFs";
-}
-
-// ===============================
-// ESTILO POR CLASIFICACIÓN
-// ===============================
-
-function estiloTerritorio(feature) {
-  const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-  const clasif = obtenerClasificacion(nombre);
-
-  let fillColor = "#999999"; // gris → sin datos
-
-  if (clasif === "CREF y PAFs") fillColor = "#c67c2d";   // café
-  if (clasif === "Solo PAFs") fillColor = "#f2c94c";    // amarillo
-
-  return {
-    color: "#444",
-    weight: 1,
-    fillColor: fillColor,
-    fillOpacity: 0.7
-  };
+function colorPorClasif(clasif) {
+  switch (clasif) {
+    case "CREF y PAFS":
+      return "#c67c2d"; // café
+    case "Solo PAFS":
+      return "#f2c94c"; // amarillo
+    case "Sin CREF ni PAFS":
+      return "#d9d9d9"; // gris claro
+    default:
+      return "#d9d9d9";
+  }
 }
 
 // ===============================
@@ -65,15 +45,25 @@ fetch("data/territorios_indigenas.geojson")
   .then(data => {
 
     const capaTerritorios = L.geoJSON(data, {
-      style: estiloTerritorio,
+
+      style: feature => {
+        const clasif = feature.properties.Clasif || "Sin CREF ni PAFS";
+
+        return {
+          color: "#444",
+          weight: 1,
+          fillColor: colorPorClasif(clasif),
+          fillOpacity: clasif === "Sin CREF ni PAFS" ? 0.4 : 0.8
+        };
+      },
 
       onEachFeature: (feature, layer) => {
         const nombre = feature.properties.TERRITORIO
           ?.trim()
           .toUpperCase();
 
+        const clasif = feature.properties.Clasif || "Sin CREF ni PAFS";
         const datos = CREF_DATA[nombre] || null;
-        const clasif = obtenerClasificacion(nombre);
 
         // TOOLTIP
         layer.bindTooltip(
@@ -81,12 +71,17 @@ fetch("data/territorios_indigenas.geojson")
           { sticky: true }
         );
 
-        // CLICK
+        // CLICK → PANEL + ZOOM
         layer.on("click", () => {
           window.territorioActivo = nombre;
-          window.datosActivos = datos;
+          window.featureActivo = feature;
 
-          actualizarPanel(nombre, datos);
+          actualizarPanel(nombre, feature);
+
+          map.fitBounds(layer.getBounds(), {
+            padding: [30, 30],
+            maxZoom: 12
+          });
         });
       }
     });
