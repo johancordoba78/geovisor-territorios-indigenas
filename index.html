@@ -10,56 +10,57 @@
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
+  <div id="app">
 
-<div id="app">
+    <!-- PANEL LATERAL -->
+    <aside id="panel">
+      <h2 id="panel-titulo">Seleccione un territorio</h2>
+      <p id="panel-subtitulo"></p>
 
-  <!-- PANEL -->
-  <aside id="panel">
-    <h2 id="panel-titulo">Seleccione un territorio</h2>
+      <div class="bloque">
+        <strong>Año seleccionado:</strong>
+        <span id="anio-activo">2024</span>
+      </div>
 
-    <div class="bloque">
-      <strong>Año seleccionado:</strong>
-      <span id="anio-activo">2024</span>
-    </div>
+      <div class="bloque">
+        <strong>Área efectiva bajo CREF</strong>
+        <div id="area-actual" class="valor-grande">–</div>
+        <small>hectáreas</small>
+      </div>
 
-    <div class="bloque">
-      <strong>Área efectiva bajo CREF</strong>
-      <div id="area-actual" class="valor-grande">–</div>
-      <small>hectáreas</small>
-    </div>
+      <div class="bloque">
+        <strong>Variación interanual</strong>
+        <div id="variacion">–</div>
+      </div>
 
-    <div class="bloque">
-      <strong>Variación interanual</strong>
-      <div id="variacion">–</div>
-    </div>
+      <div class="bloque">
+        <strong>Estado administrativo</strong>
+        <ul>
+          <li>Adenda: <span id="adenda">–</span></li>
+          <li>Documento rosa: <span id="rosa">–</span></li>
+          <li>Pendientes: <span id="pendiente">–</span></li>
+        </ul>
+      </div>
+    </aside>
 
-    <div class="bloque">
-      <strong>Estado administrativo</strong>
-      <ul>
-        <li>Adenda: <span id="adenda">–</span></li>
-        <li>Documento rosa: <span id="rosa">–</span></li>
-        <li>Pendientes: <span id="pendiente">–</span></li>
-      </ul>
-    </div>
-  </aside>
+    <!-- MAPA -->
+    <main id="map"></main>
 
-  <!-- MAPA -->
-  <main id="map"></main>
+  </div>
 
-</div>
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Leaflet -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Scripts -->
-<script src="js/config.js"></script>
-<script src="js/panel.js"></script>
-<script src="js/map.js"></script>
-
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/panel.js"></script>
+  <script src="js/map.js"></script>
 </body>
 </html>
+
 
