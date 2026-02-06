@@ -3,7 +3,7 @@
 // ===============================
 
 const map = L.map("map", {
-  center: [9.9, -84.1], // Costa Rica
+  center: [9.6, -84.1],
   zoom: 7,
   layers: [baseMaps["Carto Claro"]]
 });
@@ -18,33 +18,36 @@ fetch("data/territorios_indigenas.geojson")
   .then(res => res.json())
   .then(data => {
 
-    data.features.forEach(f => {
-      const nombre = f.properties.TERRITORIO
-        ? f.properties.TERRITORIO.trim().toUpperCase()
-        : null;
+    L.geoJSON(data, {
+      style: feature => {
+        const nombre = feature.properties.TERRITORIO
+          ?.trim()
+          .toUpperCase();
 
-      if (nombre && CREF_DATA[nombre]) {
-        f.properties.CREF = CREF_DATA[nombre];
-        f.properties.TIENE_CREF = true;
-      } else {
-        f.properties.CREF = null;
-        f.properties.TIENE_CREF = false;
-      }
-    });
+        return {
+          color: "#555",
+          weight: 1,
+          fillColor: CREF_DATA[nombre] ? "#c97a2b" : "#cccccc",
+          fillOpacity: 0.7
+        };
+      },
 
-    const capaTerritorios = L.geoJSON(data, {
-      style: f => ({
-        color: "#333",
-        weight: 1,
-        fillColor: f.properties.TIENE_CREF ? "#c77d2a" : "#bdbdbd",
-        fillOpacity: 0.7
-      }),
       onEachFeature: (feature, layer) => {
+
         layer.on("click", () => {
-          actualizarPanel(feature.properties);
+          const nombre = feature.properties.TERRITORIO
+            ?.trim()
+            .toUpperCase();
+
+          const datos = CREF_DATA[nombre] || null;
+
+          actualizarPanel(nombre, datos);
+          map.fitBounds(layer.getBounds());
         });
+
       }
+
     }).addTo(map);
 
   })
-  .catch(err => console.error("Error cargando GeoJSON:", err));
+  .catch(err => console.error("Error cargando territorios:", err));
