@@ -20,23 +20,22 @@ const baseMaps = {
 };
 
 // ===============================
-// DATOS CREF (ejemplo)
+// DATOS CREF (tabla limpia)
 // ===============================
 
 const CREF_DATA = {
-  "BORUCA": {
-    beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
-    area_2024: 1509.26,
-    variacion: 124.4,
-    adenda: "SI",
-    rosa: "PENDIENTE",
-    pendiente: "NO"
-  },
-
   "CABECAR TALAMANCA": {
     beneficiario: "Asociación de Desarrollo Integral Cabécar Talamanca",
     area_2024: 25409.16,
     variacion: 0,
+    adenda: "SI",
+    rosa: "PENDIENTE",
+    pendiente: "NO"
+  },
+  "BORUCA": {
+    beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
+    area_2024: 1509.26,
+    variacion: 124.4,
     adenda: "SI",
     rosa: "PENDIENTE",
     pendiente: "NO"
