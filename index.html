@@ -15,52 +15,56 @@
 </head>
 
 <body>
-  <div id="app">
 
-    <!-- PANEL LATERAL -->
-    <aside id="panel">
-      <h2 id="panel-titulo">Seleccione un territorio</h2>
-      <p id="panel-subtitulo"></p>
+<div id="app">
 
-      <div class="bloque">
-        <strong>Año seleccionado:</strong>
-        <span id="anio-activo">2024</span>
-      </div>
+  <!-- PANEL -->
+  <aside id="panel">
+    <h2 id="panel-titulo">Seleccione un territorio</h2>
+    <p id="panel-subtitulo"></p>
 
-      <div class="bloque">
-        <strong>Área efectiva bajo CREF</strong>
-        <div id="area-actual" class="valor-grande">–</div>
-        <small>hectáreas</small>
-      </div>
+    <div class="bloque">
+      <strong>Año seleccionado:</strong><br>
+      <select id="anio-select">
+        <option value="2024" selected>2024</option>
+        <option value="2023">2023</option>
+      </select>
+    </div>
 
-      <div class="bloque">
-        <strong>Variación interanual</strong>
-        <div id="variacion">–</div>
-      </div>
+    <div class="bloque">
+      <strong>Área efectiva bajo CREF</strong>
+      <div id="area-actual" class="valor-grande">–</div>
+      <small>hectáreas</small>
+    </div>
 
-      <div class="bloque">
-        <strong>Estado administrativo</strong>
-        <ul>
-          <li>Adenda: <span id="adenda">–</span></li>
-          <li>Documento rosa: <span id="rosa">–</span></li>
-          <li>Pendientes: <span id="pendiente">–</span></li>
-        </ul>
-      </div>
-    </aside>
+    <div class="bloque">
+      <strong>Variación interanual</strong>
+      <div id="variacion">–</div>
+    </div>
 
-    <!-- MAPA -->
-    <main id="map"></main>
+    <div class="bloque">
+      <strong>Estado administrativo</strong>
+      <ul>
+        <li>Adenda: <span id="adenda">–</span></li>
+        <li>Documento rosa: <span id="rosa">–</span></li>
+        <li>Pendientes: <span id="pendiente">–</span></li>
+      </ul>
+    </div>
+  </aside>
 
-  </div>
+  <!-- MAPA -->
+  <main id="map"></main>
 
-  <!-- Leaflet -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</div>
 
-  <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/panel.js"></script>
-  <script src="js/map.js"></script>
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/panel.js"></script>
+<script src="js/map.js"></script>
+
 </body>
 </html>
-
 
