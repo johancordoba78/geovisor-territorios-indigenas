@@ -1,0 +1,51 @@
+/* ===============================
+   BASE GENERAL
+   =============================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+}
+
+/* ===============================
+   PANEL LATERAL
+   =============================== */
+#panel {
+  width: 360px;
+  padding: 16px;
+  background: #ffffff;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+#panel h2 {
+  margin-top: 0;
+}
+
+.bloque {
+  margin-bottom: 18px;
+}
+
+.valor-grande {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* ===============================
+   MAPA
+   =============================== */
+#map {
+  flex: 1;
+}
+
+/* Leaflet corrige fondo gris */
+.leaflet-container {
+  background: #e5e5e5;
+}
