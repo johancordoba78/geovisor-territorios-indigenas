@@ -1,8 +1,16 @@
+// Crear mapa
+const map = L.map("map").setView([9.6, -84.1], 7);
+
+// Base map
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "© OpenStreetMap"
+}).addTo(map);
+
 // ===============================
 // CARGA DE TERRITORIOS INDÍGENAS
 // ===============================
 
-fetch('data/territorios_indigenas.geojson')
+fetch("data/territorios_indigenas.geojson")
   .then(res => res.json())
   .then(data => {
 
@@ -21,23 +29,22 @@ fetch('data/territorios_indigenas.geojson')
       }
     });
 
-    console.log('✔ GeoJSON enlazado con CREF');
+    console.log("✔ GeoJSON enlazado con CREF");
 
-    // Capa Leaflet
     L.geoJSON(data, {
       style: feature => ({
-        color: '#ffffff',
+        color: "#ffffff",
         weight: 1,
-        fillColor: feature.properties.TIENE_CREF ? '#c76b00' : '#555555',
+        fillColor: feature.properties.TIENE_CREF ? "#c76b00" : "#555555",
         fillOpacity: 0.7
       }),
       onEachFeature: (feature, layer) => {
-        layer.on('click', () => {
-          console.log('Territorio clickeado:', feature.properties.TERRITORIO);
-          console.log('Datos CREF:', feature.properties.CREF);
+        layer.on("click", () => {
+          console.log("Territorio:", feature.properties.TERRITORIO);
+          console.log("CREF:", feature.properties.CREF);
         });
       }
     }).addTo(map);
 
   })
-  .catch(err => console.error('❌ Error cargando GeoJSON:', err));
+  .catch(err => console.error("❌ Error GeoJSON:", err));
