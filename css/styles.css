@@ -1,7 +1,6 @@
 html, body {
   margin: 0;
   padding: 0;
-  width: 100%;
   height: 100%;
   font-family: Arial, sans-serif;
 }
@@ -11,7 +10,6 @@ html, body {
   height: 100vh;
 }
 
-/* PANEL */
 #panel {
   width: 360px;
   padding: 16px;
@@ -20,8 +18,8 @@ html, body {
   overflow-y: auto;
 }
 
-#panel h2 {
-  margin-top: 0;
+#map {
+  flex: 1;
 }
 
 .bloque {
@@ -31,18 +29,5 @@ html, body {
 .valor-grande {
   font-size: 24px;
   font-weight: bold;
-}
-
-.positivo {
-  color: green;
-}
-
-.negativo {
-  color: red;
-}
-
-/* MAPA */
-#map {
-  flex: 1;
 }
 
