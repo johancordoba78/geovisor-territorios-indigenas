@@ -1,17 +1,6 @@
 // ===============================
-// MAPA BASE
+// MAPA
 // ===============================
-
-const baseMaps = {
-  "OpenStreetMap": L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    { attribution: "© OpenStreetMap" }
-  ),
-  "Carto Claro": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    { attribution: "© CARTO" }
-  )
-};
 
 const map = L.map("map", {
   center: [9.6, -84.2],
@@ -19,23 +8,25 @@ const map = L.map("map", {
   layers: [baseMaps["OpenStreetMap"]]
 });
 
-L.control.layers(baseMaps, null).addTo(map);
+L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// ESTILO SEGÚN CLASIF (GeoJSON)
+// ESTILO
 // ===============================
 
 function estiloTerritorio(feature) {
-  const clasif = feature.properties.CLASIF?.trim();
+  const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
+  const datos = CREF_DATA[nombre];
 
-  let fillColor = "#999999"; // Sin CREF ni PAFTS
-  if (clasif === "CREF y PAFTS") fillColor = "#c67c2d";
-  else if (clasif === "Solo PAFTS") fillColor = "#f2c94c";
+  let fill = "#999999"; // Sin datos
+
+  if (datos?.clasif === "CREF y PAFs") fill = "#c67c2d";
+  if (datos?.clasif === "Solo PAFs") fill = "#f2c94c";
 
   return {
-    color: "#333",
+    color: "#444",
     weight: 1,
-    fillColor,
+    fillColor: fill,
     fillOpacity: 0.7
   };
 }
@@ -45,26 +36,19 @@ function estiloTerritorio(feature) {
 // ===============================
 
 fetch("data/territorios_indigenas.geojson")
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
-
     L.geoJSON(data, {
       style: estiloTerritorio,
-
       onEachFeature: (feature, layer) => {
-        const nombre = feature.properties.TERRITORIO.trim().toUpperCase();
-        const clasif = feature.properties.CLASIF;
-
-        layer.bindTooltip(
-          `<strong>${nombre}</strong><br>${clasif}`,
-          { sticky: true }
-        );
+        const nombre = feature.properties.TERRITORIO
+          ?.trim()
+          .toUpperCase();
 
         layer.on("click", () => {
-          actualizarPanel(nombre);
+          actualizarPanel(nombre, CREF_DATA[nombre] || null);
         });
       }
     }).addTo(map);
-
   })
   .catch(err => console.error(err));
