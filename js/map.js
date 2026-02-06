@@ -1,75 +1,46 @@
 // ===============================
-// MAPAS BASE
-// ===============================
-
-const osm = L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  { attribution: "© OpenStreetMap" }
-);
-
-const carto = L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-  { attribution: "© CARTO" }
-);
-
-const satelite = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-  { attribution: "© Esri" }
-);
-
-// ===============================
 // MAPA
 // ===============================
 
 const map = L.map("map", {
-  center: [9.6, -84.1],
+  center: [9.8, -84],
   zoom: 7,
-  layers: [carto]
+  layers: [baseMaps["Carto Claro"]]
 });
 
-// ===============================
-// TERRITORIOS
-// ===============================
+// Control de mapas base
+L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
 
-let capaTerritorios;
+// ===============================
+// TERRITORIOS INDÍGENAS
+// ===============================
 
 fetch("data/territorios_indigenas.geojson")
   .then(r => r.json())
   .then(data => {
 
-    data.features.forEach(f => {
-      const nombre = f.properties.TERRITORIO?.trim().toUpperCase();
-      f.properties.CREF = CREF_DATA[nombre] || null;
-    });
-
-    capaTerritorios = L.geoJSON(data, {
-      style: {
+    const capaTerritorios = L.geoJSON(data, {
+      style: f => ({
         color: "#ffffff",
         weight: 1,
         fillColor: "#c76b00",
         fillOpacity: 0.7
-      },
+      }),
       onEachFeature: (feature, layer) => {
         layer.on("click", () => {
-          actualizarPanel(feature.properties);
-          map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+          const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
+          if (CREF_DATA[nombre]) {
+            actualizarPanel({
+              TERRITORIO: nombre,
+              ...CREF_DATA[nombre]
+            });
+          }
         });
       }
     }).addTo(map);
 
-    // ===============================
-    // CONTROL DE CAPAS
-    // ===============================
+    // 🔑 ESTO ES LO QUE TE FALTABA
+    map.fitBounds(capaTerritorios.getBounds());
 
-    L.control.layers(
-      {
-        "Carto claro": carto,
-        "OpenStreetMap": osm,
-        "Satélite": satelite
-      },
-      {
-        "Territorios indígenas": capaTerritorios
-      },
-      { collapsed: false }
-    ).addTo(map);
-  });
+  })
+  .catch(err => console.error("Error GeoJSON:", err));
