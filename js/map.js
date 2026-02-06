@@ -1,20 +1,43 @@
-const map = L.map("map").setView([9.6, -84.1], 7);
+// ===============================
+// CARGA DE TERRITORIOS INDÍGENAS
+// ===============================
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap"
-}).addTo(map);
+fetch('data/territorios_indigenas.geojson')
+  .then(res => res.json())
+  .then(data => {
 
-// DATOS SIMULADOS (PRUEBA)
-const ejemploTerritorio = {
-  TERRITORIO: "BORUCA",
-  BENEFICIARIO:
-    "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
-  RES_2023: 1384.9,
-  RES_2024: 1509.26,
-  ADENTA: "SI",
-  ROSA: "PENDIENTE",
-  PENDIENTE: "NO"
-};
+    // Enlazar CSV CREF con GeoJSON
+    data.features.forEach(f => {
+      const nombre = f.properties.TERRITORIO
+        ? f.properties.TERRITORIO.trim().toUpperCase()
+        : null;
 
-// Cargar ficha al inicio (prueba)
-actualizarPanel(ejemploTerritorio);
+      if (nombre && CREF_DATA[nombre]) {
+        f.properties.CREF = CREF_DATA[nombre];
+        f.properties.TIENE_CREF = true;
+      } else {
+        f.properties.CREF = null;
+        f.properties.TIENE_CREF = false;
+      }
+    });
+
+    console.log('✔ GeoJSON enlazado con CREF');
+
+    // Capa Leaflet
+    L.geoJSON(data, {
+      style: feature => ({
+        color: '#ffffff',
+        weight: 1,
+        fillColor: feature.properties.TIENE_CREF ? '#c76b00' : '#555555',
+        fillOpacity: 0.7
+      }),
+      onEachFeature: (feature, layer) => {
+        layer.on('click', () => {
+          console.log('Territorio clickeado:', feature.properties.TERRITORIO);
+          console.log('Datos CREF:', feature.properties.CREF);
+        });
+      }
+    }).addTo(map);
+
+  })
+  .catch(err => console.error('❌ Error cargando GeoJSON:', err));
