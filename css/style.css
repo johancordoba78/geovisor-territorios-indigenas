@@ -1,3 +1,7 @@
+/* ===============================
+   BASE GENERAL
+=============================== */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -10,13 +14,17 @@ html, body {
   height: 100vh;
 }
 
-/* PANEL */
+/* ===============================
+   PANEL LATERAL
+=============================== */
+
 #panel {
   width: 360px;
   padding: 16px;
   background: #ffffff;
   border-right: 1px solid #ccc;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 #panel h2 {
@@ -32,8 +40,16 @@ html, body {
   font-weight: bold;
 }
 
-/* MAPA */
+/* ===============================
+   MAPA
+=============================== */
+
 #map {
   flex: 1;
 }
+
+.leaflet-container {
+  background: #e5e5e5;
+}
+
 
