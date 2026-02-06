@@ -3,12 +3,13 @@
 // ===============================
 
 const map = L.map("map", {
-  center: [9.6, -84.1],
+  center: [9.6, -84.2],
   zoom: 7,
-  layers: [baseMaps["Carto Claro"]]
+  layers: [baseMaps["OpenStreetMap"]]
 });
 
-L.control.layers(baseMaps).addTo(map);
+// Control de mapas base
+L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
 
 // ===============================
 // TERRITORIOS INDÍGENAS
@@ -20,33 +21,25 @@ fetch("data/territorios_indigenas.geojson")
 
     L.geoJSON(data, {
       style: feature => {
-        const nombre = feature.properties.TERRITORIO
-          ?.trim()
-          .toUpperCase();
+        const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
+        const tieneCref = CREF_DATA[nombre];
 
         return {
           color: "#555",
           weight: 1,
-          fillColor: CREF_DATA[nombre] ? "#c97a2b" : "#cccccc",
+          fillColor: tieneCref ? "#c67c2d" : "#999999",
           fillOpacity: 0.7
         };
       },
 
       onEachFeature: (feature, layer) => {
+        const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
+        const datos = CREF_DATA[nombre] || null;
 
         layer.on("click", () => {
-          const nombre = feature.properties.TERRITORIO
-            ?.trim()
-            .toUpperCase();
-
-          const datos = CREF_DATA[nombre] || null;
-
           actualizarPanel(nombre, datos);
-          map.fitBounds(layer.getBounds());
         });
-
       }
-
     }).addTo(map);
 
   })
