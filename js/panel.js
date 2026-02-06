@@ -1,29 +1,21 @@
-function actualizarPanel(props) {
+function actualizarPanel(nombreTerritorio, datos) {
 
-  const titulo = document.getElementById("panel-titulo");
-  const subtitulo = document.getElementById("panel-subtitulo");
-  const area = document.getElementById("area-actual");
-  const variacion = document.getElementById("variacion");
-  const adenda = document.getElementById("adenda");
-  const rosa = document.getElementById("rosa");
-  const pendiente = document.getElementById("pendiente");
+  document.getElementById("panel-titulo").textContent = nombreTerritorio;
+  document.getElementById("panel-subtitulo").textContent =
+    datos?.beneficiario || "";
 
-  titulo.textContent = props.TERRITORIO || "Territorio";
-  subtitulo.textContent = props.CREF
-    ? props.CREF.beneficiario
-    : "Sin datos CREF";
+  document.getElementById("area-actual").textContent =
+    datos ? datos.area_2024.toLocaleString("es-CR") : "–";
 
-  if (props.CREF) {
-    area.textContent = props.CREF.area_2024.toLocaleString("es-CR");
-    variacion.textContent = props.CREF.variacion + " ha";
-    adenda.textContent = props.CREF.adenda;
-    rosa.textContent = props.CREF.rosa;
-    pendiente.textContent = props.CREF.pendiente;
-  } else {
-    area.textContent = "–";
-    variacion.textContent = "–";
-    adenda.textContent = "–";
-    rosa.textContent = "–";
-    pendiente.textContent = "–";
-  }
+  document.getElementById("variacion").textContent =
+    datos ? `${datos.variacion} ha` : "–";
+
+  document.getElementById("adenda").textContent =
+    datos ? datos.adenda : "–";
+
+  document.getElementById("rosa").textContent =
+    datos ? datos.rosa : "–";
+
+  document.getElementById("pendiente").textContent =
+    datos ? datos.pendiente : "–";
 }
