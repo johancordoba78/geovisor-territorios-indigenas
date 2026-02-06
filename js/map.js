@@ -1,50 +1,75 @@
-// Crear mapa
-const map = L.map("map").setView([9.6, -84.1], 7);
+// ===============================
+// MAPAS BASE
+// ===============================
 
-// Base map
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap"
-}).addTo(map);
+const osm = L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  { attribution: "© OpenStreetMap" }
+);
+
+const carto = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  { attribution: "© CARTO" }
+);
+
+const satelite = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  { attribution: "© Esri" }
+);
 
 // ===============================
-// CARGA DE TERRITORIOS INDÍGENAS
+// MAPA
 // ===============================
+
+const map = L.map("map", {
+  center: [9.6, -84.1],
+  zoom: 7,
+  layers: [carto]
+});
+
+// ===============================
+// TERRITORIOS
+// ===============================
+
+let capaTerritorios;
 
 fetch("data/territorios_indigenas.geojson")
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
 
-    // Enlazar CSV CREF con GeoJSON
     data.features.forEach(f => {
-      const nombre = f.properties.TERRITORIO
-        ? f.properties.TERRITORIO.trim().toUpperCase()
-        : null;
-
-      if (nombre && CREF_DATA[nombre]) {
-        f.properties.CREF = CREF_DATA[nombre];
-        f.properties.TIENE_CREF = true;
-      } else {
-        f.properties.CREF = null;
-        f.properties.TIENE_CREF = false;
-      }
+      const nombre = f.properties.TERRITORIO?.trim().toUpperCase();
+      f.properties.CREF = CREF_DATA[nombre] || null;
     });
 
-    console.log("✔ GeoJSON enlazado con CREF");
-
-    L.geoJSON(data, {
-      style: feature => ({
+    capaTerritorios = L.geoJSON(data, {
+      style: {
         color: "#ffffff",
         weight: 1,
-        fillColor: feature.properties.TIENE_CREF ? "#c76b00" : "#555555",
+        fillColor: "#c76b00",
         fillOpacity: 0.7
-      }),
+      },
       onEachFeature: (feature, layer) => {
         layer.on("click", () => {
-          console.log("Territorio:", feature.properties.TERRITORIO);
-          console.log("CREF:", feature.properties.CREF);
+          actualizarPanel(feature.properties);
+          map.fitBounds(layer.getBounds(), { padding: [30, 30] });
         });
       }
     }).addTo(map);
 
-  })
-  .catch(err => console.error("❌ Error GeoJSON:", err));
+    // ===============================
+    // CONTROL DE CAPAS
+    // ===============================
+
+    L.control.layers(
+      {
+        "Carto claro": carto,
+        "OpenStreetMap": osm,
+        "Satélite": satelite
+      },
+      {
+        "Territorios indígenas": capaTerritorios
+      },
+      { collapsed: false }
+    ).addTo(map);
+  });
