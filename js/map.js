@@ -1,5 +1,5 @@
 // ===============================
-// CREAR MAPA
+// MAPA
 // ===============================
 
 const map = L.map("map", {
@@ -8,43 +8,54 @@ const map = L.map("map", {
   layers: [baseMaps["Carto Claro"]]
 });
 
-// Control de mapas base
-L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
+L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// CAPA TERRITORIOS INDÍGENAS
+// NORMALIZAR NOMBRES
+// ===============================
+
+function normalizarNombre(nombre) {
+  return nombre
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase();
+}
+
+// ===============================
+// CARGAR TERRITORIOS
 // ===============================
 
 fetch("data/territorios_indigenas.geojson")
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
 
-    const capaTerritorios = L.geoJSON(data, {
-      style: feature => ({
-        color: "#ffffff",
+    data.features.forEach(f => {
+      const nombre = normalizarNombre(f.properties.TERRITORIO);
+
+      if (CREF_DATA[nombre]) {
+        f.properties.CREF = CREF_DATA[nombre];
+        f.properties.TIENE_CREF = true;
+      } else {
+        f.properties.CREF = null;
+        f.properties.TIENE_CREF = false;
+      }
+    });
+
+    L.geoJSON(data, {
+      style: f => ({
+        color: "#444",
         weight: 1,
-        fillColor: "#c76b00",
+        fillColor: f.properties.TIENE_CREF ? "#c77d2a" : "#999",
         fillOpacity: 0.7
       }),
-
       onEachFeature: (feature, layer) => {
         layer.on("click", () => {
-          const nombre = feature.properties.TERRITORIO?.toUpperCase();
-
-          const cref = CREF_DATA[nombre];
-
-          actualizarPanel({
-            nombre,
-            ...cref
-          });
+          map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+          actualizarPanel(feature.properties);
         });
       }
     }).addTo(map);
 
-    // Ajustar vista a los territorios
-    map.fitBounds(capaTerritorios.getBounds());
-
-    console.log("✔ Territorios cargados");
   })
-  .catch(err => console.error("❌ Error GeoJSON:", err));
-
+  .catch(err => console.error("Error cargando GeoJSON:", err));
