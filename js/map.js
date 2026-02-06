@@ -11,29 +11,19 @@ const map = L.map("map", {
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// NORMALIZAR NOMBRES
-// ===============================
-
-function normalizarNombre(nombre) {
-  return nombre
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toUpperCase();
-}
-
-// ===============================
-// CARGAR TERRITORIOS
+// TERRITORIOS INDÍGENAS
 // ===============================
 
 fetch("data/territorios_indigenas.geojson")
-  .then(r => r.json())
+  .then(res => res.json())
   .then(data => {
 
     data.features.forEach(f => {
-      const nombre = normalizarNombre(f.properties.TERRITORIO);
+      const nombre = f.properties.TERRITORIO
+        ? f.properties.TERRITORIO.trim().toUpperCase()
+        : null;
 
-      if (CREF_DATA[nombre]) {
+      if (nombre && CREF_DATA[nombre]) {
         f.properties.CREF = CREF_DATA[nombre];
         f.properties.TIENE_CREF = true;
       } else {
@@ -42,7 +32,7 @@ fetch("data/territorios_indigenas.geojson")
       }
     });
 
-    L.geoJSON(data, {
+    const capaTerritorios = L.geoJSON(data, {
       style: f => ({
         color: "#444",
         weight: 1,
@@ -56,6 +46,9 @@ fetch("data/territorios_indigenas.geojson")
         });
       }
     }).addTo(map);
+
+    // 🔥 Zoom automático al cargar
+    map.fitBounds(capaTerritorios.getBounds(), { padding: [40, 40] });
 
   })
   .catch(err => console.error("Error cargando GeoJSON:", err));
