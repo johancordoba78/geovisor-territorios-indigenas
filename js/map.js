@@ -21,8 +21,11 @@ fetch("data/territorios_indigenas.geojson")
 
     L.geoJSON(data, {
       style: feature => {
-        const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-        const tieneCref = CREF_DATA[nombre];
+        const nombre = feature.properties.TERRITORIO
+          ? feature.properties.TERRITORIO.trim().toUpperCase()
+          : null;
+
+        const tieneCref = nombre && CREF_DATA[nombre];
 
         return {
           color: "#555",
@@ -32,27 +35,31 @@ fetch("data/territorios_indigenas.geojson")
         };
       },
 
-  onEachFeature: (feature, layer) => {
-  const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-  const datos = CREF_DATA[nombre] || null;
+      onEachFeature: (feature, layer) => {
+        const nombre = feature.properties.TERRITORIO
+          ? feature.properties.TERRITORIO.trim().toUpperCase()
+          : "SIN NOMBRE";
 
-  // TOOLTIP
-  layer.bindTooltip(
-    `<strong>${nombre}</strong><br>
-     ${datos ? "Con datos CREF" : "Sin datos CREF"}`,
-    {
-      sticky: true,
-      opacity: 0.9
-    }
-  );
+        const datos = CREF_DATA[nombre] || null;
 
-  // CLICK
-  layer.on("click", () => {
-    actualizarPanel(nombre, datos);
-  });
-}
+        // TOOLTIP
+        layer.bindTooltip(
+          `<strong>${nombre}</strong><br>
+           ${datos ? "Con datos CREF" : "Sin datos CREF"}`,
+          {
+            sticky: true,
+            opacity: 0.9
+          }
+        );
+
+        // CLICK
+        layer.on("click", () => {
+          actualizarPanel(nombre, datos);
+        });
+      }
 
     }).addTo(map);
 
   })
   .catch(err => console.error("Error cargando territorios:", err));
+;
