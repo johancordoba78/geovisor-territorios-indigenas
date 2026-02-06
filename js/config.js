@@ -33,12 +33,12 @@ const CREF_DATA = {
     pendiente: "NO"
   },
 
-  "ALTO CHIRRIPO": {
-    beneficiario: "Asociación de Desarrollo Integral",
-    area_2024: null,
-    variacion: null,
-    adenda: "NO",
-    rosa: "NO",
+  "CABECAR TALAMANCA": {
+    beneficiario: "Asociación de Desarrollo Integral Cabécar Talamanca",
+    area_2024: 25409.16,
+    variacion: 0,
+    adenda: "SI",
+    rosa: "PENDIENTE",
     pendiente: "NO"
   }
 };
