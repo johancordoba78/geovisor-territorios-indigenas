@@ -1,9 +1,9 @@
 // ===============================
-// MAPA
+// CREAR MAPA
 // ===============================
 
 const map = L.map("map", {
-  center: [9.8, -84],
+  center: [9.6, -84.1],
   zoom: 7,
   layers: [baseMaps["Carto Claro"]]
 });
@@ -12,35 +12,39 @@ const map = L.map("map", {
 L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
 
 // ===============================
-// TERRITORIOS INDÍGENAS
+// CAPA TERRITORIOS INDÍGENAS
 // ===============================
 
 fetch("data/territorios_indigenas.geojson")
-  .then(r => r.json())
+  .then(res => res.json())
   .then(data => {
 
     const capaTerritorios = L.geoJSON(data, {
-      style: f => ({
+      style: feature => ({
         color: "#ffffff",
         weight: 1,
         fillColor: "#c76b00",
         fillOpacity: 0.7
       }),
+
       onEachFeature: (feature, layer) => {
         layer.on("click", () => {
-          const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-          if (CREF_DATA[nombre]) {
-            actualizarPanel({
-              TERRITORIO: nombre,
-              ...CREF_DATA[nombre]
-            });
-          }
+          const nombre = feature.properties.TERRITORIO?.toUpperCase();
+
+          const cref = CREF_DATA[nombre];
+
+          actualizarPanel({
+            nombre,
+            ...cref
+          });
         });
       }
     }).addTo(map);
 
-    // 🔑 ESTO ES LO QUE TE FALTABA
+    // Ajustar vista a los territorios
     map.fitBounds(capaTerritorios.getBounds());
 
+    console.log("✔ Territorios cargados");
   })
-  .catch(err => console.error("Error GeoJSON:", err));
+  .catch(err => console.error("❌ Error GeoJSON:", err));
+
