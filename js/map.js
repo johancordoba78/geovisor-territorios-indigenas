@@ -3,7 +3,7 @@
 // ===============================
 
 const map = L.map("map", {
-  center: [9.6, -84.1],
+  center: [9.9, -84.1], // Costa Rica
   zoom: 7,
   layers: [baseMaps["Carto Claro"]]
 });
@@ -34,21 +34,17 @@ fetch("data/territorios_indigenas.geojson")
 
     const capaTerritorios = L.geoJSON(data, {
       style: f => ({
-        color: "#444",
+        color: "#333",
         weight: 1,
-        fillColor: f.properties.TIENE_CREF ? "#c77d2a" : "#999",
+        fillColor: f.properties.TIENE_CREF ? "#c77d2a" : "#bdbdbd",
         fillOpacity: 0.7
       }),
       onEachFeature: (feature, layer) => {
         layer.on("click", () => {
-          map.fitBounds(layer.getBounds(), { padding: [30, 30] });
           actualizarPanel(feature.properties);
         });
       }
     }).addTo(map);
-
-    // 🔥 Zoom automático al cargar
-    map.fitBounds(capaTerritorios.getBounds(), { padding: [40, 40] });
 
   })
   .catch(err => console.error("Error cargando GeoJSON:", err));
