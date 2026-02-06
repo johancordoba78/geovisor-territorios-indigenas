@@ -1,25 +1,43 @@
 // ===============================
-// CARGA DE DATOS CREF
+// MAPAS BASE
 // ===============================
 
-let CREF_DATA = {};
+const baseMaps = {
+  "OpenStreetMap": L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { attribution: "© OpenStreetMap" }
+  ),
 
-function cargarCREFData() {
-  fetch("data/cref_resumen.csv")
-    .then(r => r.text())
-    .then(text => {
-      const filas = text.split("\n").map(f => f.trim()).filter(Boolean);
-      const headers = filas[0].split(",");
+  "Carto Claro": L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    { attribution: "© CARTO" }
+  ),
 
-      for (let i = 1; i < filas.length; i++) {
-        const valores = filas[i].split(",");
-        let obj = {};
-        headers.forEach((h, idx) => obj[h] = valores[idx] ?? null);
-        CREF_DATA[obj.TERRITORIO] = obj;
-      }
+  "Carto Oscuro": L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    { attribution: "© CARTO" }
+  )
+};
 
-      console.log("✔ Datos CREF cargados", CREF_DATA);
-    });
-}
+// ===============================
+// DATOS CREF (CSV convertido a objeto)
+// ===============================
 
-cargarCREFData();
+const CREF_DATA = {
+  "CABECAR TALAMANCA": {
+    beneficiario: "Asociación ...",
+    area_2024: 25409.16,
+    variacion: 0,
+    adenda: "SI",
+    rosa: "PENDIENTE",
+    pendiente: "NO"
+  },
+  "BORUCA": {
+    beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
+    area_2024: 1509.26,
+    variacion: 124.4,
+    adenda: "SI",
+    rosa: "PENDIENTE",
+    pendiente: "NO"
+  }
+};
