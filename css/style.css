@@ -17,7 +17,6 @@ html, body {
   background: #ffffff;
   border-right: 1px solid #ccc;
   overflow-y: auto;
-  box-sizing: border-box;
 }
 
 #panel h2 {
