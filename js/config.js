@@ -20,22 +20,25 @@ const baseMaps = {
 };
 
 // ===============================
-// DATOS CREF (tabla limpia)
+// DATOS CREF LIMPIOS
 // ===============================
 
 const CREF_DATA = {
   "CABECAR TALAMANCA": {
     beneficiario: "Asociación de Desarrollo Integral Cabécar Talamanca",
+    area_2023: 25409.16,
     area_2024: 25409.16,
-    variacion: 0,
+    variacion_2024: 0,
     adenda: "SI",
     rosa: "PENDIENTE",
     pendiente: "NO"
   },
+
   "BORUCA": {
     beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
+    area_2023: 1384.9,
     area_2024: 1509.26,
-    variacion: 124.4,
+    variacion_2024: 124.36,
     adenda: "SI",
     rosa: "PENDIENTE",
     pendiente: "NO"
