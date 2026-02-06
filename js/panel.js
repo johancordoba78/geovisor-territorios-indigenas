@@ -1,41 +1,38 @@
-function actualizarPanel(nombre, feature) {
-
+function actualizarPanel(nombre) {
   const datos = CREF_DATA[nombre] || null;
-  const anio = parseInt(
-    document.getElementById("anio-select").value,
-    10
-  );
+  const anio = document.getElementById("anio-select").value;
 
-  // Títulos
-  document.getElementById("panel-titulo").textContent = nombre;
-  document.getElementById("panel-subtitulo").textContent =
-    feature?.properties?.Clasif ?? "Sin CREF ni PAFs";
+  document.getElementById("panel-titulo").innerText = nombre;
 
-  // Área
-  const area = datos?.area?.[anio] ?? null;
-  document.getElementById("area-actual").textContent =
-    area !== null
-      ? area.toLocaleString("es-CR", { minimumFractionDigits: 2 })
-      : "—";
+  if (!datos || !datos.area[anio]) {
+    document.getElementById("panel-subtitulo").innerText = "Sin datos CREF";
+    document.getElementById("area-actual").innerText = "–";
+    document.getElementById("variacion").innerText = "–";
+    document.getElementById("adenda").innerText = "–";
+    document.getElementById("rosa").innerText = "–";
+    document.getElementById("pendiente").innerText = "–";
+    return;
+  }
 
-  // Variación
-  const prev = datos?.area?.[anio - 1] ?? null;
-  document.getElementById("variacion").textContent =
-    area !== null && prev !== null
-      ? `${(area - prev).toFixed(2)} ha`
-      : "—";
+  const areaActual = datos.area[anio];
+  const areaPrev = datos.area[anio - 1];
 
-  // Estado administrativo
-  document.getElementById("adenda").textContent = datos?.adenda ?? "—";
-  document.getElementById("rosa").textContent = datos?.rosa ?? "—";
-  document.getElementById("pendiente").textContent = datos?.pendiente ?? "—";
+  document.getElementById("panel-subtitulo").innerText = "";
+  document.getElementById("area-actual").innerText =
+    areaActual.toLocaleString("es-CR", { maximumFractionDigits: 2 });
+
+  document.getElementById("variacion").innerText =
+    areaPrev ? (areaActual - areaPrev).toFixed(2) + " ha" : "–";
+
+  document.getElementById("adenda").innerText = datos.adenda;
+  document.getElementById("rosa").innerText = datos.rosa;
+  document.getElementById("pendiente").innerText = datos.pendiente;
 }
 
 // Cambio de año
-document
-  .getElementById("anio-select")
-  .addEventListener("change", () => {
-    if (window.territorioActivo && window.featureActivo) {
-      actualizarPanel(window.territorioActivo, window.featureActivo);
-    }
-  });
+document.getElementById("anio-select").addEventListener("change", () => {
+  const titulo = document.getElementById("panel-titulo").innerText;
+  if (titulo !== "Seleccione un territorio") {
+    actualizarPanel(titulo);
+  }
+});
