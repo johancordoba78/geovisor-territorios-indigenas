@@ -1,28 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Geovisor Territorios Indígenas</title>
+  <meta charset="UTF-8" />
+  <title>Geovisor CREF – Territorios Indígenas</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-search@3.0.4/dist/leaflet-search.min.css"/>
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body>
 
-  <div id="map"></div>
+<div id="app">
 
-  <!-- Panel KPI -->
-  <div id="panel">
-    <h3>Resumen</h3>
-    <div id="kpi-total"></div>
-    <div id="kpi-area"></div>
-    <div id="kpi-clasif"></div>
-  </div>
+  <!-- PANEL LATERAL -->
+  <aside id="panel">
+    <h2 id="panel-titulo">Seleccione un territorio</h2>
+    <p id="panel-subtitulo"></p>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-search@3.0.4/dist/leaflet-search.min.js"></script>
-  <script src="js/map.js"></script>
+    <div class="bloque">
+      <strong>Año seleccionado:</strong>
+      <span id="anio-activo">2024</span>
+    </div>
+
+    <div class="bloque">
+      <strong>Área efectiva bajo CREF</strong>
+      <div id="area-actual" class="valor-grande">–</div>
+      <small>hectáreas</small>
+    </div>
+
+    <div class="bloque">
+      <strong>Variación interanual</strong>
+      <div id="variacion">–</div>
+    </div>
+
+    <div class="bloque">
+      <strong>Estado administrativo</strong>
+      <ul>
+        <li>Adenda: <span id="adenda">–</span></li>
+        <li>Documento rosa: <span id="rosa">–</span></li>
+        <li>Pendientes: <span id="pendiente">–</span></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- MAPA -->
+  <main id="map"></main>
+
+</div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/panel.js"></script>
+<script src="js/map.js"></script>
 
 </body>
 </html>
