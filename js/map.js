@@ -32,14 +32,26 @@ fetch("data/territorios_indigenas.geojson")
         };
       },
 
-      onEachFeature: (feature, layer) => {
-        const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-        const datos = CREF_DATA[nombre] || null;
+  onEachFeature: (feature, layer) => {
+  const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
+  const datos = CREF_DATA[nombre] || null;
 
-        layer.on("click", () => {
-          actualizarPanel(nombre, datos);
-        });
-      }
+  // TOOLTIP
+  layer.bindTooltip(
+    `<strong>${nombre}</strong><br>
+     ${datos ? "Con datos CREF" : "Sin datos CREF"}`,
+    {
+      sticky: true,
+      opacity: 0.9
+    }
+  );
+
+  // CLICK
+  layer.on("click", () => {
+    actualizarPanel(nombre, datos);
+  });
+}
+
     }).addTo(map);
 
   })
