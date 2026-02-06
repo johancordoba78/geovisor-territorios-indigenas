@@ -1,5 +1,5 @@
 // ===============================
-// MAPA BASE
+// MAPAS BASE
 // ===============================
 
 const baseMaps = {
@@ -31,6 +31,14 @@ const CREF_DATA = {
     adenda: "SI",
     rosa: "PENDIENTE",
     pendiente: "NO"
+  },
+
+  "ALTO CHIRRIPO": {
+    beneficiario: "Asociación de Desarrollo Integral",
+    area_2024: null,
+    variacion: null,
+    adenda: "NO",
+    rosa: "NO",
+    pendiente: "NO"
   }
 };
-
