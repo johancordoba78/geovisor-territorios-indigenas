@@ -12,80 +12,65 @@ const map = L.map("map", {
 L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
 
 // ===============================
-// VARIABLES GLOBALES (PANEL)
+// VARIABLES GLOBALES
 // ===============================
 
 window.territorioActivo = null;
 window.featureActivo = null;
 
 // ===============================
-// COLORES POR CLASIFICACIÓN
-// (VIENE DEL GEOJSON)
+// ESTILO POR CLASIFICACIÓN (GeoJSON)
 // ===============================
 
-function colorPorClasif(clasif) {
-  switch (clasif) {
-    case "CREF y PAFS":
-      return "#c67c2d"; // café
-    case "Solo PAFS":
-      return "#f2c94c"; // amarillo
-    case "Sin CREF ni PAFS":
-      return "#d9d9d9"; // gris claro
-    default:
-      return "#d9d9d9";
-  }
+function estiloTerritorio(feature) {
+  const clasif = feature.properties?.Clasif ?? "Sin CREF ni PAFs";
+
+  let fillColor = "#999999"; // gris
+
+  if (clasif === "CREF y PAFs") fillColor = "#c67c2d";
+  if (clasif === "Solo PAFs") fillColor = "#f2c94c";
+
+  return {
+    color: "#444",
+    weight: 1,
+    fillColor,
+    fillOpacity: 0.7
+  };
 }
 
 // ===============================
-// CARGA DE TERRITORIOS INDÍGENAS
+// CARGA DE TERRITORIOS
 // ===============================
 
 fetch("data/territorios_indigenas.geojson")
   .then(res => res.json())
   .then(data => {
 
-    const capaTerritorios = L.geoJSON(data, {
-
-      style: feature => {
-        const clasif = feature.properties.Clasif || "Sin CREF ni PAFS";
-
-        return {
-          color: "#444",
-          weight: 1,
-          fillColor: colorPorClasif(clasif),
-          fillOpacity: clasif === "Sin CREF ni PAFS" ? 0.4 : 0.8
-        };
-      },
+    L.geoJSON(data, {
+      style: estiloTerritorio,
 
       onEachFeature: (feature, layer) => {
         const nombre = feature.properties.TERRITORIO
           ?.trim()
           .toUpperCase();
 
-        const clasif = feature.properties.Clasif || "Sin CREF ni PAFS";
-        const datos = CREF_DATA[nombre] || null;
+        const clasif = feature.properties?.Clasif ?? "Sin CREF ni PAFs";
 
-        // TOOLTIP
+        // Tooltip
         layer.bindTooltip(
           `<strong>${nombre}</strong><br>${clasif}`,
           { sticky: true }
         );
 
-        // CLICK → PANEL + ZOOM
+        // Click
         layer.on("click", () => {
           window.territorioActivo = nombre;
           window.featureActivo = feature;
 
           actualizarPanel(nombre, feature);
-
-          map.fitBounds(layer.getBounds(), {
-            padding: [30, 30],
-            maxZoom: 12
-          });
         });
       }
-    });
-
-    capaTerritorios.addTo(map);
+    }).addTo(map);
   })
   .catch(err => console.error("Error cargando territorios:", err));
+
