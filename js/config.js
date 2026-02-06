@@ -20,27 +20,76 @@ const baseMaps = {
 };
 
 // ===============================
-// DATOS CREF LIMPIOS
+// DATOS CREF + CLASIFICACIÓN
+// CLAVE = NOMBRE DEL TERRITORIO
+// (MAYÚSCULAS, SIN TILDES)
 // ===============================
 
 const CREF_DATA = {
-  "CABECAR TALAMANCA": {
-    beneficiario: "Asociación de Desarrollo Integral Cabécar Talamanca",
-    area_2023: 25409.16,
-    area_2024: 25409.16,
-    variacion_2024: 0,
+
+  "BORUCA": {
+    beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
+    area_2024: 1509.26,
+    area_2023: 1384.90,
+    variacion: 124.36,
+    clasificacion: "CREF y PAFS",
     adenda: "SI",
     rosa: "PENDIENTE",
     pendiente: "NO"
   },
 
-  "BORUCA": {
-    beneficiario: "Asociación de Desarrollo Integral de la Reserva Indígena de Boruca",
-    area_2023: 1384.9,
-    area_2024: 1509.26,
-    variacion_2024: 124.36,
+  "CABECAR TALAMANCA": {
+    beneficiario: "Asociación de Desarrollo Integral Cabécar de Talamanca",
+    area_2024: 25409.16,
+    area_2023: 25409.16,
+    variacion: 0,
+    clasificacion: "CREF y PAFS",
     adenda: "SI",
     rosa: "PENDIENTE",
     pendiente: "NO"
+  },
+
+  "BRIBRI TALAMANCA": {
+    beneficiario: null,
+    area_2024: null,
+    area_2023: null,
+    variacion: null,
+    clasificacion: "Sin CREF ni PAFS",
+    adenda: "—",
+    rosa: "—",
+    pendiente: "—"
+  },
+
+  "CABAGRA": {
+    beneficiario: null,
+    area_2024: null,
+    area_2023: null,
+    variacion: null,
+    clasificacion: "Solo PAFS",
+    adenda: "—",
+    rosa: "—",
+    pendiente: "—"
+  },
+
+  "ALTO CHIRRIPO": {
+    beneficiario: null,
+    area_2024: null,
+    area_2023: null,
+    variacion: null,
+    clasificacion: "Sin CREF ni PAFS",
+    adenda: "—",
+    rosa: "—",
+    pendiente: "—"
   }
+
+};
+
+// ===============================
+// COLORES POR CLASIFICACIÓN
+// ===============================
+
+const CLASIFICACION_COLOR = {
+  "CREF y PAFS": "#c67c2d",
+  "Solo PAFS": "#9e9e9e",
+  "Sin CREF ni PAFS": "#d9d9d9"
 };
