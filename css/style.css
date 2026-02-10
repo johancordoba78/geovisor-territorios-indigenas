@@ -1,22 +1,9 @@
 html, body {
   margin: 0;
   height: 100%;
-}
-
-#app {
-  display: flex;
-  height: 100vh;
-}
-
-#panel {
-  width: 320px;
-  padding: 12px;
-  border-right: 1px solid #ccc;
   font-family: Arial, sans-serif;
 }
-
-#map {
-  flex: 1;
-}
-
-
+#app { display: flex; height: 100vh; }
+#panel { width: 320px; padding: 12px; border-right: 1px solid #ccc; }
+#map { flex: 1; }
+.valor-grande { font-size: 22px; font-weight: bold; }
