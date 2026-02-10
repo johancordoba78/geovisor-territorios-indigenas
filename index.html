@@ -3,48 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>Geovisor CREF – Territorios Indígenas</title>
-
-  <!-- Leaflet -->
-  <link rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
-  <!-- Estilos -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
-
 <body>
-
 <div id="app">
-
-  <!-- PANEL -->
   <aside id="panel">
     <h2 id="panel-titulo">Seleccione un territorio</h2>
     <p id="panel-subtitulo"></p>
-
     <div class="bloque">
       <strong>Año seleccionado:</strong><br>
       <select id="anio-select">
-        <option value="2018">2018</option>
-        <option value="2019">2019</option>
-        <option value="2020">2020</option>
-        <option value="2021">2021</option>
-        <option value="2022">2022</option>
         <option value="2023">2023</option>
         <option value="2024" selected>2024</option>
       </select>
     </div>
-
     <div class="bloque">
       <strong>Área efectiva bajo CREF</strong>
       <div id="area-actual" class="valor-grande">–</div>
-      <small>hectáreas</small>
     </div>
-
     <div class="bloque">
       <strong>Variación interanual</strong>
       <div id="variacion">–</div>
     </div>
-
     <div class="bloque">
       <strong>Estado administrativo</strong>
       <ul>
@@ -54,20 +35,11 @@
       </ul>
     </div>
   </aside>
-
-  <!-- MAPA -->
   <main id="map"></main>
-
 </div>
-
-<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Scripts -->
 <script src="js/config.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/map.js"></script>
-
 </body>
 </html>
-
