@@ -101,15 +101,12 @@ function cargarTerritorios() {
             layer.setStyle(estiloTerritorio(feature));
           });
 
-          // CLICK → PANEL
-          layer.on("click", () => {
-            actualizarPanel(nombre, CREF_DATA[nombre] || null);
-          });
-        }
+       layer.on("click", () => {
 
-      }).addTo(map);
+  const key = nombre.trim().toUpperCase();
 
-    })
-    .catch(err => console.error("Error GEOJSON:", err));
+  console.log("Buscando:", key);
+  console.log("Existe en JSON:", CREF_DATA[key]);
 
-}
+  actualizarPanel(key, CREF_DATA[key] || null);
+});
