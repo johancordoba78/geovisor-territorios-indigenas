@@ -1,28 +1,24 @@
 // ===============================
-// MAPAS BASE (claro)
+// MAPA BASE BLANCO
 // ===============================
 
 const baseMaps = {
-  "Base Claro": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  "Blanco": L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
     { attribution: "© CARTO" }
   )
 };
 
-// ===============================
-// MAPA
-// ===============================
-
 const map = L.map("map", {
   center: [9.6, -84.2],
   zoom: 7,
-  layers: [baseMaps["Base Claro"]]
+  layers: [baseMaps["Blanco"]]
 });
 
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// ESTILO SEGÚN CLASIFICACIÓN (DEL GEOJSON)
+// ESTILO SEGÚN CLASIFICACIÓN (GEOJSON)
 // ===============================
 
 function estiloTerritorio(feature) {
@@ -31,95 +27,63 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff7a00"; // 🟠 Sin CREF ni PAFTS
+  let fillColor = "#ff6600"; // Sin CREF ni PAFTS (naranja)
 
-  if (clasif === "CREF Y PAFTS") fillColor = "#6a00ff"; // 🟣
-  if (clasif === "SOLO PAFTS") fillColor = "#0055ff";   // 🔵
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // morado
+  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // azul
 
   return {
-    color: "#ffffff",   // borde blanco
-    weight: 2,
-    fillColor: fillColor,
+    color: "#ffffff",
+    weight: 2.5,
+    fillColor,
     fillOpacity: 0.85
   };
 }
 
 // ===============================
-// HOVER (REALCE AMARILLO)
+// CARGAR TERRITORIOS
 // ===============================
 
-function hoverOn(e) {
-  const layer = e.target;
-
-  layer.setStyle({
-    color: "#ffff00",
-    weight: 4,
-    fillOpacity: 1
-  });
-
-  layer.bringToFront();
-}
-
-function hoverOff(e) {
-  const layer = e.target;
-  layer.setStyle(estiloTerritorio(layer.feature));
-}
-
-// ===============================
-// CARGAR DATOS CREF (JSON)
-// ===============================
-
-let CREF_DATA = {};
-
-fetch("data/cref_por_territorio.json")
+fetch("data/territorios_indigenas.geojson")
   .then(r => r.json())
   .then(data => {
-    CREF_DATA = data;
-    cargarTerritorios();
-  });
 
-// ===============================
-// CARGAR TERRITORIOS GEOJSON
-// ===============================
+    L.geoJSON(data, {
 
-function cargarTerritorios() {
+      style: estiloTerritorio,
 
-  fetch("data/territorios_indigenas.geojson")
-    .then(r => r.json())
-    .then(data => {
+      onEachFeature: (feature, layer) => {
 
-      L.geoJSON(data, {
+        const nombre = feature.properties.TERRITORIO
+          ?.trim()
+          .toUpperCase();
 
-        style: estiloTerritorio,
+        const clasif = feature.properties.CLASIF;
 
-        onEachFeature: (feature, layer) => {
+        // TOOLTIP SIN RECUADRO
+        layer.bindTooltip(
+          `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
+          { sticky: true }
+        );
 
-          const nombre = feature.properties.TERRITORIO
-            ?.trim()
-            .toUpperCase();
-
-          const clasif = feature.properties.CLASIF || "";
-
-          // TOOLTIP
-          layer.bindTooltip(
-            `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
-            { sticky: true }
-          );
-
-          // HOVER
-          layer.on({
-            mouseover: hoverOn,
-            mouseout: hoverOff,
-            click: () => {
-              actualizarPanel(nombre, CREF_DATA[nombre] || null);
-            }
+        // REALCE AMARILLO
+        layer.on("mouseover", () => {
+          layer.setStyle({
+            color: "#ffff00",
+            weight: 4
           });
+        });
 
-        }
+        layer.on("mouseout", () => {
+          layer.setStyle(estiloTerritorio(feature));
+        });
 
-      }).addTo(map);
+        layer.on("click", () => {
+          actualizarPanel(nombre, CREF_DATA[nombre] || null);
+        });
+      }
 
-    });
+    }).addTo(map);
 
-}
-
+  })
+  .catch(err => console.error(err));
