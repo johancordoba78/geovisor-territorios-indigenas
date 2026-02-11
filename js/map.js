@@ -17,9 +17,8 @@ const map = L.map("map", {
 
 L.control.layers(baseMaps).addTo(map);
 
-
 // ===============================
-// CARGAR DATOS CREF (JSON DEL EXCEL)
+// CARGAR JSON DEL EXCEL
 // ===============================
 
 fetch("data/cref_por_territorio.json")
@@ -27,14 +26,12 @@ fetch("data/cref_por_territorio.json")
   .then(data => {
 
     console.log("✔ JSON CREF cargado");
-
-    // 🔥 llena la variable global
     CREF_DATA = data;
 
-    // 🔥 ahora sí dibuja territorios
     cargarTerritorios();
+
   })
-  .catch(err => console.error("Error JSON CREF:", err));
+  .catch(err => console.error("Error JSON:", err));
 
 
 // ===============================
@@ -47,10 +44,10 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff6600"; // 🟠 SIN CREF NI PAFTS
+  let fillColor = "#ff6600"; // Sin CREF ni PAFT
 
-  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // 🟣
-  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // 🔵
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad";
+  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";
 
   return {
     color: "#ffffff",
@@ -62,7 +59,7 @@ function estiloTerritorio(feature) {
 
 
 // ===============================
-// CARGAR GEOJSON TERRITORIOS
+// CARGAR TERRITORIOS GEOJSON
 // ===============================
 
 function cargarTerritorios() {
@@ -83,13 +80,11 @@ function cargarTerritorios() {
 
           const clasif = feature.properties.CLASIF;
 
-          // TOOLTIP
           layer.bindTooltip(
             `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
             { sticky: true }
           );
 
-          // REALCE AMARILLO
           layer.on("mouseover", () => {
             layer.setStyle({
               color: "#ffff00",
@@ -101,12 +96,21 @@ function cargarTerritorios() {
             layer.setStyle(estiloTerritorio(feature));
           });
 
-       layer.on("click", () => {
+          layer.on("click", () => {
 
-  const key = nombre.trim().toUpperCase();
+            const key = nombre.trim().toUpperCase();
 
-  console.log("Buscando:", key);
-  console.log("Existe en JSON:", CREF_DATA[key]);
+            console.log("Buscando:", key);
+            console.log("JSON:", CREF_DATA[key]);
 
-  actualizarPanel(key, CREF_DATA[key] || null);
-});
+            actualizarPanel(key, CREF_DATA[key] || null);
+
+          });
+        }
+
+      }).addTo(map);
+
+    })
+    .catch(err => console.error("Error GEOJSON:", err));
+}
+
