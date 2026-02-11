@@ -1,10 +1,10 @@
 // ===============================
-// MAPA BASE (CLARO)
+// MAPAS BASE (claro)
 // ===============================
 
 const baseMaps = {
   "Base Claro": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     { attribution: "© CARTO" }
   )
 };
@@ -22,7 +22,7 @@ const map = L.map("map", {
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// ESTILO POR CLASIFICACIÓN (DESDE GEOJSON)
+// ESTILO SEGÚN CLASIFICACIÓN (DEL GEOJSON)
 // ===============================
 
 function estiloTerritorio(feature) {
@@ -31,29 +31,29 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff7f00"; // 🟠 SIN CREF NI PAFTS
+  let fillColor = "#ff7a00"; // 🟠 Sin CREF ni PAFTS
 
-  if (clasif === "CREF Y PAFTS") fillColor = "#6a00ff"; // 🟣 MORADO
-  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // 🔵 AZUL
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a00ff"; // 🟣
+  if (clasif === "SOLO PAFTS") fillColor = "#0055ff";   // 🔵
 
   return {
-    color: "#ffffff",   // borde blanco grueso
-    weight: 2.5,
+    color: "#ffffff",   // borde blanco
+    weight: 2,
     fillColor: fillColor,
     fillOpacity: 0.85
   };
 }
 
 // ===============================
-// ESTILO HOVER (REALCE AMARILLO)
+// HOVER (REALCE AMARILLO)
 // ===============================
 
 function hoverOn(e) {
   const layer = e.target;
 
   layer.setStyle({
-    weight: 3,
     color: "#ffff00",
+    weight: 4,
     fillOpacity: 1
   });
 
@@ -61,11 +61,12 @@ function hoverOn(e) {
 }
 
 function hoverOff(e) {
-  geojson.resetStyle(e.target);
+  const layer = e.target;
+  layer.setStyle(estiloTerritorio(layer.feature));
 }
 
 // ===============================
-// CARGAR DATOS CREF DESDE JSON
+// CARGAR DATOS CREF (JSON)
 // ===============================
 
 let CREF_DATA = {};
@@ -78,10 +79,8 @@ fetch("data/cref_por_territorio.json")
   });
 
 // ===============================
-// CARGAR GEOJSON
+// CARGAR TERRITORIOS GEOJSON
 // ===============================
-
-let geojson;
 
 function cargarTerritorios() {
 
@@ -89,7 +88,7 @@ function cargarTerritorios() {
     .then(r => r.json())
     .then(data => {
 
-      geojson = L.geoJSON(data, {
+      L.geoJSON(data, {
 
         style: estiloTerritorio,
 
@@ -99,28 +98,27 @@ function cargarTerritorios() {
             ?.trim()
             .toUpperCase();
 
-          const clasif = feature.properties.CLASIF || "Sin clasificación";
+          const clasif = feature.properties.CLASIF || "";
 
-          // 🔥 TOOLTIP CON CLASIFICACIÓN
+          // TOOLTIP
           layer.bindTooltip(
             `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
             { sticky: true }
           );
 
-          // 🟡 HOVER
+          // HOVER
           layer.on({
             mouseover: hoverOn,
-            mouseout: hoverOff
+            mouseout: hoverOff,
+            click: () => {
+              actualizarPanel(nombre, CREF_DATA[nombre] || null);
+            }
           });
 
-          // 👆 CLICK → PANEL
-          layer.on("click", () => {
-            actualizarPanel(nombre, CREF_DATA[nombre] || null);
-          });
         }
 
       }).addTo(map);
 
     });
-}
 
+}
