@@ -18,7 +18,7 @@ const map = L.map("map", {
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// ESTILO SEGÚN CLASIFICACIÓN (GEOJSON)
+// ESTILO SEGÚN CLASIFICACIÓN
 // ===============================
 
 function estiloTerritorio(feature) {
@@ -27,7 +27,7 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff6600"; // Sin CREF ni PAFTS (naranja)
+  let fillColor = "#ff6600"; // Sin CREF ni PAFTS
 
   if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // morado
   if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // azul
@@ -60,7 +60,7 @@ fetch("data/territorios_indigenas.geojson")
 
         const clasif = feature.properties.CLASIF;
 
-        // TOOLTIP SIN RECUADRO
+        // TOOLTIP
         layer.bindTooltip(
           `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
           { sticky: true }
@@ -78,6 +78,7 @@ fetch("data/territorios_indigenas.geojson")
           layer.setStyle(estiloTerritorio(feature));
         });
 
+        // CLICK PANEL
         layer.on("click", () => {
           actualizarPanel(nombre, CREF_DATA[nombre] || null);
         });
