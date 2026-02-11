@@ -18,6 +18,20 @@ const map = L.map("map", {
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
+// CARGAR DATOS CREF (EL JSON DEL EXCEL)
+// ===============================
+
+fetch("data/cref_por_territorio.json")
+  .then(r => r.json())
+  .then(data => {
+
+    // 🔥 AQUÍ se llena la variable global
+    CREF_DATA = data;
+
+    cargarTerritorios();
+  });
+
+// ===============================
 // ESTILO SEGÚN CLASIFICACIÓN
 // ===============================
 
@@ -27,10 +41,10 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff6600"; // Sin CREF ni PAFTS
+  let fillColor = "#ff6600"; // 🟠 SIN CREF NI PAFT
 
-  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // morado
-  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // azul
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // 🟣
+  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // 🔵
 
   return {
     color: "#ffffff",
@@ -41,50 +55,53 @@ function estiloTerritorio(feature) {
 }
 
 // ===============================
-// CARGAR TERRITORIOS
+// CARGAR GEOJSON
 // ===============================
 
-fetch("data/territorios_indigenas.geojson")
-  .then(r => r.json())
-  .then(data => {
+function cargarTerritorios() {
 
-    L.geoJSON(data, {
+  fetch("data/territorios_indigenas.geojson")
+    .then(r => r.json())
+    .then(data => {
 
-      style: estiloTerritorio,
+      L.geoJSON(data, {
 
-      onEachFeature: (feature, layer) => {
+        style: estiloTerritorio,
 
-        const nombre = feature.properties.TERRITORIO
-          ?.trim()
-          .toUpperCase();
+        onEachFeature: (feature, layer) => {
 
-        const clasif = feature.properties.CLASIF;
+          const nombre = feature.properties.TERRITORIO
+            ?.trim()
+            .toUpperCase();
 
-        // TOOLTIP
-        layer.bindTooltip(
-          `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
-          { sticky: true }
-        );
+          const clasif = feature.properties.CLASIF;
 
-        // REALCE AMARILLO
-        layer.on("mouseover", () => {
-          layer.setStyle({
-            color: "#ffff00",
-            weight: 4
+          // TOOLTIP
+          layer.bindTooltip(
+            `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
+            { sticky: true }
+          );
+
+          // REALCE AMARILLO
+          layer.on("mouseover", () => {
+            layer.setStyle({
+              color: "#ffff00",
+              weight: 4
+            });
           });
-        });
 
-        layer.on("mouseout", () => {
-          layer.setStyle(estiloTerritorio(feature));
-        });
+          layer.on("mouseout", () => {
+            layer.setStyle(estiloTerritorio(feature));
+          });
 
-        // CLICK PANEL
-        layer.on("click", () => {
-          actualizarPanel(nombre, CREF_DATA[nombre] || null);
-        });
-      }
+          // CLICK PANEL
+          layer.on("click", () => {
+            actualizarPanel(nombre, CREF_DATA[nombre] || null);
+          });
+        }
 
-    }).addTo(map);
+      }).addTo(map);
 
-  })
-  .catch(err => console.error(err));
+    });
+
+}
