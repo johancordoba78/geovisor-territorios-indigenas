@@ -22,7 +22,7 @@ const map = L.map("map", {
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// ESTILO POR CLASIFICACIÓN (GeoJSON)
+// ESTILO POR CLASIFICACIÓN
 // ===============================
 
 function estiloTerritorio(feature) {
@@ -44,30 +44,47 @@ function estiloTerritorio(feature) {
 }
 
 // ===============================
-// CARGA DE TERRITORIOS
+// CARGAR DATOS CREF DESDE JSON
 // ===============================
 
-fetch("data/territorios_indigenas.geojson")
+fetch("data/cref_por_territorio.json")
   .then(r => r.json())
   .then(data => {
-    L.geoJSON(data, {
-      style: estiloTerritorio,
-      onEachFeature: (feature, layer) => {
-        const nombre = feature.properties.TERRITORIO
-          ?.trim()
-          .toUpperCase();
+    CREF_DATA = data;
+    cargarTerritorios();
+  });
 
-        layer.bindTooltip(
-          `<strong>${feature.properties.TERRITORIO}</strong><br>
-           ${feature.properties.CLASIF}`,
-          { sticky: true }
-        );
+// ===============================
+// CARGAR TERRITORIOS GEOJSON
+// ===============================
 
-        layer.on("click", () => {
-          actualizarPanel(nombre, CREF_DATA[nombre] || null);
-        });
-      }
-    }).addTo(map);
-  })
-  .catch(console.error);
-;
+function cargarTerritorios() {
+
+  fetch("data/territorios_indigenas.geojson")
+    .then(r => r.json())
+    .then(data => {
+
+      L.geoJSON(data, {
+        style: estiloTerritorio,
+
+        onEachFeature: (feature, layer) => {
+
+          const nombre = feature.properties.TERRITORIO
+            ?.trim()
+            .toUpperCase();
+
+          layer.bindTooltip(
+            `<strong>${feature.properties.TERRITORIO}</strong><br>
+             ${feature.properties.CLASIF}`,
+            { sticky: true }
+          );
+
+          layer.on("click", () => {
+            actualizarPanel(nombre, CREF_DATA[nombre] || null);
+          });
+        }
+      }).addTo(map);
+
+    });
+
+}
