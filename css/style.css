@@ -1,8 +1,6 @@
 html, body {
   margin: 0;
-  padding: 0;
   height: 100%;
-  font-family: Arial, sans-serif;
 }
 
 #app {
@@ -10,37 +8,22 @@ html, body {
   height: 100vh;
 }
 
-/* PANEL */
 #panel {
-  width: 360px;
-  padding: 16px;
-  background: #f5f5f5;
+  width: 320px;
+  padding: 12px;
   border-right: 1px solid #ccc;
-  overflow-y: auto;
+  font-family: Arial, sans-serif;
 }
 
-#panel h2 {
-  margin-top: 0;
+#map {
+  flex: 1;
 }
 
 .bloque {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .valor-grande {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
-}
-
-.positivo {
-  color: green;
-}
-
-.negativo {
-  color: red;
-}
-
-/* MAPA */
-#map {
-  flex: 1;
 }
