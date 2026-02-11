@@ -1,20 +1,10 @@
 // ===============================
-// MAPAS BASE
+// MAPA BASE (CLARO)
 // ===============================
 
 const baseMaps = {
-  "OpenStreetMap": L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    { attribution: "© OpenStreetMap" }
-  ),
-
-  "Carto Claro": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    { attribution: "© CARTO" }
-  ),
-
-  "Carto Oscuro": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+  "Base Claro": L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
     { attribution: "© CARTO" }
   )
 };
@@ -26,65 +16,110 @@ const baseMaps = {
 const map = L.map("map", {
   center: [9.6, -84.2],
   zoom: 7,
-  layers: [baseMaps["OpenStreetMap"]]
+  layers: [baseMaps["Base Claro"]]
 });
 
-// Control de mapas base
-L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
+L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// TERRITORIOS INDÍGENAS
+// ESTILO POR CLASIFICACIÓN (DESDE GEOJSON)
 // ===============================
 
-fetch("data/territorios_indigenas.geojson")
-  .then(res => res.json())
+function estiloTerritorio(feature) {
+
+  const clasif = (feature.properties.CLASIF || "")
+    .trim()
+    .toUpperCase();
+
+  let fillColor = "#ff7f00"; // 🟠 SIN CREF NI PAFTS
+
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a00ff"; // 🟣 MORADO
+  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // 🔵 AZUL
+
+  return {
+    color: "#ffffff",   // borde blanco grueso
+    weight: 2.5,
+    fillColor: fillColor,
+    fillOpacity: 0.85
+  };
+}
+
+// ===============================
+// ESTILO HOVER (REALCE AMARILLO)
+// ===============================
+
+function hoverOn(e) {
+  const layer = e.target;
+
+  layer.setStyle({
+    weight: 3,
+    color: "#ffff00",
+    fillOpacity: 1
+  });
+
+  layer.bringToFront();
+}
+
+function hoverOff(e) {
+  geojson.resetStyle(e.target);
+}
+
+// ===============================
+// CARGAR DATOS CREF DESDE JSON
+// ===============================
+
+let CREF_DATA = {};
+
+fetch("data/cref_por_territorio.json")
+  .then(r => r.json())
   .then(data => {
+    CREF_DATA = data;
+    cargarTerritorios();
+  });
 
-    const capaTerritorios = L.geoJSON(data, {
+// ===============================
+// CARGAR GEOJSON
+// ===============================
 
-      style: feature => {
-        const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-        const tieneCref = CREF_DATA[nombre];
+let geojson;
 
-        return {
-          color: "#555",
-          weight: 1,
-          fillColor: tieneCref ? "#c67c2d" : "#999999",
-          fillOpacity: 0.7
-        };
-      },
+function cargarTerritorios() {
 
-      onEachFeature: (feature, layer) => {
-        const nombre = feature.properties.TERRITORIO?.trim().toUpperCase();
-        const datos = CREF_DATA[nombre] || null;
+  fetch("data/territorios_indigenas.geojson")
+    .then(r => r.json())
+    .then(data => {
 
-        // TOOLTIP
-        layer.bindTooltip(
-          `<strong>${nombre}</strong><br>
-           ${datos ? "Con datos CREF" : "Sin datos CREF"}`,
-          {
-            sticky: true,
-            opacity: 0.9
-          }
-        );
+      geojson = L.geoJSON(data, {
 
-        // CLICK → PANEL + ZOOM
-        layer.on("click", () => {
-          // Actualiza panel
-          actualizarPanel(nombre, datos);
+        style: estiloTerritorio,
 
-          // ZOOM AUTOMÁTICO AL TERRITORIO
-          map.fitBounds(layer.getBounds(), {
-            padding: [40, 40],
-            maxZoom: 12,
-            animate: true
+        onEachFeature: (feature, layer) => {
+
+          const nombre = feature.properties.TERRITORIO
+            ?.trim()
+            .toUpperCase();
+
+          const clasif = feature.properties.CLASIF || "Sin clasificación";
+
+          // 🔥 TOOLTIP CON CLASIFICACIÓN
+          layer.bindTooltip(
+            `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
+            { sticky: true }
+          );
+
+          // 🟡 HOVER
+          layer.on({
+            mouseover: hoverOn,
+            mouseout: hoverOff
           });
-        });
-      }
+
+          // 👆 CLICK → PANEL
+          layer.on("click", () => {
+            actualizarPanel(nombre, CREF_DATA[nombre] || null);
+          });
+        }
+
+      }).addTo(map);
 
     });
-
-    capaTerritorios.addTo(map);
-
-  })
-  .catch(err => console.error("Error cargando territorios:", err));
+}
