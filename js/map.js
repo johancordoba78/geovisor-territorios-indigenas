@@ -18,7 +18,24 @@ const map = L.map("map", {
 L.control.layers(baseMaps).addTo(map);
 
 // ===============================
-// ESTILO SEGÚN CLASIFICACIÓN (GEOJSON)
+// CARGAR JSON DEL EXCEL
+// ===============================
+
+fetch("data/cref_por_territorio.json")
+  .then(r => r.json())
+  .then(data => {
+
+    console.log("✔ JSON CREF cargado");
+    CREF_DATA = data;
+
+    cargarTerritorios();
+
+  })
+  .catch(err => console.error("Error JSON:", err));
+
+
+// ===============================
+// ESTILO SEGÚN CLASIFICACIÓN
 // ===============================
 
 function estiloTerritorio(feature) {
@@ -27,10 +44,10 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff6600"; // Sin CREF ni PAFTS (naranja)
+  let fillColor = "#ff6600"; // Sin CREF ni PAFT
 
-  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // morado
-  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // azul
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad";
+  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";
 
   return {
     color: "#ffffff",
@@ -40,51 +57,59 @@ function estiloTerritorio(feature) {
   };
 }
 
+
 // ===============================
-// CARGAR TERRITORIOS
+// CARGAR TERRITORIOS GEOJSON
 // ===============================
 
-fetch("data/territorios_indigenas.geojson")
-  .then(r => r.json())
-  .then(data => {
+function cargarTerritorios() {
 
-    L.geoJSON(data, {
+  fetch("data/territorios_indigenas.geojson")
+    .then(r => r.json())
+    .then(data => {
 
-      style: estiloTerritorio,
+      L.geoJSON(data, {
 
-      onEachFeature: (feature, layer) => {
+        style: estiloTerritorio,
 
-        const nombre = feature.properties.TERRITORIO
-          ?.trim()
-          .toUpperCase();
+        onEachFeature: (feature, layer) => {
 
-        const clasif = feature.properties.CLASIF;
+          const nombre = feature.properties.TERRITORIO
+            ?.trim()
+            .toUpperCase();
 
-        // TOOLTIP SIN RECUADRO
-        layer.bindTooltip(
-          `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
-          { sticky: true }
-        );
+          const clasif = feature.properties.CLASIF;
 
-        // REALCE AMARILLO
-        layer.on("mouseover", () => {
-          layer.setStyle({
-            color: "#ffff00",
-            weight: 4
+          layer.bindTooltip(
+            `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
+            { sticky: true }
+          );
+
+          layer.on("mouseover", () => {
+            layer.setStyle({
+              color: "#ffff00",
+              weight: 4
+            });
           });
-        });
 
-        layer.on("mouseout", () => {
-          layer.setStyle(estiloTerritorio(feature));
-        });
+          layer.on("mouseout", () => {
+            layer.setStyle(estiloTerritorio(feature));
+          });
 
-        layer.on("click", () => {
-          actualizarPanel(nombre, CREF_DATA[nombre] || null);
-        });
-      }
+          layer.on("click", () => {
 
-    }).addTo(map);
+            const key = nombre.trim().toUpperCase();
 
-  })
-  .catch(err => console.error(err));
+            console.log("Buscando:", key);
+            console.log("JSON:", CREF_DATA[key]);
 
+            actualizarPanel(key, CREF_DATA[key] || null);
+
+          });
+        }
+
+      }).addTo(map);
+
+    })
+    .catch(err => console.error("Error GEOJSON:", err));
+}
