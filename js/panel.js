@@ -1,20 +1,17 @@
-// ===============================
-// ACTUALIZAR PANEL
-// ===============================
-
 function actualizarPanel(nombre, datos) {
 
   document.getElementById("panel-titulo").textContent = nombre;
 
-  // Año fijo actual (lo tomamos del span)
-  const anio = document.getElementById("anio-activo").textContent;
+  const anio = document.getElementById("anio-select").value;
 
   if (!datos) {
+
     document.getElementById("area-actual").textContent = "–";
     document.getElementById("variacion").textContent = "–";
     document.getElementById("adenda").textContent = "–";
     document.getElementById("rosa").textContent = "–";
     document.getElementById("pendiente").textContent = "–";
+
     return;
   }
 
@@ -22,10 +19,12 @@ function actualizarPanel(nombre, datos) {
   const areaPrev = datos.area?.[anio - 1];
 
   document.getElementById("area-actual").textContent =
-    area ? area.toLocaleString("es-CR") : "–";
+    area ? Number(area).toLocaleString("es-CR") : "–";
 
   document.getElementById("variacion").textContent =
-    areaPrev ? (area - areaPrev).toFixed(2) + " ha" : "–";
+    (area && areaPrev)
+      ? (area - areaPrev).toFixed(2) + " ha"
+      : "–";
 
   document.getElementById("adenda").textContent = datos.adenda || "–";
   document.getElementById("rosa").textContent = datos.rosa || "–";
