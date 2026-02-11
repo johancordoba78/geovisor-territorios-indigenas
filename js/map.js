@@ -17,19 +17,25 @@ const map = L.map("map", {
 
 L.control.layers(baseMaps).addTo(map);
 
+
 // ===============================
-// CARGAR DATOS CREF (EL JSON DEL EXCEL)
+// CARGAR DATOS CREF (JSON DEL EXCEL)
 // ===============================
 
 fetch("data/cref_por_territorio.json")
   .then(r => r.json())
   .then(data => {
 
-    // 🔥 AQUÍ se llena la variable global
+    console.log("✔ JSON CREF cargado");
+
+    // 🔥 llena la variable global
     CREF_DATA = data;
 
+    // 🔥 ahora sí dibuja territorios
     cargarTerritorios();
-  });
+  })
+  .catch(err => console.error("Error JSON CREF:", err));
+
 
 // ===============================
 // ESTILO SEGÚN CLASIFICACIÓN
@@ -41,7 +47,7 @@ function estiloTerritorio(feature) {
     .trim()
     .toUpperCase();
 
-  let fillColor = "#ff6600"; // 🟠 SIN CREF NI PAFT
+  let fillColor = "#ff6600"; // 🟠 SIN CREF NI PAFTS
 
   if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad"; // 🟣
   if (clasif === "SOLO PAFTS") fillColor = "#0047ff";   // 🔵
@@ -54,8 +60,9 @@ function estiloTerritorio(feature) {
   };
 }
 
+
 // ===============================
-// CARGAR GEOJSON
+// CARGAR GEOJSON TERRITORIOS
 // ===============================
 
 function cargarTerritorios() {
@@ -94,7 +101,7 @@ function cargarTerritorios() {
             layer.setStyle(estiloTerritorio(feature));
           });
 
-          // CLICK PANEL
+          // CLICK → PANEL
           layer.on("click", () => {
             actualizarPanel(nombre, CREF_DATA[nombre] || null);
           });
@@ -102,6 +109,7 @@ function cargarTerritorios() {
 
       }).addTo(map);
 
-    });
+    })
+    .catch(err => console.error("Error GEOJSON:", err));
 
 }
