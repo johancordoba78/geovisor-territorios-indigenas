@@ -30,7 +30,6 @@ function actualizarDatosPanel() {
   const selector = document.getElementById("anio-select");
   if (!selector) return;
 
-  // 🔥 FORZAMOS STRING PARA COINCIDIR CON JSON
   const anio = String(selector.value);
 
   if (!datosActivos) {
@@ -62,51 +61,14 @@ function actualizarDatosPanel() {
 
 
 // ===============================
-// 🔥 CONEXIÓN REAL DEL SELECTOR DE AÑO
+// 🔥 EVENTO CAMBIO DE AÑO (SIN DOMContentLoaded)
 // ===============================
 
-window.addEventListener("load", () => {
+const selectorAnio = document.getElementById("anio-select");
 
-  const selector = document.getElementById("anio-select");
-
-  if(selector){
-
-    console.log("✔ Selector año conectado");
-
-    selector.addEventListener("change", () => {
-
-      console.log("Cambio de año detectado");
-      actualizarDatosPanel();
-
-    });
-
-  }
-
-});
-
-// ===============================
-// 🔥 ACTIVAR CAMBIO DE AÑO (FORMA SEGURA)
-// ===============================
-
-setTimeout(() => {
-
-  const selector = document.getElementById("anio-select");
-
-  if(selector){
-
-    console.log("✔ Selector año ACTIVADO");
-
-    selector.onchange = () => {
-      console.log("Cambio de año detectado");
-      actualizarDatosPanel();
-    };
-
-  }
-
-}, 500);
-
-
-
+if(selectorAnio){
+  selectorAnio.addEventListener("change", actualizarDatosPanel);
+}
 
 
 
