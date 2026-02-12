@@ -1,3 +1,10 @@
+// ===============================
+// TERRITORIO ACTIVO GLOBAL
+// ===============================
+
+let territorioActivo = null;
+let datosActivos = null;
+
 function actualizarPanel(nombre, datos) {
 
   document.getElementById("panel-titulo").textContent = nombre;
@@ -29,4 +36,5 @@ function actualizarPanel(nombre, datos) {
   document.getElementById("adenda").textContent = datos.adenda || "–";
   document.getElementById("rosa").textContent = datos.rosa || "–";
   document.getElementById("pendiente").textContent = datos.pendiente || "–";
+
 }
