@@ -28,9 +28,10 @@ function actualizarPanel(nombre, datos) {
 function actualizarDatosPanel() {
 
   const selector = document.getElementById("anio-select");
-  if(!selector) return;
+  if (!selector) return;
 
-  const anio = selector.value;
+  // 🔥 FORZAMOS STRING PARA COINCIDIR CON JSON
+  const anio = String(selector.value);
 
   if (!datosActivos) {
 
@@ -44,7 +45,7 @@ function actualizarDatosPanel() {
   }
 
   const area = datosActivos.area?.[anio];
-  const areaPrev = datosActivos.area?.[anio - 1];
+  const areaPrev = datosActivos.area?.[String(Number(anio) - 1)];
 
   document.getElementById("area-actual").textContent =
     area ? Number(area).toLocaleString("es-CR") : "–";
