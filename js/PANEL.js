@@ -35,8 +35,11 @@ function actualizarDatosPanel() {
 
   if (!datosActivos) return;
 
-  const area = datosActivos.area?.[anio];
-  const areaPrev = datosActivos.area?.[String(Number(anio) - 1)];
+  // 🔥 Detecta cualquier nombre del campo área
+  const areas = datosActivos.area || datosActivos.AREA || datosActivos.areas;
+
+  const area = areas?.[anio];
+  const areaPrev = areas?.[String(Number(anio) - 1)];
 
   document.getElementById("area-actual").textContent =
     area ? Number(area).toLocaleString("es-CR") : "–";
@@ -61,7 +64,15 @@ function renderTablaAnios() {
   const contenedor = document.getElementById("tabla-anios");
   if (!contenedor) return;
 
-  if (!datosActivos || !datosActivos.area) {
+  if (!datosActivos) {
+    contenedor.innerHTML = "";
+    return;
+  }
+
+  // 🔥 Detecta cualquier nombre del campo área
+  const areas = datosActivos.area || datosActivos.AREA || datosActivos.areas;
+
+  if (!areas) {
     contenedor.innerHTML = "";
     return;
   }
@@ -76,12 +87,11 @@ function renderTablaAnios() {
       </tr>
   `;
 
-  Object.keys(datosActivos.area)
+  Object.keys(areas)
     .sort()
     .forEach(anio => {
 
-      const area = Number(datosActivos.area[anio])
-        .toLocaleString("es-CR");
+      const area = Number(areas[anio]).toLocaleString("es-CR");
 
       const activo = (anio === anioSeleccionado)
         ? "background:#ffe600;font-weight:bold;color:#000"
@@ -115,5 +125,6 @@ if(selectorAnio){
 
   });
 }
+
 
 
