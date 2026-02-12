@@ -5,13 +5,11 @@
   <meta charset="UTF-8" />
   <title>Geovisor CREF – Territorios Indígenas</title>
 
-  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
-  <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -28,7 +26,7 @@
     <div class="bloque">
       <strong>Año seleccionado:</strong><br>
 
-      <!-- 🔥 SELECT CORREGIDO -->
+      <!-- ⚠️ SIN onchange -->
       <select id="anio-select">
         <option value="2018">2018</option>
         <option value="2019">2019</option>
@@ -60,7 +58,7 @@
       </ul>
     </div>
 
-    <!-- 🔥 TABLA DINÁMICA AUTOMÁTICA -->
+    <!-- 🔥 TABLA AUTOMÁTICA -->
     <div id="tabla-anios"></div>
 
   </aside>
@@ -70,12 +68,13 @@
 
 </div>
 
-<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- ⚠️ ORDEN CORRECTO -->
 <script src="js/config.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/map.js"></script>
 
 </body>
 </html>
+
