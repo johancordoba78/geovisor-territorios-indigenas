@@ -18,6 +18,7 @@ function actualizarPanel(nombre, datos) {
   document.getElementById("panel-titulo").textContent = nombre;
 
   actualizarDatosPanel();
+  renderTablaAnios(); // 🔥 NUEVO
 }
 
 
@@ -61,7 +62,55 @@ function actualizarDatosPanel() {
 
 
 // ===============================
-// 🔥 EVENTO CAMBIO DE AÑO (FIX REAL)
+// 🔥 TABLA DINÁMICA POR TERRITORIO (NUEVO)
+// ===============================
+
+function renderTablaAnios() {
+
+  const contenedor = document.getElementById("tabla-anios");
+  if (!contenedor) return;
+
+  if (!datosActivos || !datosActivos.area) {
+    contenedor.innerHTML = "";
+    return;
+  }
+
+  const anioSeleccionado = document.getElementById("anio-select")?.value;
+
+  let html = `
+    <table style="width:100%; font-size:12px; border-collapse:collapse">
+      <tr style="background:#222;color:#fff">
+        <th style="padding:4px">Año</th>
+        <th style="padding:4px">Área CREF (ha)</th>
+      </tr>
+  `;
+
+  Object.keys(datosActivos.area)
+    .sort()
+    .forEach(anio => {
+
+      const area = Number(datosActivos.area[anio]).toLocaleString("es-CR");
+
+      const activo = (anio === anioSeleccionado)
+        ? "background:#ffe600;font-weight:bold;color:#000"
+        : "";
+
+      html += `
+        <tr style="${activo}">
+          <td style="padding:4px; border-bottom:1px solid #ddd">${anio}</td>
+          <td style="padding:4px; border-bottom:1px solid #ddd">${area}</td>
+        </tr>
+      `;
+    });
+
+  html += "</table>";
+
+  contenedor.innerHTML = html;
+}
+
+
+// ===============================
+// EVENTO CAMBIO DE AÑO
 // ===============================
 
 const selectorAnio = document.getElementById("anio-select");
@@ -69,14 +118,10 @@ const selectorAnio = document.getElementById("anio-select");
 if(selectorAnio){
   selectorAnio.addEventListener("change", () => {
 
-    // Actualiza valores del panel
     actualizarDatosPanel();
-
-    // 🔥 Mantiene activo el territorio SIN volver a hacer click
-    if (territorioActivo && datosActivos) {
-      actualizarPanel(territorioActivo, datosActivos);
-    }
+    renderTablaAnios(); // 🔥 resalta año automáticamente
 
   });
 }
+
 
