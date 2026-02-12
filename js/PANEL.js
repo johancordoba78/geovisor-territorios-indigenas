@@ -5,13 +5,32 @@
 let territorioActivo = null;
 let datosActivos = null;
 
+
+// ===============================
+// FUNCIÓN PRINCIPAL PANEL
+// ===============================
+
 function actualizarPanel(nombre, datos) {
+
+  // 🔥 Guardamos territorio activo
+  territorioActivo = nombre;
+  datosActivos = datos;
 
   document.getElementById("panel-titulo").textContent = nombre;
 
+  actualizarDatosPanel();
+}
+
+
+// ===============================
+// FUNCIÓN QUE ACTUALIZA SOLO DATOS
+// ===============================
+
+function actualizarDatosPanel() {
+
   const anio = document.getElementById("anio-select").value;
 
-  if (!datos) {
+  if (!datosActivos) {
 
     document.getElementById("area-actual").textContent = "–";
     document.getElementById("variacion").textContent = "–";
@@ -22,8 +41,8 @@ function actualizarPanel(nombre, datos) {
     return;
   }
 
-  const area = datos.area?.[anio];
-  const areaPrev = datos.area?.[anio - 1];
+  const area = datosActivos.area?.[anio];
+  const areaPrev = datosActivos.area?.[anio - 1];
 
   document.getElementById("area-actual").textContent =
     area ? Number(area).toLocaleString("es-CR") : "–";
@@ -33,8 +52,22 @@ function actualizarPanel(nombre, datos) {
       ? (area - areaPrev).toFixed(2) + " ha"
       : "–";
 
-  document.getElementById("adenda").textContent = datos.adenda || "–";
-  document.getElementById("rosa").textContent = datos.rosa || "–";
-  document.getElementById("pendiente").textContent = datos.pendiente || "–";
-
+  document.getElementById("adenda").textContent = datosActivos.adenda || "–";
+  document.getElementById("rosa").textContent = datosActivos.rosa || "–";
+  document.getElementById("pendiente").textContent = datosActivos.pendiente || "–";
 }
+
+
+// ===============================
+// CAMBIO DE AÑO SIN VOLVER A CLICAR
+// ===============================
+
+document.getElementById("anio-select")
+  .addEventListener("change", () => {
+
+    if (territorioActivo) {
+      actualizarDatosPanel();
+    }
+
+});
+
