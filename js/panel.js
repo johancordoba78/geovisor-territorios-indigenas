@@ -118,8 +118,11 @@ const selectorAnio = document.getElementById("anio-select");
 if(selectorAnio){
   selectorAnio.addEventListener("change", () => {
 
-    actualizarDatosPanel();
-    renderTablaAnios();
+    // 👉 SI YA HAY TERRITORIO SELECCIONADO
+    if(datosActivos){
+      actualizarDatosPanel();
+    }
 
   });
 }
+
