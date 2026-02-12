@@ -61,15 +61,22 @@ function actualizarDatosPanel() {
 
 
 // ===============================
-// 🔥 EVENTO CAMBIO DE AÑO (SIN DOMContentLoaded)
+// 🔥 EVENTO CAMBIO DE AÑO (FIX REAL)
 // ===============================
 
 const selectorAnio = document.getElementById("anio-select");
 
 if(selectorAnio){
-  selectorAnio.addEventListener("change", actualizarDatosPanel);
+  selectorAnio.addEventListener("change", () => {
+
+    // Actualiza valores del panel
+    actualizarDatosPanel();
+
+    // 🔥 Mantiene activo el territorio SIN volver a hacer click
+    if (territorioActivo && datosActivos) {
+      actualizarPanel(territorioActivo, datosActivos);
+    }
+
+  });
 }
-
-
-
 
