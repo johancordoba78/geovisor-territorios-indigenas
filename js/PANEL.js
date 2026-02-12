@@ -12,7 +12,6 @@ let datosActivos = null;
 
 function actualizarPanel(nombre, datos) {
 
-  // 🔥 Guardamos territorio activo
   territorioActivo = nombre;
   datosActivos = datos;
 
@@ -23,12 +22,15 @@ function actualizarPanel(nombre, datos) {
 
 
 // ===============================
-// FUNCIÓN QUE ACTUALIZA SOLO DATOS
+// ACTUALIZA SOLO LOS DATOS (AÑO)
 // ===============================
 
 function actualizarDatosPanel() {
 
-  const anio = document.getElementById("anio-select").value;
+  const selector = document.getElementById("anio-select");
+  if(!selector) return;
+
+  const anio = selector.value;
 
   if (!datosActivos) {
 
@@ -58,26 +60,5 @@ function actualizarDatosPanel() {
 }
 
 
-// ===============================
-// CAMBIO DE AÑO SIN VOLVER A CLICAR
-// ===============================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  const selector = document.getElementById("anio-select");
-
-  if (selector) {
-
-    selector.addEventListener("change", () => {
-
-      if (datosActivos) {
-        actualizarDatosPanel();
-      }
-
-    });
-
-  }
-
-});
 
 
