@@ -113,20 +113,16 @@ function renderTablaAnios() {
 // EVENTO CAMBIO DE AÑO
 // ===============================
 
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = function(){
 
   const selectorAnio = document.getElementById("anio-select");
 
-  if(selectorAnio){
-    selectorAnio.addEventListener("change", () => {
+  selectorAnio.onchange = function(){
 
-      // 👇 SOLO si ya hay territorio activo
-      if(datosActivos !== null){
-        actualizarDatosPanel();
-      }
+    if(datosActivos){
+      actualizarDatosPanel();
+    }
 
-    });
-  }
+  };
 
-});
-
+};
