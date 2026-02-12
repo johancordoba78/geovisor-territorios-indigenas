@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,8 +28,8 @@
     <div class="bloque">
       <strong>Año seleccionado:</strong><br>
 
-      <!-- 🔥 CAMBIO CLAVE -->
-      <select id="anio-select" onchange="actualizarDatosPanel()">
+      <!-- 🔥 SELECT CORREGIDO -->
+      <select id="anio-select">
         <option value="2018">2018</option>
         <option value="2019">2019</option>
         <option value="2020">2020</option>
@@ -37,7 +38,6 @@
         <option value="2023">2023</option>
         <option value="2024" selected>2024</option>
       </select>
-
     </div>
 
     <div class="bloque">
@@ -60,6 +60,9 @@
       </ul>
     </div>
 
+    <!-- 🔥 TABLA DINÁMICA AUTOMÁTICA -->
+    <div id="tabla-anios"></div>
+
   </aside>
 
   <!-- MAPA -->
@@ -76,4 +79,3 @@
 
 </body>
 </html>
-
