@@ -84,6 +84,29 @@ window.addEventListener("load", () => {
 
 });
 
+// ===============================
+// 🔥 ACTIVAR CAMBIO DE AÑO (FORMA SEGURA)
+// ===============================
+
+setTimeout(() => {
+
+  const selector = document.getElementById("anio-select");
+
+  if(selector){
+
+    console.log("✔ Selector año ACTIVADO");
+
+    selector.onchange = () => {
+      console.log("Cambio de año detectado");
+      actualizarDatosPanel();
+    };
+
+  }
+
+}, 500);
+
+
+
 
 
 
