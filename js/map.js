@@ -11,7 +11,7 @@ const baseMaps = {
 
 const map = L.map("map", {
   center: [9.6, -84.2],
-  zoom: 7,
+  zoom: 8,
   layers: [baseMaps["Blanco"]]
 });
 
