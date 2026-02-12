@@ -62,12 +62,22 @@ function actualizarDatosPanel() {
 // CAMBIO DE AÑO SIN VOLVER A CLICAR
 // ===============================
 
-document.getElementById("anio-select")
-  .addEventListener("change", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (territorioActivo) {
-      actualizarDatosPanel();
-    }
+  const selector = document.getElementById("anio-select");
+
+  if (selector) {
+
+    selector.addEventListener("change", () => {
+
+      if (datosActivos) {
+        actualizarDatosPanel();
+      }
+
+    });
+
+  }
 
 });
+
 
