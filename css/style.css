@@ -13,6 +13,8 @@ html, body {
   padding: 12px;
   border-right: 1px solid #ccc;
   font-family: Arial, sans-serif;
+
+  overflow-y: auto;   /* 👈 ESTO HACE APARECER LA TABLA */
 }
 
 #map {
