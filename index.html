@@ -24,11 +24,11 @@
     <h2 id="panel-titulo">Seleccione un territorio</h2>
     <p id="panel-subtitulo"></p>
 
-    <!-- SELECTOR DE AÑO (CLAVE PARA ACTUALIZAR SIN CLICK EN MAPA) -->
     <div class="bloque">
       <strong>Año seleccionado:</strong><br>
 
-      <select id="anio-select">
+      <!-- 🔥 CAMBIO CLAVE -->
+      <select id="anio-select" onchange="actualizarDatosPanel()">
         <option value="2018">2018</option>
         <option value="2019">2019</option>
         <option value="2020">2020</option>
@@ -70,10 +70,10 @@
 <!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Orden correcto de scripts -->
 <script src="js/config.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/map.js"></script>
 
 </body>
 </html>
+
