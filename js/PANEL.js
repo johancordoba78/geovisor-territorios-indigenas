@@ -18,7 +18,7 @@ function actualizarPanel(nombre, datos) {
   document.getElementById("panel-titulo").textContent = nombre;
 
   actualizarDatosPanel();
-  renderTablaAnios(); // 🔥 NUEVO
+  renderTablaAnios();
 }
 
 
@@ -33,16 +33,7 @@ function actualizarDatosPanel() {
 
   const anio = String(selector.value);
 
-  if (!datosActivos) {
-
-    document.getElementById("area-actual").textContent = "–";
-    document.getElementById("variacion").textContent = "–";
-    document.getElementById("adenda").textContent = "–";
-    document.getElementById("rosa").textContent = "–";
-    document.getElementById("pendiente").textContent = "–";
-
-    return;
-  }
+  if (!datosActivos) return;
 
   const area = datosActivos.area?.[anio];
   const areaPrev = datosActivos.area?.[String(Number(anio) - 1)];
@@ -62,7 +53,7 @@ function actualizarDatosPanel() {
 
 
 // ===============================
-// 🔥 TABLA DINÁMICA POR TERRITORIO (NUEVO)
+// TABLA DINÁMICA POR TERRITORIO
 // ===============================
 
 function renderTablaAnios() {
@@ -89,7 +80,8 @@ function renderTablaAnios() {
     .sort()
     .forEach(anio => {
 
-      const area = Number(datosActivos.area[anio]).toLocaleString("es-CR");
+      const area = Number(datosActivos.area[anio])
+        .toLocaleString("es-CR");
 
       const activo = (anio === anioSeleccionado)
         ? "background:#ffe600;font-weight:bold;color:#000"
@@ -119,7 +111,7 @@ if(selectorAnio){
   selectorAnio.addEventListener("change", () => {
 
     actualizarDatosPanel();
-    renderTablaAnios(); // 🔥 resalta año automáticamente
+    renderTablaAnios();
 
   });
 }
