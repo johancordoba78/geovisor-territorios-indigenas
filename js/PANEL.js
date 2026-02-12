@@ -61,5 +61,30 @@ function actualizarDatosPanel() {
 }
 
 
+// ===============================
+// 🔥 CONEXIÓN REAL DEL SELECTOR DE AÑO
+// ===============================
+
+window.addEventListener("load", () => {
+
+  const selector = document.getElementById("anio-select");
+
+  if(selector){
+
+    console.log("✔ Selector año conectado");
+
+    selector.addEventListener("change", () => {
+
+      console.log("Cambio de año detectado");
+      actualizarDatosPanel();
+
+    });
+
+  }
+
+});
+
+
+
 
 
