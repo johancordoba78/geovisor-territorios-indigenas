@@ -1,21 +1,87 @@
+/* =====================================================
+🌐 BASE GENERAL
+===================================================== */
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
+  background: #ffffff;
 }
+
+
+/* =====================================================
+🏛️ HEADER INSTITUCIONAL PRO
+===================================================== */
+
+#header-app{
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:64px;
+  background:#ffffff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  z-index:9999;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+.header-left h1{
+  margin:0;
+  font-size:18px;
+  font-weight:700;
+  color:#111827;
+}
+
+.header-sub{
+  font-size:12px;
+  color:#6b7280;
+}
+
+.header-logos{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.header-logos img{
+  height:36px;
+  object-fit:contain;
+  opacity:0.9;
+  transition:0.2s;
+}
+
+.header-logos img:hover{
+  transform:scale(1.05);
+  opacity:1;
+}
+
+
+/* =====================================================
+🧭 CONTENEDOR APP (BAJAMOS POR HEADER)
+===================================================== */
 
 #app {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 64px);
+  margin-top:64px;
 }
 
-/* PANEL */
+
+/* =====================================================
+📊 PANEL LATERAL
+===================================================== */
+
 #panel {
   width: 360px;
   padding: 16px;
-  background: #f5f5f5;
-  border-right: 1px solid #ccc;
+  background: #f5f7fa;
+  border-right: 1px solid #e5e7eb;
   overflow-y: auto;
 }
 
@@ -32,21 +98,10 @@ html, body {
   font-weight: bold;
 }
 
-.positivo {
-  color: green;
-}
 
-.negativo {
-  color: red;
-}
-
-/* MAPA */
-#map {
-  flex: 1;
-}
-/* ===============================
-   KPI CARD – PANEL PRO
-=============================== */
+/* =====================================================
+🎯 KPI CARD – PANEL PRO
+===================================================== */
 
 .kpi-card {
   background: #ffffff;
@@ -67,4 +122,49 @@ html, body {
   font-weight: bold;
   color: #111;
   margin: 6px 0;
+}
+
+
+/* =====================================================
+📈 VARIACIÓN INTERANUAL (DINÁMICA)
+===================================================== */
+
+#variacion {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.positivo {
+  color: #047857; /* verde institucional */
+}
+
+.negativo {
+  color: #b91c1c; /* rojo institucional */
+}
+
+
+/* =====================================================
+🗺️ MAPA
+===================================================== */
+
+#map {
+  flex: 1;
+}
+
+
+/* =====================================================
+✨ EFECTOS VISOR PRO
+===================================================== */
+
+.leaflet-interactive {
+  transition: all 0.25s ease;
+}
+
+
+/* =====================================================
+🧭 LEYENDA MAPA
+===================================================== */
+
+.info.legend {
+  font-family: Arial, sans-serif;
 }
