@@ -20,10 +20,11 @@ const baseMaps = {
 };
 
 const map = L.map("map", {
-  center: [9.6, -84.2],
-  zoom: 7,
+  center: [9.75, -84.2], // Costa Rica centrado
+  zoom: 9,              // 🔥 más cercano
   layers: [baseMaps["Blanco"]]
 });
+
 
 L.control.layers(baseMaps).addTo(map);
 
