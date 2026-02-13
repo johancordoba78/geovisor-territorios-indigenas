@@ -121,6 +121,7 @@ window.onload = function(){
 
     if(datosActivos){
       actualizarDatosPanel();
+      renderTablaAnios(); // 🔥 ahora también actualiza la tabla
     }
 
   };
