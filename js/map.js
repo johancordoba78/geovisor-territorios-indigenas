@@ -7,30 +7,46 @@ window.APP_STATE = {
   datos: null
 };
 
+let territorioSeleccionado = null;
+
 
 // ===============================
-// MAPA BASE BLANCO
+// 🗺️ BASEMAPS
 // ===============================
+
+// 🌍 SATELITE (DEFAULT)
+const satellite = L.tileLayer(
+  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+  { attribution: "© OSM" }
+);
+
+// 🌑 NEGRO
+const dark = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+  { attribution: "© CARTO" }
+);
 
 const baseMaps = {
-  "Blanco": L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
-    { attribution: "© CARTO" }
-  )
+  "Satélite": satellite,
+  "Negro": dark
 };
 
-const map = L.map("map", {
-  center: [9.75, -84.2], // Costa Rica centrado
-  zoom: 9,              // 🔥 más cercano
-  layers: [baseMaps["Blanco"]]
-});
 
+// ===============================
+// 🗺️ CREAR MAPA
+// ===============================
+
+const map = L.map("map", {
+  center: [9.75, -84.2],
+  zoom: 9,
+  layers: [satellite] // 🔥 SATELITE DEFAULT
+});
 
 L.control.layers(baseMaps).addTo(map);
 
 
 // ===============================
-// CARGAR JSON DEL EXCEL
+// 📊 CARGAR JSON CREF
 // ===============================
 
 fetch("data/cref_por_territorio.json")
@@ -47,7 +63,7 @@ fetch("data/cref_por_territorio.json")
 
 
 // ===============================
-// ESTILO SEGÚN CLASIFICACIÓN
+// 🎨 ESTILO TERRITORIOS
 // ===============================
 
 function estiloTerritorio(feature) {
@@ -71,7 +87,7 @@ function estiloTerritorio(feature) {
 
 
 // ===============================
-// CARGAR TERRITORIOS GEOJSON
+// 📍 CARGAR GEOJSON
 // ===============================
 
 function cargarTerritorios() {
@@ -97,15 +113,64 @@ function cargarTerritorios() {
             { sticky: true }
           );
 
-          // =====================================
-          // 🔥 CLICK CORREGIDO (NO TOCAR MÁS)
-          // =====================================
+          // ===============================
+          // ✨ HOVER AMARILLO
+          // ===============================
+
+          layer.on("mouseover", () => {
+
+            if(territorioSeleccionado !== layer){
+
+              layer.setStyle({
+                color:"#ffd400",
+                weight:3,
+                fillOpacity:0.95
+              });
+
+            }
+
+          });
+
+          layer.on("mouseout", () => {
+
+            if(territorioSeleccionado !== layer){
+              layer.setStyle(estiloTerritorio(feature));
+            }
+
+          });
+
+
+          // ===============================
+          // 🔥 CLICK TERRITORIO PRO
+          // ===============================
 
           layer.on("click", () => {
 
             const key = nombre.trim().toUpperCase();
 
-            // Guardamos estado global
+            // Reset anterior
+            if(territorioSeleccionado){
+              territorioSeleccionado.setStyle(
+                estiloTerritorio(territorioSeleccionado.feature)
+              );
+            }
+
+            // Glow amarillo seleccionado
+            layer.setStyle({
+              color:"#ffd400",
+              weight:5,
+              fillOpacity:1
+            });
+
+            territorioSeleccionado = layer;
+
+            // 🎯 Zoom suave automático
+            map.flyToBounds(layer.getBounds(),{
+              duration:0.8,
+              easeLinearity:0.25
+            });
+
+            // Estado global
             window.APP_STATE.territorio = key;
             window.APP_STATE.datos = CREF_DATA[key] || null;
 
@@ -115,6 +180,7 @@ function cargarTerritorios() {
             );
 
           });
+
         }
 
       }).addTo(map);
@@ -124,6 +190,7 @@ function cargarTerritorios() {
     })
     .catch(err => console.error("Error GEOJSON:", err));
 }
+
 
 // ===============================
 // 🎯 LEYENDA CLASIFICACIÓN
@@ -145,6 +212,7 @@ legend.onAdd = function () {
       line-height:18px;
     ">
       <strong>Clasificación</strong><br>
+
       <span style="background:#6a0dad;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
       CREF y PAFTS<br>
 
