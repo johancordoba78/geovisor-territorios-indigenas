@@ -1,4 +1,14 @@
 // ===============================
+// 🔥 ESTADO GLOBAL DE LA APP
+// ===============================
+
+window.APP_STATE = {
+  territorio: null,
+  datos: null
+};
+
+
+// ===============================
 // MAPA BASE BLANCO
 // ===============================
 
@@ -86,11 +96,22 @@ function cargarTerritorios() {
             { sticky: true }
           );
 
+          // =====================================
+          // 🔥 CLICK CORREGIDO (NO TOCAR MÁS)
+          // =====================================
+
           layer.on("click", () => {
 
             const key = nombre.trim().toUpperCase();
 
-            actualizarPanel(key, CREF_DATA[key] || null);
+            // Guardamos estado global
+            window.APP_STATE.territorio = key;
+            window.APP_STATE.datos = CREF_DATA[key] || null;
+
+            actualizarPanel(
+              window.APP_STATE.territorio,
+              window.APP_STATE.datos
+            );
 
           });
         }
@@ -102,3 +123,4 @@ function cargarTerritorios() {
     })
     .catch(err => console.error("Error GEOJSON:", err));
 }
+
