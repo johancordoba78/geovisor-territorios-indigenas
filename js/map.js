@@ -8,20 +8,18 @@ window.APP_STATE = {
 };
 
 let territorioSeleccionado = null;
-let capaFocus = null; // 🔥 capa oscura
+let capaFocus = null;
 
 
 // ===============================
 // 🗺️ BASEMAPS
 // ===============================
 
-// 🌍 SATELITE (DEFAULT)
 const satellite = L.tileLayer(
   "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
   { attribution: "© OSM" }
 );
 
-// 🌑 NEGRO
 const dark = L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
   { attribution: "© CARTO" }
@@ -102,11 +100,12 @@ function activarFocusMode(layer){
 
   capaFocus = L.geoJSON(geo,{
     style:{
-      color:"#ffff00",
+      color:"#fff200",
       weight:4,
       fillColor:"#000000",
       fillOpacity:0.35,
-      interactive:false
+      interactive:false,
+      className:"territorio-activo"
     }
   }).addTo(map);
 
@@ -135,13 +134,21 @@ function cargarTerritorios() {
 
           const clasif = feature.properties.CLASIF;
 
+          // 🔥 TOOLTIP PRO OSCURO
           layer.bindTooltip(
-            `<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}`,
-            { sticky: true }
+            `<div class="tooltip-pro">
+              <strong>${feature.properties.TERRITORIO}</strong><br>${clasif}
+            </div>`,
+            {
+              sticky:true,
+              direction:"top",
+              offset:[0,-10]
+            }
           );
 
+
           // ===============================
-          // ✨ HOVER AMARILLO
+          // ✨ HOVER PRO SUAVE
           // ===============================
 
           layer.on("mouseover", () => {
@@ -149,9 +156,10 @@ function cargarTerritorios() {
             if(territorioSeleccionado !== layer){
 
               layer.setStyle({
-                color:"#ffd400",
-                weight:3,
-                fillOpacity:0.95
+                color:"#ffe600",
+                weight:2.5,
+                opacity:1,
+                fillOpacity:0.92
               });
 
             }
@@ -173,7 +181,7 @@ function cargarTerritorios() {
 
           layer.on("click", (e) => {
 
-            L.DomEvent.stopPropagation(e); // 🔥 evita reset al click
+            L.DomEvent.stopPropagation(e);
 
             const key = nombre.trim().toUpperCase();
 
@@ -183,15 +191,18 @@ function cargarTerritorios() {
               );
             }
 
+            // ⭐ HALO PRO
             layer.setStyle({
-              color:"#ffd400",
-              weight:5,
-              fillOpacity:1
+              color:"#fff200",
+              weight:3,
+              opacity:1,
+              fillOpacity:1,
+              className:"territorio-activo"
             });
 
             territorioSeleccionado = layer;
 
-            activarFocusMode(layer); // 🔥 FOCUS PRO
+            activarFocusMode(layer);
 
             map.flyToBounds(layer.getBounds(),{
               duration:0.8,
@@ -212,4 +223,90 @@ function cargarTerritorios() {
 
       }).addTo(map);
 
-      map.fitBoun
+      map.fitBounds(capa.getBounds());
+
+    })
+    .catch(err => console.error("Error GEOJSON:", err));
+}
+
+
+// ===============================
+// 🎯 LEYENDA CLASIFICACIÓN
+// ===============================
+
+const legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function () {
+
+  const div = L.DomUtil.create("div", "info legend");
+
+  div.innerHTML = `
+    <div style="
+      background:white;
+      padding:10px;
+      border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      font-size:12px;
+      line-height:18px;
+    ">
+      <strong>Clasificación</strong><br>
+
+      <span style="background:#6a0dad;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
+      CREF y PAFTS<br>
+
+      <span style="background:#0047ff;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
+      Solo PAFTS<br>
+
+      <span style="background:#ff6600;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
+      Otros
+    </div>
+  `;
+
+  return div;
+};
+
+legend.addTo(map);
+
+
+// ===============================
+// 🎯 ZOOM INICIAL
+// ===============================
+
+const zoomInicial = {
+  center: [9.75, -84.2],
+  zoom: 9
+};
+
+
+// ===============================
+// 🔄 RESET CLICK FUERA
+// ===============================
+
+map.on("click", function(){
+
+  if(!territorioSeleccionado) return;
+
+  territorioSeleccionado.setStyle(
+    estiloTerritorio(territorioSeleccionado.feature)
+  );
+
+  territorioSeleccionado = null;
+
+  if(capaFocus){
+    map.removeLayer(capaFocus);
+    capaFocus = null;
+  }
+
+  window.APP_STATE.territorio = null;
+  window.APP_STATE.datos = null;
+
+  map.flyTo(
+    zoomInicial.center,
+    zoomInicial.zoom,
+    {
+      duration:0.8,
+      easeLinearity:0.25
+    }
+  );
+
+});
