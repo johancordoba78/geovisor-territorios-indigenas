@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Geovisor CREF – Territorios Indígenas</title>
 
   <!-- Leaflet -->
@@ -12,13 +15,14 @@
 
   <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css" />
+
 </head>
 
 <body>
 
-<!-- ===============================
-     🏛️ HEADER INSTITUCIONAL PRO
-================================ -->
+<!-- ==================================================
+🏛️ HEADER INSTITUCIONAL PRO
+================================================== -->
 <header id="header-app">
 
   <div class="header-left">
@@ -29,19 +33,22 @@
   </div>
 
   <div class="header-logos">
-    <img src="logos/fonafifo.png" alt="FONAFIFO">
-    <img src="logos/redd.png" alt="REDD+">
-    <img src="logos/gigup.png" alt="GIGUP">
+    <img src="./logos/fonafifo.png" alt="FONAFIFO">
+    <img src="./logos/redd.png" alt="REDD+">
+    <img src="./logos/gigup.png" alt="GIGUP">
   </div>
 
 </header>
 
 
-<div id="app">
+<!-- ==================================================
+APP WRAPPER (necesario para header fijo)
+================================================== -->
+<div id="app" class="app-wrapper">
 
-  <!-- ===============================
+  <!-- =============================================
        PANEL LATERAL
-  =============================== -->
+  ============================================== -->
   <aside id="panel">
 
     <h2 id="panel-titulo">Seleccione un territorio</h2>
@@ -62,9 +69,7 @@
       </select>
     </div>
 
-    <!-- ===============================
-         KPI CARD
-    =============================== -->
+    <!-- KPI CARD -->
     <div class="kpi-card">
 
       <div class="kpi-label">Área efectiva bajo CREF</div>
@@ -93,22 +98,23 @@
 
   </aside>
 
-  <!-- ===============================
+
+  <!-- =============================================
        MAPA
-  =============================== -->
+  ============================================== -->
   <main id="map"></main>
 
 </div>
 
 
-<!-- ===============================
-     🏛️ FOOTER INSTITUCIONAL LOGOS
-================================ -->
+<!-- ==================================================
+🏛️ FOOTER LOGOS INSTITUCIONAL
+================================================== -->
 <div id="logos-footer">
 
-  <img src="logos/fonafifo.png" alt="FONAFIFO">
-  <img src="logos/redd.png" alt="REDD+ Costa Rica">
-  <img src="logos/gigup.png" alt="GIGUP">
+  <img src="./logos/fonafifo.png" alt="FONAFIFO">
+  <img src="./logos/redd.png" alt="REDD+ Costa Rica">
+  <img src="./logos/gigup.png" alt="GIGUP">
 
 </div>
 
@@ -116,11 +122,10 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- ⚠️ ORDEN CORRECTO (NO CAMBIAR) -->
+<!-- ⚠️ ORDEN CORRECTO -->
 <script src="js/config.js"></script>
 <script src="js/map.js"></script>
 <script src="js/panel.js"></script>
 
 </body>
 </html>
-
