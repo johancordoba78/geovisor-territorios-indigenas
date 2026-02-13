@@ -228,3 +228,45 @@ legend.onAdd = function () {
 };
 
 legend.addTo(map);
+
+
+// ===============================
+// 🎯 ZOOM INICIAL GUARDADO
+// ===============================
+
+const zoomInicial = {
+  center: [9.75, -84.2],
+  zoom: 9
+};
+
+
+// ===============================
+// 🔄 RESET ZOOM AL HACER CLICK FUERA
+// ===============================
+
+map.on("click", function(e){
+
+  // Si no hay territorio activo, no hacemos nada
+  if(!territorioSeleccionado) return;
+
+  // Reset estilo territorio
+  territorioSeleccionado.setStyle(
+    estiloTerritorio(territorioSeleccionado.feature)
+  );
+
+  territorioSeleccionado = null;
+
+  window.APP_STATE.territorio = null;
+  window.APP_STATE.datos = null;
+
+  // 🔥 Volver al zoom original
+  map.flyTo(
+    zoomInicial.center,
+    zoomInicial.zoom,
+    {
+      duration:0.8,
+      easeLinearity:0.25
+    }
+  );
+
+});
