@@ -68,3 +68,18 @@ html, body {
   color: #065f46;
 }
 
+/* ===============================
+   🎯 KPI DINÁMICO
+=============================== */
+
+.kpi-positivo {
+  color: #065f46;      /* verde */
+}
+
+.kpi-negativo {
+  color: #b91c1c;      /* rojo */
+}
+
+.kpi-neutro {
+  color: #374151;      /* gris */
+}
