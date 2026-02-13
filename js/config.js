@@ -1,2 +1,8 @@
-// Archivo config.js (puede quedar vacío por ahora)
-// Se mantiene para compatibilidad con tu index.html
+// ===============================
+// ESTADO GLOBAL DEL VISOR
+// ===============================
+
+window.APP_STATE = {
+  territorio: null,
+  datos: null
+};
