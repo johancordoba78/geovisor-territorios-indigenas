@@ -8,6 +8,7 @@ window.APP_STATE = {
 };
 
 let territorioSeleccionado = null;
+let capaFocus = null; // 🔥 capa oscura
 
 
 // ===============================
@@ -39,7 +40,7 @@ const baseMaps = {
 const map = L.map("map", {
   center: [9.75, -84.2],
   zoom: 9,
-  layers: [satellite] // 🔥 SATELITE DEFAULT
+  layers: [satellite]
 });
 
 L.control.layers(baseMaps).addTo(map);
@@ -83,6 +84,32 @@ function estiloTerritorio(feature) {
     fillColor,
     fillOpacity: 0.85
   };
+}
+
+
+// ===============================
+// 🎯 FOCUS MODE PRO
+// ===============================
+
+function activarFocusMode(layer){
+
+  if(capaFocus){
+    map.removeLayer(capaFocus);
+    capaFocus = null;
+  }
+
+  const geo = layer.feature;
+
+  capaFocus = L.geoJSON(geo,{
+    style:{
+      color:"#ffff00",
+      weight:4,
+      fillColor:"#000000",
+      fillOpacity:0.35,
+      interactive:false
+    }
+  }).addTo(map);
+
 }
 
 
@@ -144,18 +171,18 @@ function cargarTerritorios() {
           // 🔥 CLICK TERRITORIO PRO
           // ===============================
 
-          layer.on("click", () => {
+          layer.on("click", (e) => {
+
+            L.DomEvent.stopPropagation(e); // 🔥 evita reset al click
 
             const key = nombre.trim().toUpperCase();
 
-            // Reset anterior
             if(territorioSeleccionado){
               territorioSeleccionado.setStyle(
                 estiloTerritorio(territorioSeleccionado.feature)
               );
             }
 
-            // Glow amarillo seleccionado
             layer.setStyle({
               color:"#ffd400",
               weight:5,
@@ -164,13 +191,13 @@ function cargarTerritorios() {
 
             territorioSeleccionado = layer;
 
-            // 🎯 Zoom suave automático
+            activarFocusMode(layer); // 🔥 FOCUS PRO
+
             map.flyToBounds(layer.getBounds(),{
               duration:0.8,
               easeLinearity:0.25
             });
 
-            // Estado global
             window.APP_STATE.territorio = key;
             window.APP_STATE.datos = CREF_DATA[key] || null;
 
@@ -185,88 +212,4 @@ function cargarTerritorios() {
 
       }).addTo(map);
 
-      map.fitBounds(capa.getBounds());
-
-    })
-    .catch(err => console.error("Error GEOJSON:", err));
-}
-
-
-// ===============================
-// 🎯 LEYENDA CLASIFICACIÓN
-// ===============================
-
-const legend = L.control({ position: "bottomright" });
-
-legend.onAdd = function () {
-
-  const div = L.DomUtil.create("div", "info legend");
-
-  div.innerHTML = `
-    <div style="
-      background:white;
-      padding:10px;
-      border-radius:8px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-      font-size:12px;
-      line-height:18px;
-    ">
-      <strong>Clasificación</strong><br>
-
-      <span style="background:#6a0dad;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
-      CREF y PAFTS<br>
-
-      <span style="background:#0047ff;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
-      Solo PAFTS<br>
-
-      <span style="background:#ff6600;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
-      Otros
-    </div>
-  `;
-
-  return div;
-};
-
-legend.addTo(map);
-
-
-// ===============================
-// 🎯 ZOOM INICIAL GUARDADO
-// ===============================
-
-const zoomInicial = {
-  center: [9.75, -84.2],
-  zoom: 9
-};
-
-
-// ===============================
-// 🔄 RESET ZOOM AL HACER CLICK FUERA
-// ===============================
-
-map.on("click", function(e){
-
-  // Si no hay territorio activo, no hacemos nada
-  if(!territorioSeleccionado) return;
-
-  // Reset estilo territorio
-  territorioSeleccionado.setStyle(
-    estiloTerritorio(territorioSeleccionado.feature)
-  );
-
-  territorioSeleccionado = null;
-
-  window.APP_STATE.territorio = null;
-  window.APP_STATE.datos = null;
-
-  // 🔥 Volver al zoom original
-  map.flyTo(
-    zoomInicial.center,
-    zoomInicial.zoom,
-    {
-      duration:0.8,
-      easeLinearity:0.25
-    }
-  );
-
-});
+      map.fitBoun
