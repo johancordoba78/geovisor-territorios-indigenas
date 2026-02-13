@@ -131,3 +131,38 @@ html, body {
 .leaflet-interactive {
   transition: all 0.25s ease;
 }
+
+/* ===============================
+   🏛️ FOOTER LOGOS INSTITUCIONAL
+=============================== */
+
+#logos-footer{
+  position:absolute;
+  bottom:10px;
+  left:340px; /* deja libre el panel */
+  z-index:9999;
+
+  background:rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+
+  padding:6px 12px;
+  border-radius:10px;
+
+  display:flex;
+  gap:14px;
+  align-items:center;
+
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);
+}
+
+#logos-footer img{
+  height:28px;
+  opacity:0.85;
+  transition:0.2s;
+}
+
+#logos-footer img:hover{
+  opacity:1;
+  transform:scale(1.05);
+}
+
