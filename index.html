@@ -5,11 +5,13 @@
   <meta charset="UTF-8" />
   <title>Geovisor CREF – Territorios Indígenas</title>
 
+  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
+  <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -17,16 +19,18 @@
 
 <div id="app">
 
-  <!-- PANEL -->
+  <!-- ===============================
+       PANEL LATERAL
+  =============================== -->
   <aside id="panel">
 
     <h2 id="panel-titulo">Seleccione un territorio</h2>
     <p id="panel-subtitulo"></p>
 
+    <!-- Selector año -->
     <div class="bloque">
       <strong>Año seleccionado:</strong><br>
 
-      <!-- ⚠️ SIN onchange -->
       <select id="anio-select">
         <option value="2018">2018</option>
         <option value="2019">2019</option>
@@ -38,24 +42,23 @@
       </select>
     </div>
 
+    <!-- ===============================
+         KPI CARD
+    =============================== -->
     <div class="kpi-card">
 
-  <div class="kpi-label">Área efectiva bajo CREF</div>
-  <div id="area-actual" class="kpi-value">–</div>
-  <div class="kpi-label">hectáreas</div>
+      <div class="kpi-label">Área efectiva bajo CREF</div>
+      <div id="area-actual" class="kpi-value">–</div>
+      <div class="kpi-label">hectáreas</div>
 
-  <hr style="border:none;border-top:1px solid #eee;margin:10px 0;">
+      <hr style="border:none;border-top:1px solid #eee;margin:10px 0;">
 
-  <div class="kpi-label">Variación interanual</div>
-  <div id="variacion">–</div>
-
-</div>
-
-    <div class="bloque">
-      <strong>Variación interanual</strong>
+      <div class="kpi-label">Variación interanual</div>
       <div id="variacion">–</div>
+
     </div>
 
+    <!-- Estado administrativo -->
     <div class="bloque">
       <strong>Estado administrativo</strong>
       <ul>
@@ -65,23 +68,25 @@
       </ul>
     </div>
 
-    <!-- 🔥 TABLA AUTOMÁTICA -->
+    <!-- Tabla dinámica -->
     <div id="tabla-anios"></div>
 
   </aside>
 
-  <!-- MAPA -->
+  <!-- ===============================
+       MAPA
+  =============================== -->
   <main id="map"></main>
 
 </div>
 
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- ⚠️ ORDEN CORRECTO -->
+<!-- ORDEN CORRECTO -->
 <script src="js/config.js"></script>
 <script src="js/map.js"></script>
 <script src="js/panel.js"></script>
-
 
 </body>
 </html>
