@@ -125,3 +125,38 @@ function cargarTerritorios() {
     .catch(err => console.error("Error GEOJSON:", err));
 }
 
+// ===============================
+// 🎯 LEYENDA CLASIFICACIÓN
+// ===============================
+
+const legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function () {
+
+  const div = L.DomUtil.create("div", "info legend");
+
+  div.innerHTML = `
+    <div style="
+      background:white;
+      padding:10px;
+      border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      font-size:12px;
+      line-height:18px;
+    ">
+      <strong>Clasificación</strong><br>
+      <span style="background:#6a0dad;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
+      CREF y PAFTS<br>
+
+      <span style="background:#0047ff;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
+      Solo PAFTS<br>
+
+      <span style="background:#ff6600;width:12px;height:12px;display:inline-block;margin-right:6px"></span>
+      Otros
+    </div>
+  `;
+
+  return div;
+};
+
+legend.addTo(map);
