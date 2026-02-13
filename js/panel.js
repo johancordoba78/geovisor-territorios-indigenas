@@ -112,7 +112,7 @@ function renderTablaAnios() {
 
   let html = `
     <table style="width:100%; font-size:12px; border-collapse:collapse">
-      <tr style="background:#222;color:#fff">
+      <tr style="background:#0f766e;color:#fff">
         <th style="padding:4px">Año</th>
         <th style="padding:4px">Área CREF (ha)</th>
       </tr>
