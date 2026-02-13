@@ -48,10 +48,29 @@ function actualizarDatosPanel() {
   document.getElementById("area-actual").textContent =
     area ? Number(area).toLocaleString("es-CR") : "–";
 
-  document.getElementById("variacion").textContent =
-    (area && areaPrev)
-      ? (area - areaPrev).toFixed(2) + " ha"
-      : "–";
+ const variacionEl = document.getElementById("variacion");
+
+if(area && areaPrev){
+
+  const dif = area - areaPrev;
+
+  variacionEl.textContent = dif.toFixed(2) + " ha";
+
+  // 🔥 KPI dinámico
+  variacionEl.classList.remove("kpi-positivo","kpi-negativo","kpi-neutro");
+
+  if(dif > 0){
+    variacionEl.classList.add("kpi-positivo");
+  }else if(dif < 0){
+    variacionEl.classList.add("kpi-negativo");
+  }else{
+    variacionEl.classList.add("kpi-neutro");
+  }
+
+}else{
+  variacionEl.textContent = "–";
+  variacionEl.classList.remove("kpi-positivo","kpi-negativo","kpi-neutro");
+}
 
   document.getElementById("adenda").textContent =
     datosActivos.adenda || "–";
