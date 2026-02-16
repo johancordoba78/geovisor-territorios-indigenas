@@ -150,6 +150,11 @@ if(selectorAnio){
       renderTablaAnios();
     }
 
+    // 🔥 ACTUALIZA PUNTOS GIGUP AUTOMÁTICAMENTE
+    if(typeof actualizarGigupPorAnio === "function"){
+      actualizarGigupPorAnio();
+    }
+
   });
 
 }
