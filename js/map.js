@@ -48,7 +48,7 @@ collapsed:false
 }).addTo(map);
 
 
-// 🌲 mover árbol al panel (si existe)
+// 🌲 mover árbol al panel si existe
 setTimeout(()=>{
 const contenedor = document.getElementById("arbol-capas");
 if(contenedor){
@@ -235,7 +235,7 @@ function cargarTerritorios() {
 
 
 // =====================================================
-// 👩 CAPAS GIGUP POR AÑO (ÚNICO CAMBIO REAL)
+// 👩 CAPAS GIGUP PROFESIONALES POR AÑO
 // =====================================================
 
 function estiloGigup(feature,latlng){
@@ -255,7 +255,45 @@ fetch(url)
 .then(data=>{
 
 const capa = L.geoJSON(data,{
-pointToLayer: estiloGigup
+
+pointToLayer: estiloGigup,
+
+onEachFeature:(feature,layer)=>{
+
+const nombreM = feature.properties.Name || "Sin nombre";
+const anio = feature.properties.Anio || "Sin año";
+const lugar = feature.properties.Lugar || "";
+
+layer.bindTooltip(
+`<div class="tooltip-pro">
+<strong>${nombreM}</strong><br>
+Año GIGUP: ${anio}
+</div>`,
+{
+direction:"top",
+offset:[0,-8],
+sticky:true
+}
+);
+
+layer.bindPopup(`
+<div style="
+font-size:13px;
+line-height:18px;
+min-width:160px;
+">
+<div style="font-weight:700;font-size:14px;margin-bottom:4px;">
+👩 ${nombreM}
+</div>
+<div style="color:#374151;">
+📅 Año GIGUP: <strong>${anio}</strong>
+</div>
+${lugar ? `<div style="margin-top:4px;color:#6b7280;">📍 ${lugar}</div>` : ""}
+</div>
+`);
+
+}
+
 });
 
 controlCapas.addOverlay(capa,nombre);
