@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Geovisor CREF – Territorios Indígenas</title>
+<title>Geovisor CREF – Territorios Indígenas</title>
 
-  <link rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-  <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/style.css" />
 
 </head>
 
@@ -18,66 +18,65 @@
 
 <header id="header-app">
 
-  <div class="header-left">
-    <h1>Geovisor CREF – Territorios Indígenas</h1>
-    <span class="header-sub">
-      Programa REDD+ Costa Rica | FONAFIFO
-    </span>
-  </div>
+<div class="header-left">
+<h1>Geovisor CREF – Territorios Indígenas</h1>
+<span class="header-sub">
+Programa REDD+ Costa Rica | FONAFIFO
+</span>
+</div>
 
-  <div class="header-logos">
-    <img src="./logos/fonafifo.png">
-    <img src="./logos/redd.png">
-    <img src="./logos/gigup.png">
-  </div>
+<div class="header-logos">
+<img src="./logos/fonafifo.png">
+<img src="./logos/redd.png">
+<img src="./logos/gigup.png">
+</div>
 
 </header>
 
 <div id="app" class="app-wrapper">
 
-  <aside id="panel">
+<aside id="panel">
 
-    <h2 id="panel-titulo">Seleccione un territorio</h2>
-    <p id="panel-subtitulo"></p>
+<h2 id="panel-titulo">Seleccione un territorio</h2>
+<p id="panel-subtitulo"></p>
 
-    <div class="bloque">
-      <strong>Año seleccionado:</strong><br>
+<div class="bloque">
+<strong>Año seleccionado:</strong><br>
+<select id="anio-select">
+<option value="2018">2018</option>
+<option value="2019">2019</option>
+<option value="2020">2020</option>
+<option value="2021">2021</option>
+<option value="2022">2022</option>
+<option value="2023">2023</option>
+<option value="2024" selected>2024</option>
+</select>
+</div>
 
-      <select id="anio-select">
-        <option value="2018">2018</option>
-        <option value="2019">2019</option>
-        <option value="2020">2020</option>
-        <option value="2021">2021</option>
-        <option value="2022">2022</option>
-        <option value="2023">2023</option>
-        <option value="2024" selected>2024</option>
-      </select>
-    </div>
+<div class="kpi-card">
 
-    <div class="kpi-card">
+<div class="kpi-label">Área efectiva bajo CREF</div>
+<div id="area-actual" class="kpi-value">–</div>
+<div class="kpi-label">hectáreas</div>
 
-      <div class="kpi-label">Área efectiva bajo CREF</div>
-      <div id="area-actual" class="kpi-value">–</div>
-      <div class="kpi-label">hectáreas</div>
+<hr style="border:none;border-top:1px solid #eee;margin:10px 0;">
 
-      <hr style="border:none;border-top:1px solid #eee;margin:10px 0;">
+<div class="kpi-label">Variación interanual</div>
+<div id="variacion">–</div>
 
-      <div class="kpi-label">Variación interanual</div>
-      <div id="variacion">–</div>
+</div>
 
-    </div>
+<!-- 🔥 CLASIFICACIÓN DINÁMICA -->
+<div class="bloque">
+<strong>Clasificación</strong>
+<div id="clasificacion-dinamica">–</div>
+</div>
 
-    <!-- 🔥 NUEVA CLASIFICACIÓN DINÁMICA -->
-    <div class="bloque">
-      <strong>Clasificación</strong>
-      <div id="clasificacion-dinamica">–</div>
-    </div>
+<div id="tabla-anios"></div>
 
-    <div id="tabla-anios"></div>
+</aside>
 
-  </aside>
-
-  <main id="map"></main>
+<main id="map"></main>
 
 </div>
 
