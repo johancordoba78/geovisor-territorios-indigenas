@@ -235,7 +235,7 @@ function cargarTerritorios() {
 
 
 // =====================================================
-// 👩 CAPAS GIGUP PROFESIONALES POR AÑO
+// 👩 CAPAS GIGUP PROFESIONALES POR AÑO (LIMPIO)
 // =====================================================
 
 function estiloGigup(feature,latlng){
@@ -262,12 +262,11 @@ onEachFeature:(feature,layer)=>{
 
 const nombreM = feature.properties.Name || "Sin nombre";
 const anio = feature.properties.Anio || "Sin año";
-const lugar = feature.properties.Lugar || "";
 
 layer.bindTooltip(
 `<div class="tooltip-pro">
-<strong>${nombreM}</strong><br>
-Año GIGUP: ${anio}
+<strong>👩 ${nombreM}</strong><br>
+📅 Año GIGUP: ${anio}
 </div>`,
 {
 direction:"top",
@@ -288,7 +287,6 @@ min-width:160px;
 <div style="color:#374151;">
 📅 Año GIGUP: <strong>${anio}</strong>
 </div>
-${lugar ? `<div style="margin-top:4px;color:#6b7280;">📍 ${lugar}</div>` : ""}
 </div>
 `);
 
