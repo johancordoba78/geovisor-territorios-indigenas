@@ -13,7 +13,7 @@ let capaTerritorios = null;
 
 
 // ===============================
-// 🗺️ BASEMAP (SOLO SATÉLITE)
+// 🗺️ BASEMAP
 // ===============================
 
 const satellite = L.tileLayer(
@@ -29,29 +29,27 @@ const overlayMaps = {};
 
 
 // ===============================
-// 🗺️ CREAR MAPA
+// 🗺️ CREAR MAPA (COSTA RICA COMPLETA)
 // ===============================
+
+const boundsCostaRica = [
+  [7.5, -86.5],
+  [11.5, -82.0]
+];
 
 const map = L.map("map", {
   center: [9.75, -84.2],
-  zoom: 9,
+  zoom: 8,
+  minZoom: 7,
+  maxZoom: 18,
+  maxBounds: boundsCostaRica,
+  maxBoundsViscosity: 1.0,
   layers: [satellite]
 });
 
 const controlCapas = L.control.layers(baseMaps, overlayMaps,{
 collapsed:false
 }).addTo(map);
-
-
-// 🌲 mover árbol al panel si existe
-setTimeout(()=>{
-const contenedor = document.getElementById("arbol-capas");
-if(contenedor){
-contenedor.appendChild(
-document.querySelector(".leaflet-control-layers")
-);
-}
-},500);
 
 
 // ===============================
@@ -96,7 +94,7 @@ function estiloTerritorio(feature) {
 
 
 // ===============================
-// 🎯 FOCUS MODE PRO
+// 🎯 FOCUS MODE
 // ===============================
 
 function activarFocusMode(layer){
@@ -123,7 +121,7 @@ function activarFocusMode(layer){
 
 
 // ===============================
-// 📍 CARGAR TERRITORIOS (EN ÁRBOL)
+// 📍 TERRITORIOS (EN ÁRBOL)
 // ===============================
 
 function cargarTerritorios() {
@@ -223,14 +221,12 @@ capaTerritorios.addTo(map);
 
 controlCapas.addOverlay(capaTerritorios,"Territorios indígenas");
 
-map.fitBounds(capaTerritorios.getBounds());
-
 });
 }
 
 
 // =====================================================
-// 👩 CAPAS GIGUP ORDENADAS CRONOLÓGICAMENTE (PRO)
+// 👩 GIGUP ORDENADO CRONOLÓGICAMENTE
 // =====================================================
 
 function estiloGigup(feature,latlng){
@@ -297,12 +293,12 @@ controlCapas.addOverlay(capa,capasGigup[i].nombre);
 
 
 // ===============================
-// 🔄 RESET CLICK FUERA
+// 🔄 RESET TERRITORIOS
 // ===============================
 
 const zoomInicial = {
 center:[9.75,-84.2],
-zoom:9
+zoom:8
 };
 
 map.on("click",function(){
@@ -330,25 +326,3 @@ zoomInicial.zoom,
 );
 
 });
-
-// =====================================================
-// 🔥 RESET SOLO PARA EXPLORACIÓN GIGUP (NO TERRITORIOS)
-// =====================================================
-
-map.on("dblclick", function(e){
-
-// Si hay territorio activo → NO hacer nada
-if(territorioSeleccionado) return;
-
-// Volver al zoom nacional cuando solo exploran puntos
-map.flyTo(
-zoomInicial.center,
-zoomInicial.zoom,
-{
-duration:0.8,
-easeLinearity:0.25
-}
-);
-
-});
-
