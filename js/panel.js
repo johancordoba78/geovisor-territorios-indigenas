@@ -48,38 +48,29 @@ function actualizarDatosPanel() {
   document.getElementById("area-actual").textContent =
     area ? Number(area).toLocaleString("es-CR") : "–";
 
- const variacionEl = document.getElementById("variacion");
+  const variacionEl = document.getElementById("variacion");
 
-if(area && areaPrev){
+  if(area && areaPrev){
 
-  const dif = area - areaPrev;
+    const dif = area - areaPrev;
 
-  variacionEl.textContent = dif.toFixed(2) + " ha";
+    variacionEl.textContent = dif.toFixed(2) + " ha";
 
-  // 🔥 KPI dinámico
-  variacionEl.classList.remove("kpi-positivo","kpi-negativo","kpi-neutro");
+    variacionEl.classList.remove("kpi-positivo","kpi-negativo","kpi-neutro");
 
-  if(dif > 0){
-    variacionEl.classList.add("kpi-positivo");
-  }else if(dif < 0){
-    variacionEl.classList.add("kpi-negativo");
+    if(dif > 0){
+      variacionEl.classList.add("kpi-positivo");
+    }else if(dif < 0){
+      variacionEl.classList.add("kpi-negativo");
+    }else{
+      variacionEl.classList.add("kpi-neutro");
+    }
+
   }else{
-    variacionEl.classList.add("kpi-neutro");
+    variacionEl.textContent = "–";
+    variacionEl.classList.remove("kpi-positivo","kpi-negativo","kpi-neutro");
   }
 
-}else{
-  variacionEl.textContent = "–";
-  variacionEl.classList.remove("kpi-positivo","kpi-negativo","kpi-neutro");
-}
-
-  document.getElementById("adenda").textContent =
-    datosActivos.adenda || "–";
-
-  document.getElementById("rosa").textContent =
-    datosActivos.rosa || "–";
-
-  document.getElementById("pendiente").textContent =
-    datosActivos.pendiente || "–";
 }
 
 
@@ -145,7 +136,7 @@ function renderTablaAnios() {
 
 
 // ===============================
-// 🔥 EVENTO CAMBIO DE AÑO (EL BUENO)
+// 🔥 EVENTO CAMBIO DE AÑO
 // ===============================
 
 const selectorAnio = document.getElementById("anio-select");
@@ -153,8 +144,6 @@ const selectorAnio = document.getElementById("anio-select");
 if(selectorAnio){
 
   selectorAnio.addEventListener("change", () => {
-
-    console.log("🔥 CAMBIO DE AÑO DETECTADO");
 
     if(datosActivos){
       actualizarDatosPanel();
@@ -165,3 +154,45 @@ if(selectorAnio){
 
 }
 
+
+// ===============================
+// 🎨 CLASIFICACIÓN DINÁMICA PRO
+// ===============================
+
+function renderClasificacion(clasif){
+
+  const div = document.getElementById("clasificacion-dinamica");
+
+  if(!div) return;
+
+  if(!clasif){
+    div.innerHTML = "–";
+    return;
+  }
+
+  const c = clasif.trim().toUpperCase();
+
+  let color = "#ff6600";
+
+  if(c === "CREF Y PAFTS") color = "#6a0dad";
+  if(c === "SOLO PAFTS") color = "#0047ff";
+
+  div.innerHTML = `
+    <div style="
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:6px;
+      font-size:13px;
+    ">
+      <span style="
+        width:14px;
+        height:14px;
+        background:${color};
+        border-radius:3px;
+        display:inline-block;
+      "></span>
+      ${clasif}
+    </div>
+  `;
+}
