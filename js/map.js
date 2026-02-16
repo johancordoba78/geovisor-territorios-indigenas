@@ -330,3 +330,25 @@ zoomInicial.zoom,
 );
 
 });
+
+// =====================================================
+// 🔥 RESET SOLO PARA EXPLORACIÓN GIGUP (NO TERRITORIOS)
+// =====================================================
+
+map.on("dblclick", function(e){
+
+// Si hay territorio activo → NO hacer nada
+if(territorioSeleccionado) return;
+
+// Volver al zoom nacional cuando solo exploran puntos
+map.flyTo(
+zoomInicial.center,
+zoomInicial.zoom,
+{
+duration:0.8,
+easeLinearity:0.25
+}
+);
+
+});
+
