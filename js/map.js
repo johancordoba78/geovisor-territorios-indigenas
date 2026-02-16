@@ -38,19 +38,21 @@ zoom: 9,
 layers: [satellite]
 });
 
-const controlCapas = L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-
-// ===============================
-// 📊 JSON CREF
-// ===============================
-
-fetch("data/cref_por_territorio.json")
-.then(r => r.json())
-.then(data => {
-CREF_DATA = data;
-cargarTerritorios();
+const controlCapas = L.control.layers(baseMaps, overlayMaps,{
+collapsed:false
 });
+
+controlCapas.addTo(map);
+
+// 🌲 mover árbol al panel
+setTimeout(()=>{
+const contenedor = document.getElementById("arbol-capas");
+if(contenedor){
+contenedor.appendChild(
+document.querySelector(".leaflet-control-layers")
+);
+}
+},500);
 
 
 // ===============================
@@ -78,30 +80,6 @@ fillOpacity: 0.85
 
 
 // ===============================
-// 🎯 FOCUS MODE
-// ===============================
-
-function activarFocusMode(layer){
-
-if(capaFocus){
-map.removeLayer(capaFocus);
-capaFocus = null;
-}
-
-capaFocus = L.geoJSON(layer.feature,{
-style:{
-color:"#fff200",
-weight:4,
-fillColor:"#000000",
-fillOpacity:0.35,
-interactive:false
-}
-}).addTo(map);
-
-}
-
-
-// ===============================
 // 📍 TERRITORIOS
 // ===============================
 
@@ -112,78 +90,7 @@ fetch("data/territorios_indigenas.geojson")
 .then(data => {
 
 const capa = L.geoJSON(data, {
-
-style: estiloTerritorio,
-
-onEachFeature: (feature, layer) => {
-
-const nombre = feature.properties.TERRITORIO
-?.trim()
-.toUpperCase();
-
-const clasif = feature.properties.CLASIF;
-
-layer.bindTooltip(
-`<div class="tooltip-pro">
-<strong>${feature.properties.TERRITORIO}</strong><br>${clasif}
-</div>`,
-{sticky:true,direction:"top",offset:[0,-10]}
-);
-
-layer.on("mouseover", () => {
-if(territorioSeleccionado !== layer){
-layer.setStyle({
-color:"#ffe600",
-weight:2.5,
-fillOpacity:0.92
-});
-}
-});
-
-layer.on("mouseout", () => {
-if(territorioSeleccionado !== layer){
-layer.setStyle(estiloTerritorio(feature));
-}
-});
-
-layer.on("click", (e) => {
-
-L.DomEvent.stopPropagation(e);
-
-if(territorioSeleccionado){
-territorioSeleccionado.setStyle(
-estiloTerritorio(territorioSeleccionado.feature)
-);
-}
-
-layer.setStyle({
-color:"#fff200",
-weight:3,
-fillOpacity:1
-});
-
-territorioSeleccionado = layer;
-
-activarFocusMode(layer);
-
-map.flyToBounds(layer.getBounds(),{
-duration:0.8
-});
-
-window.APP_STATE.territorio = nombre;
-window.APP_STATE.datos = CREF_DATA[nombre] || null;
-
-actualizarPanel(
-window.APP_STATE.territorio,
-window.APP_STATE.datos
-);
-
-renderClasificacion(feature.properties.CLASIF);
-
-});
-
-}
-
+style: estiloTerritorio
 }).addTo(map);
 
 map.fitBounds(capa.getBounds());
@@ -191,36 +98,32 @@ map.fitBounds(capa.getBounds());
 });
 }
 
+cargarTerritorios();
 
-// ===============================
-// 🔄 RESET TERRITORIO
-// ===============================
 
-map.on("click", function(){
+// =====================================================
+// 🗺️ DISTRITOS COSTA RICA
+// =====================================================
 
-if(!territorioSeleccionado) return;
+fetch("data/distritos_cr.geojson")
+.then(r=>r.json())
+.then(data=>{
 
-territorioSeleccionado.setStyle(
-estiloTerritorio(territorioSeleccionado.feature)
-);
-
-territorioSeleccionado = null;
-
-if(capaFocus){
-map.removeLayer(capaFocus);
-capaFocus = null;
+const capaDistritos = L.geoJSON(data,{
+style:{
+color:"#888888",
+weight:0.8,
+fillOpacity:0
 }
+});
 
-window.APP_STATE.territorio = null;
-window.APP_STATE.datos = null;
-
-map.flyTo([9.75,-84.2],9,{duration:0.8});
+controlCapas.addOverlay(capaDistritos,"Distritos CR");
 
 });
 
 
 // =====================================================
-// 👩 CAPAS GIGUP INDEPENDIENTES POR AÑO
+// 👩 CAPAS GIGUP
 // =====================================================
 
 function estiloGigup(feature,latlng){
@@ -240,18 +143,7 @@ fetch(url)
 .then(data=>{
 
 const capa = L.geoJSON(data,{
-pointToLayer: estiloGigup,
-onEachFeature:(feature,layer)=>{
-
-const nombreM = feature.properties.Name || "";
-const lugar = feature.properties.Lugar || "";
-
-layer.bindTooltip(`
-<div class="tooltip-pro">
-<strong>${nombreM}</strong><br>${lugar}
-</div>
-`);
-}
+pointToLayer: estiloGigup
 });
 
 controlCapas.addOverlay(capa,nombre);
@@ -259,7 +151,6 @@ controlCapas.addOverlay(capa,nombre);
 });
 }
 
-// 🔥 CARGAR TODAS LAS CAPAS
 cargarGigup("data/Gigup_2022_wgs84.geojson","GIGUP 2022");
 cargarGigup("data/Gigup_2023_wgs84.geojson","GIGUP 2023");
 cargarGigup("data/Gigup_2024_wgs84.geojson","GIGUP 2024");
