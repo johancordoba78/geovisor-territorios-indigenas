@@ -10,6 +10,10 @@
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
+<!-- 🔥 MINI MAP CSS -->
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.css"/>
+
 <link rel="stylesheet" href="css/style.css" />
 
 </head>
@@ -54,7 +58,6 @@ Programa REDD+ Costa Rica | FONAFIFO
 </div>
 
 <div class="kpi-card">
-
 <div class="kpi-label">Área efectiva bajo CREF</div>
 <div id="area-actual" class="kpi-value">–</div>
 <div class="kpi-label">hectáreas</div>
@@ -63,10 +66,8 @@ Programa REDD+ Costa Rica | FONAFIFO
 
 <div class="kpi-label">Variación interanual</div>
 <div id="variacion">–</div>
-
 </div>
 
-<!-- 🔥 CLASIFICACIÓN DINÁMICA -->
 <div class="bloque">
 <strong>Clasificación</strong>
 <div id="clasificacion-dinamica">–</div>
@@ -81,6 +82,9 @@ Programa REDD+ Costa Rica | FONAFIFO
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- 🔥 MINI MAP JS -->
+<script src="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
 
 <script src="js/config.js"></script>
 <script src="js/map.js"></script>
