@@ -9,10 +9,11 @@ window.APP_STATE = {
 
 let territorioSeleccionado = null;
 let capaFocus = null;
+let capaTerritorios = null;
 
 
 // ===============================
-// 🗺️ BASEMAPS
+// 🗺️ BASEMAP (SOLO SATÉLITE)
 // ===============================
 
 const satellite = L.tileLayer(
@@ -20,14 +21,8 @@ const satellite = L.tileLayer(
   { attribution: "© OSM" }
 );
 
-const dark = L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-  { attribution: "© CARTO" }
-);
-
 const baseMaps = {
-  "Satélite": satellite,
-  "Negro": dark
+  "Satélite": satellite
 };
 
 const overlayMaps = {};
@@ -128,7 +123,7 @@ function activarFocusMode(layer){
 
 
 // ===============================
-// 📍 CARGAR TERRITORIOS
+// 📍 CARGAR TERRITORIOS (AHORA EN ÁRBOL)
 // ===============================
 
 function cargarTerritorios() {
@@ -137,7 +132,7 @@ function cargarTerritorios() {
     .then(r => r.json())
     .then(data => {
 
-      const capa = L.geoJSON(data, {
+      capaTerritorios = L.geoJSON(data, {
 
         style: estiloTerritorio,
 
@@ -226,16 +221,21 @@ function cargarTerritorios() {
 
         }
 
-      }).addTo(map);
+      });
 
-      map.fitBounds(capa.getBounds());
+      capaTerritorios.addTo(map);
+
+      // 🔥 ahora territorios están en árbol
+      controlCapas.addOverlay(capaTerritorios,"Territorios indígenas");
+
+      map.fitBounds(capaTerritorios.getBounds());
 
     });
 }
 
 
 // =====================================================
-// 👩 CAPAS GIGUP PROFESIONALES POR AÑO (LIMPIO)
+// 👩 CAPAS GIGUP PROFESIONALES POR AÑO
 // =====================================================
 
 function estiloGigup(feature,latlng){
