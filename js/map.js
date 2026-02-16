@@ -1,3 +1,7 @@
+// ===============================
+// 🔥 ESTADO GLOBAL
+// ===============================
+
 window.APP_STATE = {
 territorio: null,
 datos: null
@@ -7,7 +11,10 @@ let territorioSeleccionado = null;
 let capaFocus = null;
 
 
+// ===============================
 // 🗺️ BASEMAPS
+// ===============================
+
 const satellite = L.tileLayer(
 "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
 { attribution: "© OSM" }
@@ -30,7 +37,10 @@ L.control.layers({
 }).addTo(map);
 
 
+// ===============================
 // 📊 JSON CREF
+// ===============================
+
 fetch("data/cref_por_territorio.json")
 .then(r => r.json())
 .then(data => {
@@ -39,7 +49,10 @@ cargarTerritorios();
 });
 
 
-// 🎨 ESTILO
+// ===============================
+// 🎨 ESTILO TERRITORIOS
+// ===============================
+
 function estiloTerritorio(feature) {
 
 const clasif = (feature.properties.CLASIF || "")
@@ -60,7 +73,10 @@ fillOpacity: 0.85
 }
 
 
-// 🎯 FOCUS
+// ===============================
+// 🎯 FOCUS MODE
+// ===============================
+
 function activarFocusMode(layer){
 
 if(capaFocus){
@@ -81,7 +97,10 @@ interactive:false
 }
 
 
-// 📍 GEOJSON
+// ===============================
+// 📍 TERRITORIOS
+// ===============================
+
 function cargarTerritorios() {
 
 fetch("data/territorios_indigenas.geojson")
@@ -100,7 +119,6 @@ const nombre = feature.properties.TERRITORIO
 
 const clasif = feature.properties.CLASIF;
 
-// TOOLTIP
 layer.bindTooltip(
 `<div class="tooltip-pro">
 <strong>${feature.properties.TERRITORIO}</strong><br>${clasif}
@@ -108,8 +126,6 @@ layer.bindTooltip(
 {sticky:true,direction:"top",offset:[0,-10]}
 );
 
-
-// HOVER
 layer.on("mouseover", () => {
 if(territorioSeleccionado !== layer){
 layer.setStyle({
@@ -126,8 +142,6 @@ layer.setStyle(estiloTerritorio(feature));
 }
 });
 
-
-// CLICK
 layer.on("click", (e) => {
 
 L.DomEvent.stopPropagation(e);
@@ -160,7 +174,6 @@ window.APP_STATE.territorio,
 window.APP_STATE.datos
 );
 
-// 🔥 NUEVO DINÁMICO
 renderClasificacion(feature.properties.CLASIF);
 
 });
@@ -175,7 +188,10 @@ map.fitBounds(capa.getBounds());
 }
 
 
-// 🔄 RESET
+// ===============================
+// 🔄 RESET TERRITORIO
+// ===============================
+
 map.on("click", function(){
 
 if(!territorioSeleccionado) return;
@@ -197,3 +213,77 @@ window.APP_STATE.datos = null;
 map.flyTo([9.75,-84.2],9,{duration:0.8});
 
 });
+
+
+// =====================================================
+// 👩 CAPA GIGUP NACIONAL DINÁMICA POR AÑO
+// =====================================================
+
+let capaGigup = null;
+let gigupData = [];
+
+Promise.all([
+fetch("data/Gigup_2022_wgs84.geojson").then(r=>r.json()),
+fetch("data/Gigup_2023_wgs84.geojson").then(r=>r.json()),
+fetch("data/Gigup_2024_wgs84.geojson").then(r=>r.json()),
+fetch("data/Gigup_2025_wgs84.geojson").then(r=>r.json())
+])
+.then(res => {
+
+gigupData = res.flatMap(fc => fc.features);
+
+actualizarGigupPorAnio();
+
+});
+
+
+// =====================================================
+// 🔄 FILTRO DINÁMICO GIGUP
+// =====================================================
+
+function actualizarGigupPorAnio(){
+
+const selector = document.getElementById("anio-select");
+if(!selector) return;
+
+const anio = Number(selector.value);
+
+if(capaGigup){
+map.removeLayer(capaGigup);
+capaGigup = null;
+}
+
+const filtrados = gigupData.filter(f =>
+Number(f.properties.Anio) === anio
+);
+
+capaGigup = L.geoJSON(filtrados,{
+
+pointToLayer:(feature,latlng)=>{
+
+return L.circleMarker(latlng,{
+radius:5,
+fillColor:"#ff2fa0",
+color:"#ffffff",
+weight:1,
+fillOpacity:0.9
+});
+
+},
+
+onEachFeature:(feature,layer)=>{
+
+const nombre = feature.properties.Name || "";
+const lugar = feature.properties.Lugar || "";
+
+layer.bindTooltip(`
+<div class="tooltip-pro">
+<strong>${nombre}</strong><br>${lugar}
+</div>
+`);
+
+}
+
+}).addTo(map);
+
+}
