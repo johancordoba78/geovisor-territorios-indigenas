@@ -1,5 +1,5 @@
 // ===============================
-// 🔥 ESTADO GLOBAL DE LA APP
+// 🔥 ESTADO GLOBAL
 // ===============================
 
 window.APP_STATE = {
@@ -17,130 +17,135 @@ let capaTerritorios = null;
 // ===============================
 
 const satellite = L.tileLayer(
-  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-  { attribution: "© OSM" }
+"https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+{ attribution:"© OSM"}
 );
 
 const baseMaps = {
-  "Satélite": satellite
+"Satélite": satellite
 };
 
 const overlayMaps = {};
 
 
 // ===============================
-// 🗺️ CREAR MAPA (COSTA RICA COMPLETA)
+// 🗺️ MAPA COSTA RICA COMPLETA
 // ===============================
 
 const boundsCostaRica = [
-  [7.5, -86.5],
-  [11.5, -82.0]
+[7.5,-86.5],
+[11.5,-82.0]
 ];
 
-const map = L.map("map", {
-  center: [9.75, -84.2],
-  zoom: 8,
-  minZoom: 7,
-  maxZoom: 18,
-  maxBounds: boundsCostaRica,
-  maxBoundsViscosity: 1.0,
-  layers: [satellite]
+const map = L.map("map",{
+center:[9.75,-84.2],
+zoom:8,
+minZoom:7,
+maxZoom:18,
+maxBounds: boundsCostaRica,
+maxBoundsViscosity:1.0,
+layers:[satellite]
 });
 
-const controlCapas = L.control.layers(baseMaps, overlayMaps,{
+const controlCapas = L.control.layers(baseMaps,overlayMaps,{
 collapsed:false
 }).addTo(map);
 
 
+// =====================================================
+// 🌎 MINI MAPA REGIONAL (NUEVO)
+// =====================================================
+
+const miniLayer = L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{ attribution:"" }
+);
+
+new L.Control.MiniMap(miniLayer,{
+position:"bottomleft",
+width:160,
+height:120,
+zoomLevelOffset:-4,
+toggleDisplay:true
+}).addTo(map);
+
+
 // ===============================
-// 📊 CARGAR JSON CREF
+// 📊 JSON CREF
 // ===============================
 
 fetch("data/cref_por_territorio.json")
-.then(r => r.json())
-.then(data => {
-
-  console.log("✔ JSON CREF cargado");
-  CREF_DATA = data;
-
-  cargarTerritorios();
-
-})
-.catch(err => console.error("Error JSON:", err));
+.then(r=>r.json())
+.then(data=>{
+CREF_DATA=data;
+cargarTerritorios();
+});
 
 
 // ===============================
 // 🎨 ESTILO TERRITORIOS
 // ===============================
 
-function estiloTerritorio(feature) {
+function estiloTerritorio(feature){
 
-  const clasif = (feature.properties.CLASIF || "")
-    .trim()
-    .toUpperCase();
+const clasif=(feature.properties.CLASIF||"").trim().toUpperCase();
 
-  let fillColor = "#ff6600";
+let fillColor="#ff6600";
+if(clasif==="CREF Y PAFTS") fillColor="#6a0dad";
+if(clasif==="SOLO PAFTS") fillColor="#0047ff";
 
-  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad";
-  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";
-
-  return {
-    color: "#ffffff",
-    weight: 2.5,
-    fillColor,
-    fillOpacity: 0.85
-  };
+return{
+color:"#ffffff",
+weight:2.5,
+fillColor,
+fillOpacity:0.85
+};
 }
 
 
 // ===============================
-// 🎯 FOCUS MODE
+// 🎯 FOCUS
 // ===============================
 
 function activarFocusMode(layer){
 
-  if(capaFocus){
-    map.removeLayer(capaFocus);
-    capaFocus = null;
-  }
+if(capaFocus){
+map.removeLayer(capaFocus);
+capaFocus=null;
+}
 
-  const geo = layer.feature;
-
-  capaFocus = L.geoJSON(geo,{
-    style:{
-      color:"#fff200",
-      weight:4,
-      fillColor:"#000000",
-      fillOpacity:0.35,
-      interactive:false,
-      className:"territorio-activo"
-    }
-  }).addTo(map);
+capaFocus=L.geoJSON(layer.feature,{
+style:{
+color:"#fff200",
+weight:4,
+fillColor:"#000000",
+fillOpacity:0.35,
+interactive:false,
+className:"territorio-activo"
+}
+}).addTo(map);
 
 }
 
 
 // ===============================
-// 📍 TERRITORIOS (EN ÁRBOL)
+// 📍 TERRITORIOS
 // ===============================
 
-function cargarTerritorios() {
+function cargarTerritorios(){
 
 fetch("data/territorios_indigenas.geojson")
-.then(r => r.json())
-.then(data => {
+.then(r=>r.json())
+.then(data=>{
 
-capaTerritorios = L.geoJSON(data,{
+capaTerritorios=L.geoJSON(data,{
 
-style: estiloTerritorio,
+style:estiloTerritorio,
 
 onEachFeature:(feature,layer)=>{
 
-const nombre = feature.properties.TERRITORIO
-?.trim()
-.toUpperCase();
-
-const clasif = feature.properties.CLASIF;
+const nombre=feature.properties.TERRITORIO?.trim().toUpperCase();
+const clasif=feature.properties.CLASIF;
 
 layer.bindTooltip(
 `<div class="tooltip-pro">
@@ -150,33 +155,20 @@ layer.bindTooltip(
 );
 
 layer.on("mouseover",()=>{
-
-if(territorioSeleccionado !== layer){
-
-layer.setStyle({
-color:"#ffe600",
-weight:2.5,
-opacity:1,
-fillOpacity:0.92
-});
-
+if(territorioSeleccionado!==layer){
+layer.setStyle({color:"#ffe600",weight:2.5,fillOpacity:0.92});
 }
-
 });
 
 layer.on("mouseout",()=>{
-
-if(territorioSeleccionado !== layer){
+if(territorioSeleccionado!==layer){
 layer.setStyle(estiloTerritorio(feature));
 }
-
 });
 
 layer.on("click",(e)=>{
 
 L.DomEvent.stopPropagation(e);
-
-const key = nombre.trim().toUpperCase();
 
 if(territorioSeleccionado){
 territorioSeleccionado.setStyle(
@@ -187,29 +179,21 @@ estiloTerritorio(territorioSeleccionado.feature)
 layer.setStyle({
 color:"#fff200",
 weight:3,
-opacity:1,
 fillOpacity:1,
 className:"territorio-activo"
 });
 
-territorioSeleccionado = layer;
+territorioSeleccionado=layer;
 
 activarFocusMode(layer);
 
-map.flyToBounds(layer.getBounds(),{
-duration:0.8,
-easeLinearity:0.25
-});
+map.flyToBounds(layer.getBounds(),{duration:0.8});
 
-window.APP_STATE.territorio = key;
-window.APP_STATE.datos = CREF_DATA[key] || null;
+window.APP_STATE.territorio=nombre;
+window.APP_STATE.datos=CREF_DATA[nombre]||null;
 
-actualizarPanel(
-window.APP_STATE.territorio,
-window.APP_STATE.datos
-);
-
-renderClasificacion(feature.properties.CLASIF);
+actualizarPanel(nombre,window.APP_STATE.datos);
+renderClasificacion(clasif);
 
 });
 
@@ -218,15 +202,15 @@ renderClasificacion(feature.properties.CLASIF);
 });
 
 capaTerritorios.addTo(map);
-
 controlCapas.addOverlay(capaTerritorios,"Territorios indígenas");
 
 });
+
 }
 
 
 // =====================================================
-// 👩 GIGUP ORDENADO CRONOLÓGICAMENTE
+// 👩 GIGUP POR AÑO (PRO)
 // =====================================================
 
 function estiloGigup(feature,latlng){
@@ -239,11 +223,11 @@ fillOpacity:0.9
 });
 }
 
-const capasGigup = [
-{url:"data/Gigup_2022_wgs84.geojson", nombre:"GIGUP 2022"},
-{url:"data/Gigup_2023_wgs84.geojson", nombre:"GIGUP 2023"},
-{url:"data/Gigup_2024_wgs84.geojson", nombre:"GIGUP 2024"},
-{url:"data/Gigup_2025_wgs84.geojson", nombre:"GIGUP 2025"}
+const capasGigup=[
+{url:"data/Gigup_2022_wgs84.geojson",nombre:"GIGUP 2022"},
+{url:"data/Gigup_2023_wgs84.geojson",nombre:"GIGUP 2023"},
+{url:"data/Gigup_2024_wgs84.geojson",nombre:"GIGUP 2024"},
+{url:"data/Gigup_2025_wgs84.geojson",nombre:"GIGUP 2025"}
 ];
 
 Promise.all(
@@ -253,14 +237,14 @@ capasGigup.map(c=>fetch(c.url).then(r=>r.json()))
 
 respuestas.forEach((data,i)=>{
 
-const capa = L.geoJSON(data,{
+const capa=L.geoJSON(data,{
 
-pointToLayer: estiloGigup,
+pointToLayer:estiloGigup,
 
 onEachFeature:(feature,layer)=>{
 
-const nombreM = feature.properties.Name || "Sin nombre";
-const anio = feature.properties.Anio || "Sin año";
+const nombreM=feature.properties.Name||"Sin nombre";
+const anio=feature.properties.Anio||"Sin año";
 
 layer.bindTooltip(
 `<div class="tooltip-pro">
@@ -296,7 +280,7 @@ controlCapas.addOverlay(capa,capasGigup[i].nombre);
 // 🔄 RESET TERRITORIOS
 // ===============================
 
-const zoomInicial = {
+const zoomInicial={
 center:[9.75,-84.2],
 zoom:8
 };
@@ -309,20 +293,17 @@ territorioSeleccionado.setStyle(
 estiloTerritorio(territorioSeleccionado.feature)
 );
 
-territorioSeleccionado = null;
+territorioSeleccionado=null;
 
 if(capaFocus){
 map.removeLayer(capaFocus);
-capaFocus = null;
+capaFocus=null;
 }
 
-window.APP_STATE.territorio = null;
-window.APP_STATE.datos = null;
+window.APP_STATE.territorio=null;
+window.APP_STATE.datos=null;
 
-map.flyTo(
-zoomInicial.center,
-zoomInicial.zoom,
-{duration:0.8,easeLinearity:0.25}
-);
+map.flyTo(zoomInicial.center,zoomInicial.zoom,{duration:0.8});
 
 });
+
