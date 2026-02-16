@@ -1,10 +1,10 @@
 // ===============================
-// 🔥 ESTADO GLOBAL
+// 🔥 ESTADO GLOBAL DE LA APP
 // ===============================
 
 window.APP_STATE = {
-territorio: null,
-datos: null
+  territorio: null,
+  datos: null
 };
 
 let territorioSeleccionado = null;
@@ -16,35 +16,39 @@ let capaFocus = null;
 // ===============================
 
 const satellite = L.tileLayer(
-"https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-{ attribution: "© OSM" }
+  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+  { attribution: "© OSM" }
 );
 
 const dark = L.tileLayer(
-"https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-{ attribution: "© CARTO" }
+  "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+  { attribution: "© CARTO" }
 );
 
 const baseMaps = {
-"Satélite": satellite,
-"Negro": dark
+  "Satélite": satellite,
+  "Negro": dark
 };
 
 const overlayMaps = {};
 
+
+// ===============================
+// 🗺️ CREAR MAPA
+// ===============================
+
 const map = L.map("map", {
-center: [9.75, -84.2],
-zoom: 9,
-layers: [satellite]
+  center: [9.75, -84.2],
+  zoom: 9,
+  layers: [satellite]
 });
 
 const controlCapas = L.control.layers(baseMaps, overlayMaps,{
 collapsed:false
-});
+}).addTo(map);
 
-controlCapas.addTo(map);
 
-// 🌲 mover árbol al panel
+// 🌲 mover árbol al panel (si existe)
 setTimeout(()=>{
 const contenedor = document.getElementById("arbol-capas");
 if(contenedor){
@@ -56,74 +60,182 @@ document.querySelector(".leaflet-control-layers")
 
 
 // ===============================
+// 📊 CARGAR JSON CREF
+// ===============================
+
+fetch("data/cref_por_territorio.json")
+  .then(r => r.json())
+  .then(data => {
+
+    console.log("✔ JSON CREF cargado");
+    CREF_DATA = data;
+
+    cargarTerritorios();
+
+  })
+  .catch(err => console.error("Error JSON:", err));
+
+
+// ===============================
 // 🎨 ESTILO TERRITORIOS
 // ===============================
 
 function estiloTerritorio(feature) {
 
-const clasif = (feature.properties.CLASIF || "")
-.trim()
-.toUpperCase();
+  const clasif = (feature.properties.CLASIF || "")
+    .trim()
+    .toUpperCase();
 
-let fillColor = "#ff6600";
+  let fillColor = "#ff6600";
 
-if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad";
-if (clasif === "SOLO PAFTS") fillColor = "#0047ff";
+  if (clasif === "CREF Y PAFTS") fillColor = "#6a0dad";
+  if (clasif === "SOLO PAFTS") fillColor = "#0047ff";
 
-return {
-color: "#ffffff",
-weight: 2.5,
-fillColor,
-fillOpacity: 0.85
-};
+  return {
+    color: "#ffffff",
+    weight: 2.5,
+    fillColor,
+    fillOpacity: 0.85
+  };
 }
 
 
 // ===============================
-// 📍 TERRITORIOS
+// 🎯 FOCUS MODE PRO
+// ===============================
+
+function activarFocusMode(layer){
+
+  if(capaFocus){
+    map.removeLayer(capaFocus);
+    capaFocus = null;
+  }
+
+  const geo = layer.feature;
+
+  capaFocus = L.geoJSON(geo,{
+    style:{
+      color:"#fff200",
+      weight:4,
+      fillColor:"#000000",
+      fillOpacity:0.35,
+      interactive:false,
+      className:"territorio-activo"
+    }
+  }).addTo(map);
+
+}
+
+
+// ===============================
+// 📍 CARGAR TERRITORIOS
 // ===============================
 
 function cargarTerritorios() {
 
-fetch("data/territorios_indigenas.geojson")
-.then(r => r.json())
-.then(data => {
+  fetch("data/territorios_indigenas.geojson")
+    .then(r => r.json())
+    .then(data => {
 
-const capa = L.geoJSON(data, {
-style: estiloTerritorio
-}).addTo(map);
+      const capa = L.geoJSON(data, {
 
-map.fitBounds(capa.getBounds());
+        style: estiloTerritorio,
 
-});
+        onEachFeature: (feature, layer) => {
+
+          const nombre = feature.properties.TERRITORIO
+            ?.trim()
+            .toUpperCase();
+
+          const clasif = feature.properties.CLASIF;
+
+          layer.bindTooltip(
+            `<div class="tooltip-pro">
+              <strong>${feature.properties.TERRITORIO}</strong><br>${clasif}
+            </div>`,
+            {
+              sticky:true,
+              direction:"top",
+              offset:[0,-10]
+            }
+          );
+
+          layer.on("mouseover", () => {
+
+            if(territorioSeleccionado !== layer){
+
+              layer.setStyle({
+                color:"#ffe600",
+                weight:2.5,
+                opacity:1,
+                fillOpacity:0.92
+              });
+
+            }
+
+          });
+
+          layer.on("mouseout", () => {
+
+            if(territorioSeleccionado !== layer){
+              layer.setStyle(estiloTerritorio(feature));
+            }
+
+          });
+
+          layer.on("click", (e) => {
+
+            L.DomEvent.stopPropagation(e);
+
+            const key = nombre.trim().toUpperCase();
+
+            if(territorioSeleccionado){
+              territorioSeleccionado.setStyle(
+                estiloTerritorio(territorioSeleccionado.feature)
+              );
+            }
+
+            layer.setStyle({
+              color:"#fff200",
+              weight:3,
+              opacity:1,
+              fillOpacity:1,
+              className:"territorio-activo"
+            });
+
+            territorioSeleccionado = layer;
+
+            activarFocusMode(layer);
+
+            map.flyToBounds(layer.getBounds(),{
+              duration:0.8,
+              easeLinearity:0.25
+            });
+
+            window.APP_STATE.territorio = key;
+            window.APP_STATE.datos = CREF_DATA[key] || null;
+
+            actualizarPanel(
+              window.APP_STATE.territorio,
+              window.APP_STATE.datos
+            );
+
+            renderClasificacion(feature.properties.CLASIF);
+
+          });
+
+        }
+
+      }).addTo(map);
+
+      map.fitBounds(capa.getBounds());
+
+    });
 }
 
-cargarTerritorios();
-
 
 // =====================================================
-// 🗺️ DISTRITOS COSTA RICA
-// =====================================================
-
-fetch("data/distritos_cr.geojson")
-.then(r=>r.json())
-.then(data=>{
-
-const capaDistritos = L.geoJSON(data,{
-style:{
-color:"#888888",
-weight:0.8,
-fillOpacity:0
-}
-});
-
-controlCapas.addOverlay(capaDistritos,"Distritos CR");
-
-});
-
-
-// =====================================================
-// 👩 CAPAS GIGUP
+// 👩 CAPAS GIGUP POR AÑO (ÚNICO CAMBIO REAL)
 // =====================================================
 
 function estiloGigup(feature,latlng){
@@ -155,3 +267,42 @@ cargarGigup("data/Gigup_2022_wgs84.geojson","GIGUP 2022");
 cargarGigup("data/Gigup_2023_wgs84.geojson","GIGUP 2023");
 cargarGigup("data/Gigup_2024_wgs84.geojson","GIGUP 2024");
 cargarGigup("data/Gigup_2025_wgs84.geojson","GIGUP 2025");
+
+
+// ===============================
+// 🔄 RESET CLICK FUERA
+// ===============================
+
+const zoomInicial = {
+  center: [9.75, -84.2],
+  zoom: 9
+};
+
+map.on("click", function(){
+
+  if(!territorioSeleccionado) return;
+
+  territorioSeleccionado.setStyle(
+    estiloTerritorio(territorioSeleccionado.feature)
+  );
+
+  territorioSeleccionado = null;
+
+  if(capaFocus){
+    map.removeLayer(capaFocus);
+    capaFocus = null;
+  }
+
+  window.APP_STATE.territorio = null;
+  window.APP_STATE.datos = null;
+
+  map.flyTo(
+    zoomInicial.center,
+    zoomInicial.zoom,
+    {
+      duration:0.8,
+      easeLinearity:0.25
+    }
+  );
+
+});
