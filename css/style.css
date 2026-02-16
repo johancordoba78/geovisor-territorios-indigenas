@@ -11,7 +11,7 @@ html, body {
 
 #app {
   display: flex;
-  margin-top:64px;                 /* 🔥 espacio para header */
+  margin-top:64px;
   height: calc(100vh - 64px);
 }
 
@@ -122,17 +122,9 @@ html, body {
   margin-top: 6px;
 }
 
-.kpi-positivo {
-  color: #065f46;
-}
-
-.kpi-negativo {
-  color: #b91c1c;
-}
-
-.kpi-neutro {
-  color: #374151;
-}
+.kpi-positivo { color: #065f46; }
+.kpi-negativo { color: #b91c1c; }
+.kpi-neutro   { color: #374151; }
 
 
 /* =====================================================
@@ -171,7 +163,7 @@ html, body {
 
 
 /* =====================================================
-   ✨ TRANSICIONES SUAVES VISOR PRO
+   ✨ TRANSICIONES SUAVES
 ===================================================== */
 
 .leaflet-interactive {
@@ -180,25 +172,46 @@ html, body {
 
 
 /* =====================================================
-   🏛️ FOOTER LOGOS INSTITUCIONAL PRO
+   🌲 ÁRBOL DE CAPAS FIJO EN PANEL
+===================================================== */
+
+#arbol-capas .leaflet-control-layers {
+  position:relative !important;
+  top:auto !important;
+  right:auto !important;
+  left:auto !important;
+  bottom:auto !important;
+  box-shadow:none;
+  border:none;
+  background:transparent;
+  padding:0;
+}
+
+#arbol-capas .leaflet-control-layers-list{
+  font-size:13px;
+}
+
+#arbol-capas label{
+  cursor:pointer;
+}
+
+
+/* =====================================================
+   🏛️ FOOTER LOGOS
 ===================================================== */
 
 #logos-footer{
   position:fixed;
   bottom:10px;
-  left:340px;               /* espacio panel */
+  left:340px;
   z-index:9999;
-
   background:rgba(255,255,255,0.9);
   backdrop-filter: blur(4px);
-
   padding:6px 12px;
   border-radius:10px;
-
   display:flex;
   gap:14px;
   align-items:center;
-
   box-shadow:0 3px 8px rgba(0,0,0,0.15);
 }
 
@@ -212,4 +225,5 @@ html, body {
   opacity:1;
   transform:scale(1.05);
 }
+
 
