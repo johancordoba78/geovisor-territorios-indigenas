@@ -7,22 +7,15 @@
 
   <title>Geovisor CREF – Territorios Indígenas</title>
 
-  <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-  <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css" />
 
 </head>
 
 <body>
 
-<!-- ==================================================
-🏛️ HEADER INSTITUCIONAL PRO
-================================================== -->
 <header id="header-app">
 
   <div class="header-left">
@@ -33,28 +26,20 @@
   </div>
 
   <div class="header-logos">
-    <img src="./logos/fonafifo.png" alt="FONAFIFO">
-    <img src="./logos/redd.png" alt="REDD+">
-    <img src="./logos/gigup.png" alt="GIGUP">
+    <img src="./logos/fonafifo.png">
+    <img src="./logos/redd.png">
+    <img src="./logos/gigup.png">
   </div>
 
 </header>
 
-
-<!-- ==================================================
-APP WRAPPER
-================================================== -->
 <div id="app" class="app-wrapper">
 
-  <!-- =============================================
-       PANEL LATERAL
-  ============================================== -->
   <aside id="panel">
 
     <h2 id="panel-titulo">Seleccione un territorio</h2>
     <p id="panel-subtitulo"></p>
 
-    <!-- Selector año -->
     <div class="bloque">
       <strong>Año seleccionado:</strong><br>
 
@@ -69,7 +54,6 @@ APP WRAPPER
       </select>
     </div>
 
-    <!-- KPI CARD -->
     <div class="kpi-card">
 
       <div class="kpi-label">Área efectiva bajo CREF</div>
@@ -83,36 +67,26 @@ APP WRAPPER
 
     </div>
 
-    <!-- Estado administrativo -->
+    <!-- 🔥 NUEVA CLASIFICACIÓN DINÁMICA -->
     <div class="bloque">
-      <strong>Estado administrativo</strong>
-      <ul>
-        <li>Adenda: <span id="adenda">–</span></li>
-        <li>Documento rosa: <span id="rosa">–</span></li>
-        <li>Pendientes: <span id="pendiente">–</span></li>
-      </ul>
+      <strong>Clasificación</strong>
+      <div id="clasificacion-dinamica">–</div>
     </div>
 
-    <!-- Tabla dinámica -->
     <div id="tabla-anios"></div>
 
   </aside>
 
-  <!-- =============================================
-       MAPA
-  ============================================== -->
   <main id="map"></main>
 
 </div>
 
-
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- ORDEN CORRECTO -->
 <script src="js/config.js"></script>
 <script src="js/map.js"></script>
 <script src="js/panel.js"></script>
 
 </body>
 </html>
+
